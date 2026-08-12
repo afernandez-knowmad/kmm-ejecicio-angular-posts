@@ -1,0 +1,117 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Observable, firstValueFrom } from 'rxjs';
+
+import { API_BASE_URL } from '../../core/http/api-base-url.token';
+import { toId } from '../../core/lib/ids';
+import type { Page } from './models/post-filters.model';
+import type { NewPost, Post, PostPatch, PostListQuery } from './models/post.model';
+
+/**
+ * HttpParams helper. json-server accepts `_page`, `_limit`, `q`,
+ * `userId`, and `tags_like` (matches one of the tags).
+ */
+function buildListParams(query: PostListQuery): HttpParams {
+  let params = new HttpParams()
+    .set('_page', String(query.page))
+    .set('_limit', String(query.pageSize));
+
+  const q = query.q?.trim();
+  if (q) {
+    params = params.set('q', q);
+  }
+  if (query.userId) {
+    params = params.set('userId', toId(query.userId));
+  }
+  if (query.tag) {
+    params = params.set('tags_like', query.tag);
+  }
+  return params;
+}
+
+/**
+ * Total count comes from the `X-Total-Count` response header in
+ * json-server. We parse it defensively so a missing header does not
+ * break the UI.
+ */
+function readTotal(
+  res: HttpClient,
+  headers: { get(name: string): string | null } | undefined,
+): number {
+  const raw = headers?.get('X-Total-Count') ?? '0';
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+/**
+ * PostsApi talks to the `/posts` collection of the mock backend.
+ *
+ * - listResource returns an `httpResource` for the list page so the
+ *   request re-runs whenever the PostListQuery signal changes.
+ * - The other endpoints are imperative and return Promises, since
+ *   mutations are not reactive.
+ */
+@Injectable({ providedIn: 'root' })
+export class PostsApi {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
+
+  /**
+   * Build the URL + params pair used by the list httpResource.
+   */
+  listRequest(query: () => PostListQuery): { url: string; params: HttpParams } {
+    return {
+      url: `${this.baseUrl}/posts`,
+      params: buildListParams(query()),
+    };
+  }
+
+  /**
+   * Imperative single-shot fetch of the list. Useful for prefetch on
+   * hover or for one-off consumers that do not need reactivity.
+   */
+  listOnce(query: PostListQuery): Promise<Page<Post>> {
+    return firstValueFrom(this.listObservable(query));
+  }
+
+  /**
+   * Observable variant of `list`; lets the caller decide between
+   * subscribe / firstValueFrom.
+   */
+  listObservable(query: PostListQuery): Observable<Page<Post>> {
+    const params = buildListParams(query);
+    return new Observable<Page<Post>>((subscriber) => {
+      const sub = this.http
+        .get<Post[]>(`${this.baseUrl}/posts`, { params, observe: 'response' })
+        .subscribe({
+          next: (res) => {
+            subscriber.next({
+              items: res.body ?? [],
+              total: readTotal(this.http, res.headers),
+              page: query.page,
+              pageSize: query.pageSize,
+            });
+            subscriber.complete();
+          },
+          error: (err) => subscriber.error(err),
+        });
+      return () => sub.unsubscribe();
+    });
+  }
+
+  getById(id: string): Promise<Post> {
+    return firstValueFrom(this.http.get<Post>(`${this.baseUrl}/posts/${toId(id)}`));
+  }
+
+  create(payload: NewPost): Promise<Post> {
+    return firstValueFrom(this.http.post<Post>(`${this.baseUrl}/posts`, payload));
+  }
+
+  update(id: string, patch: PostPatch): Promise<Post> {
+    return firstValueFrom(this.http.patch<Post>(`${this.baseUrl}/posts/${toId(id)}`, patch));
+  }
+
+  delete(id: string): Promise<void> {
+    return firstValueFrom(this.http.delete<void>(`${this.baseUrl}/posts/${toId(id)}`));
+  }
+}
