@@ -57,3 +57,36 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Calidad y flujo de trabajo
+
+Este proyecto aplica de serie:
+
+- **ESLint** (`@angular-eslint`) sobre `*.ts` y `*.html` con selector `app`.
+- **Prettier** (`printWidth: 100`, single quote, parser `angular` para HTML).
+- **Husky 9** con hooks `pre-commit` (lint-staged) y `commit-msg` (commitlint).
+- **lint-staged** para correr `ng lint --fix` + `prettier --write` solo sobre los
+  archivos modificados en cada commit.
+- **Conventional Commits** validados con `@commitlint/config-conventional`
+  y wizard opcional vía `npm run commit` (Commitizen + cz-conventional-changelog).
+- **Flujo de ramas** documentado en [`docs/git-workflow.md`](docs/git-workflow.md).
+
+### Scripts útiles
+
+```bash
+npm run lint          # ng lint
+npm run lint:fix      # ng lint --fix
+npm run format        # prettier --write
+npm run format:check  # prettier --check
+npm run typecheck     # tsc --noEmit
+npm run commit        # commitizen (wizard interactivo)
+```
+
+### Hooks
+
+Tras clonar el repo, ejecuta `npm install` (el script `prepare` inicializa
+Husky automáticamente). Si los hooks no se activan:
+
+```bash
+npm run prepare
+```
