@@ -1,0 +1,44 @@
+<section class="post-form" data-testid="post-form-edit">
+  <header class="post-form__header">
+    <h1 class="post-form__title">{{ 'posts.form.editTitle' | transloco }}</h1>
+  </header>
+
+  @if (postResource.status() === 'resolved') {
+    <form class="post-form__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <label class="post-form__field">
+        <span class="post-form__label">{{ 'posts.form.titleLabel' | transloco }}</span>
+        <input type="text" formControlName="title" data-testid="post-form-title" />
+      </label>
+
+      <label class="post-form__field">
+        <span class="post-form__label">{{ 'posts.form.bodyLabel' | transloco }}</span>
+        <textarea formControlName="body" rows="6" data-testid="post-form-body"></textarea>
+      </label>
+
+      <label class="post-form__field">
+        <span class="post-form__label">{{ 'posts.form.tagsLabel' | transloco }}</span>
+        <input
+          type="text"
+          formControlName="tags"
+          [attr.placeholder]="'posts.form.tagsPlaceholder' | transloco"
+          data-testid="post-form-tags"
+        />
+      </label>
+
+      <button
+        type="submit"
+        class="post-form__submit"
+        [disabled]="!canSubmit()"
+        data-testid="post-form-submit"
+      >
+        {{ 'posts.form.save' | transloco }}
+      </button>
+    </form>
+  } @else if (postResource.status() === 'loading' || postResource.status() === 'reloading') {
+    <p class="post-form__state">{{ 'posts.detail.loading' | transloco }}</p>
+  } @else {
+    <p class="post-form__state post-form__state--error" role="alert">
+      {{ 'posts.detail.error' | transloco }}
+    </p>
+  }
+</section>
