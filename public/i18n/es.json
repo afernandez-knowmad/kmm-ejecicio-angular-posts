@@ -12,5 +12,23 @@
     "label": "Idioma",
     "es": "Español",
     "en": "Inglés"
+  },
+  "auth": {
+    "login": {
+      "title": "Inicia sesión",
+      "subtitle": "Usa tu usuario mock (alice / bruno / carla / diego).",
+      "username": "Usuario",
+      "password": "Contraseña",
+      "submit": "Entrar",
+      "submitting": "Entrando…",
+      "usernamePlaceholder": "p. ej. alice",
+      "passwordPlaceholder": "Tu contraseña"
+    },
+    "errors": {
+      "unknown-user": "No existe ningún usuario con ese nombre.",
+      "wrong-password": "La contraseña no es correcta.",
+      "network-error": "No se pudo conectar con el servidor. Inténtalo de nuevo.",
+      "unknown": "Ha ocurrido un error inesperado."
+    }
   }
 }

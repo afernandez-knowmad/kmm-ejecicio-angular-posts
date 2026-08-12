@@ -12,5 +12,23 @@
     "label": "Language",
     "es": "Spanish",
     "en": "English"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Use one of the mock users (alice / bruno / carla / diego).",
+      "username": "Username",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Signing in…",
+      "usernamePlaceholder": "e.g. alice",
+      "passwordPlaceholder": "Your password"
+    },
+    "errors": {
+      "unknown-user": "No user exists with that name.",
+      "wrong-password": "The password is not correct.",
+      "network-error": "Could not reach the server. Try again.",
+      "unknown": "Something went wrong."
+    }
   }
 }
