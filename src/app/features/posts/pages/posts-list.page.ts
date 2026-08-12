@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
+import { PostsPaginationComponent } from '../components/posts-pagination.component';
 import { PostsSearchComponent } from '../components/posts-search.component';
 import { PostsTagFilterComponent } from '../components/posts-tag-filter.component';
 import { PostsApi } from '../posts.api';
@@ -31,6 +32,7 @@ import type { Post } from '../models/post.model';
     PostsSearchComponent,
     PostsAuthorFilterComponent,
     PostsTagFilterComponent,
+    PostsPaginationComponent,
   ],
   templateUrl: './posts-list.page.html',
   styleUrl: './posts-list.page.css',

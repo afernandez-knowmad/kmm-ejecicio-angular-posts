@@ -47,6 +47,11 @@
       "anyAuthor": "Any author",
       "tagLabel": "Tags",
       "clearTag": "Clear tag"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {page}"
     }
   }
 }
