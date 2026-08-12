@@ -1,0 +1,45 @@
+<section class="login">
+  <header class="login__header">
+    <h1 class="login__title">{{ 'auth.login.title' | transloco }}</h1>
+    <p class="login__subtitle">{{ 'auth.login.subtitle' | transloco }}</p>
+  </header>
+
+  <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <label class="login__field">
+      <span class="login__label">{{ 'auth.login.username' | transloco }}</span>
+      <input
+        type="text"
+        autocomplete="username"
+        formControlName="name"
+        [attr.placeholder]="'auth.login.usernamePlaceholder' | transloco"
+      />
+    </label>
+
+    <label class="login__field">
+      <span class="login__label">{{ 'auth.login.password' | transloco }}</span>
+      <input
+        type="password"
+        autocomplete="current-password"
+        formControlName="password"
+        [attr.placeholder]="'auth.login.passwordPlaceholder' | transloco"
+      />
+    </label>
+
+    @if (errorMessage(); as key) {
+      <p class="login__error" role="alert" data-testid="login-error">{{ key | transloco }}</p>
+    }
+
+    <button
+      type="submit"
+      class="login__submit"
+      [disabled]="!canSubmit()"
+      data-testid="login-submit"
+    >
+      @if (store.loading()) {
+        {{ 'auth.login.submitting' | transloco }}
+      } @else {
+        {{ 'auth.login.submit' | transloco }}
+      }
+    </button>
+  </form>
+</section>
