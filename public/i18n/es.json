@@ -52,6 +52,27 @@
       "prev": "Anterior",
       "next": "Siguiente",
       "page": "Página {page}"
+    },
+    "detail": {
+      "title": "Detalle del post",
+      "loading": "Cargando post…",
+      "error": "No se pudo cargar el post.",
+      "notFound": "No existe ningún post con ese id.",
+      "forbidden": "No puedes editar ni borrar este post porque no es tuyo.",
+      "by": "por",
+      "edit": "Editar",
+      "delete": "Borrar",
+      "deleteConfirm": "¿Borrar este post?"
+    },
+    "form": {
+      "newTitle": "Nuevo post",
+      "editTitle": "Editar post",
+      "titleLabel": "Título",
+      "bodyLabel": "Contenido",
+      "tagsLabel": "Etiquetas",
+      "tagsPlaceholder": "angular, signals, zoneless",
+      "create": "Crear",
+      "save": "Guardar"
     }
   }
 }

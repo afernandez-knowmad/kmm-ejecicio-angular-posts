@@ -1,0 +1,51 @@
+<section class="post-detail" data-testid="post-detail">
+  @switch (status()) {
+    @case ('loading') {
+      <p class="post-detail__state" data-testid="post-detail-loading">
+        {{ 'posts.detail.loading' | transloco }}
+      </p>
+    }
+    @case ('error') {
+      <p
+        class="post-detail__state post-detail__state--error"
+        role="alert"
+        data-testid="post-detail-error"
+      >
+        {{ 'posts.detail.error' | transloco }}
+      </p>
+    }
+    @case ('not-found') {
+      <p class="post-detail__state" data-testid="post-detail-not-found">
+        {{ 'posts.detail.notFound' | transloco }}
+      </p>
+    }
+    @case ('forbidden') {
+      <p
+        class="post-detail__state post-detail__state--forbidden"
+        role="alert"
+        data-testid="post-detail-forbidden"
+      >
+        {{ 'posts.detail.forbidden' | transloco }}
+      </p>
+    }
+    @case ('resolved') {
+      @if (post(); as p) {
+        <article class="post-detail__article" data-testid="post-detail-resolved">
+          <header class="post-detail__header">
+            <h1 class="post-detail__title">{{ p.title }}</h1>
+            <app-post-author-card [userId]="p.userId" />
+          </header>
+          <p class="post-detail__body">{{ p.body }}</p>
+          @if (p.tags.length > 0) {
+            <ul class="post-detail__tags" data-testid="post-detail-tags">
+              @for (tag of p.tags; track tag) {
+                <li class="post-detail__tag">#{{ tag }}</li>
+              }
+            </ul>
+          }
+          <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
+        </article>
+      }
+    }
+  }
+</section>

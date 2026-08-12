@@ -41,7 +41,15 @@ export type OwnershipResolver = (id: string) => Promise<OwnedResource | null>;
  * the page handles the UI feedback.
  */
 export function ownershipGuardFor(basePath: string, resolver: OwnershipResolver): CanMatchFn {
-  return async (_route: Route, segments: UrlSegment[]): Promise<boolean | UrlTree> => {
+  return async (
+    route: Route,
+    segments: UrlSegment[],
+    // The third CanMatchFn parameter is required by the signature
+    // but unused by this guard; suppressed via config in eslint.config.
+    snapshot: Parameters<CanMatchFn>[2],
+  ): Promise<boolean | UrlTree> => {
+    void snapshot;
+    void route;
     const store = inject(AuthStore);
     const router = inject(Router);
 

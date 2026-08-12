@@ -52,6 +52,27 @@
       "prev": "Previous",
       "next": "Next",
       "page": "Page {page}"
+    },
+    "detail": {
+      "title": "Post detail",
+      "loading": "Loading post…",
+      "error": "Could not load the post.",
+      "notFound": "No post exists with that id.",
+      "forbidden": "You cannot edit or delete this post because it is not yours.",
+      "by": "by",
+      "edit": "Edit",
+      "delete": "Delete",
+      "deleteConfirm": "Delete this post?"
+    },
+    "form": {
+      "newTitle": "New post",
+      "editTitle": "Edit post",
+      "titleLabel": "Title",
+      "bodyLabel": "Body",
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "angular, signals, zoneless",
+      "create": "Create",
+      "save": "Save"
     }
   }
 }
