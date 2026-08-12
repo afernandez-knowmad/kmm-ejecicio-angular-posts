@@ -1,0 +1,37 @@
+<section class="posts-list">
+  <header class="posts-list__header">
+    <h1 class="posts-list__title">{{ 'posts.list.title' | transloco }}</h1>
+  </header>
+
+  @switch (postsResource.status()) {
+    @case ('loading') {
+      <p class="posts-list__state posts-list__state--loading" data-testid="posts-loading">
+        {{ 'posts.list.loading' | transloco }}
+      </p>
+    }
+    @case ('error') {
+      <p class="posts-list__state posts-list__state--error" role="alert" data-testid="posts-error">
+        {{ 'posts.list.error' | transloco }}
+      </p>
+    }
+    @case ('ready') {
+      @if (items().length === 0) {
+        <p class="posts-list__state posts-list__state--empty" data-testid="posts-empty">
+          {{ 'posts.list.empty' | transloco }}
+        </p>
+      } @else {
+        <ul class="posts-list__items" data-testid="posts-items">
+          @for (post of items(); track post.id) {
+            <li class="post-card" data-testid="post-item">
+              <h2 class="post-card__title">{{ post.title }}</h2>
+              <p class="post-card__body">{{ post.body }}</p>
+            </li>
+          }
+        </ul>
+        <p class="posts-list__count" data-testid="posts-count">
+          {{ 'posts.list.count' | transloco: { total: total() } }}
+        </p>
+      }
+    }
+  }
+</section>
