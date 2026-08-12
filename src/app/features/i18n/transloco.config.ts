@@ -1,5 +1,7 @@
 import { provideTransloco, TranslocoConfig } from '@jsverse/transloco';
 
+import { TranslocoHttpLoader } from './transloco.loader';
+
 /**
  * Languages supported by the app. The first entry is the default.
  *
@@ -20,13 +22,28 @@ export const LANG_STORAGE_KEY = 'app.lang';
 /**
  * Transloco runtime configuration. Loaded eagerly so translations are
  * available on first paint.
+ *
+ * `availableLangs` is given a spread copy because Transloco's type
+ * expects a mutable array of `LangDefinition`.
  */
 export const translocoConfig: TranslocoConfig = {
-  availableLangs: SUPPORTED_LANGS,
+  availableLangs: [...SUPPORTED_LANGS],
   defaultLang: DEFAULT_LANG,
   fallbackLang: DEFAULT_LANG,
   reRenderOnLangChange: true,
   prodMode: true,
+  // Sensible defaults that match Transloco's own starter config.
+  failedRetries: 2,
+  flatten: {
+    aot: false,
+  },
+  missingHandler: {
+    logMissingKey: true,
+    useFallbackTranslation: true,
+    allowEmpty: true,
+  },
+  interpolation: ['{{', '}}'],
+  scopes: {},
 };
 
 /**
@@ -37,5 +54,5 @@ export const translocoConfig: TranslocoConfig = {
 export const provideAppTransloco = () =>
   provideTransloco({
     config: translocoConfig,
-    loader: () => import('./transloco.loader'),
+    loader: TranslocoHttpLoader,
   });
