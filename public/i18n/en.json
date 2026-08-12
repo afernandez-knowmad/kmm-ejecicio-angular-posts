@@ -37,7 +37,8 @@
       "loading": "Loading posts…",
       "empty": "No posts match your filters.",
       "error": "Could not load posts.",
-      "count": "Showing {total} results"
+      "count": "Showing {total} results",
+      "by": "by"
     }
   }
 }

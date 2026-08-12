@@ -2,8 +2,10 @@ import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsApi } from '../posts.api';
 import { PostsQueryState } from '../posts.query-state';
+import type { Post } from '../models/post.model';
 
 /**
  * Posts list page.
@@ -19,7 +21,7 @@ import { PostsQueryState } from '../posts.query-state';
 @Component({
   selector: 'app-posts-list-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, PostListItemComponent],
   templateUrl: './posts-list.page.html',
   styleUrl: './posts-list.page.css',
 })

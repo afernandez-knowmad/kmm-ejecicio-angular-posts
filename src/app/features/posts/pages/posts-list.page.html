@@ -22,9 +22,8 @@
       } @else {
         <ul class="posts-list__items" data-testid="posts-items">
           @for (post of items(); track post.id) {
-            <li class="post-card" data-testid="post-item">
-              <h2 class="post-card__title">{{ post.title }}</h2>
-              <p class="post-card__body">{{ post.body }}</p>
+            <li>
+              <app-post-list-item [post]="post" />
             </li>
           }
         </ul>
