@@ -62,6 +62,16 @@
       "edit": "Edit",
       "delete": "Delete",
       "deleteConfirm": "Delete this post?"
+    },
+    "form": {
+      "newTitle": "New post",
+      "editTitle": "Edit post",
+      "titleLabel": "Title",
+      "bodyLabel": "Body",
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "angular, signals, zoneless",
+      "create": "Create",
+      "save": "Save"
     }
   }
 }
