@@ -6,7 +6,14 @@
     "start": "concurrently -k -n json,ng -c blue,green \"json-server db.json --port 3000\" \"wait-on http://localhost:3000 && ng serve\"",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
+    "format": "prettier --write \"**/*.{ts,html,css,scss,md,json}\"",
+    "format:check": "prettier --check \"**/*.{ts,html,css,scss,md,json}\"",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit",
+    "commit": "cz",
+    "prepare": "husky"
   },
   "private": true,
   "packageManager": "npm@10.9.8",
@@ -19,23 +26,50 @@
     "@angular/platform-browser": "^22.1.0",
     "@angular/router": "^22.1.0",
     "@jsverse/transloco": "^8.4.0",
-    "json-server": "^1.0.0-beta.15",
     "concurrently": "^9.1.0",
-    "wait-on": "^8.0.1",
+    "json-server": "^1.0.0-beta.15",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "wait-on": "^8.0.1"
   },
   "devDependencies": {
     "@angular/build": "^22.1.3",
     "@angular/cli": "^22.1.3",
     "@angular/compiler-cli": "^22.1.0",
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4.1.12",
+    "@testing-library/angular": "^19.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/user-event": "^14.6.4",
     "@types/node": "^22.10.0",
+    "angular-eslint": "22.1.0",
+    "commitizen": "^4.3.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^10.6.0",
+    "husky": "^9.1.7",
     "jsdom": "^28.0.0",
+    "lint-staged": "^17.3.0",
     "postcss": "^8.5.3",
     "prettier": "^3.8.1",
     "tailwindcss": "^4.1.12",
     "typescript": "~6.0.2",
+    "typescript-eslint": "8.62.1",
     "vitest": "^4.0.8"
+  },
+  "lint-staged": {
+    "*.{ts,html}": [
+      "ng lint --fix"
+    ],
+    "*.{ts,html,css,scss,md,json}": [
+      "prettier --write"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
