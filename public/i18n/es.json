@@ -39,6 +39,10 @@
       "error": "No se pudieron cargar los posts.",
       "count": "Mostrando {total} resultados",
       "by": "por"
+    },
+    "filters": {
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar por título o contenido"
     }
   }
 }

@@ -39,6 +39,10 @@
       "error": "Could not load posts.",
       "count": "Showing {total} results",
       "by": "by"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by title or content"
     }
   }
 }
