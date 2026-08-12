@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './features/auth/auth.guard';
+import { ownershipGuardFor } from './features/auth/ownership.guard';
+import { postsOwnershipResolver } from './features/posts/posts.resolver';
 
 /**
  * Top-level routes for the app.
@@ -8,12 +10,36 @@ import { authGuard } from './features/auth/auth.guard';
  * Authenticated routes use `authGuard` via `canMatch` so the lazy
  * chunk is not even loaded when the user is not signed in. The login
  * route is intentionally NOT guarded so anonymous users can reach it.
+ *
+ * /posts/:id/edit uses both authGuard and ownershipGuardFor so the
+ * edit page is not even loaded for posts the current user does not
+ * own; non-owners are redirected back to /posts/:id?forbidden=1.
  */
 export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./features/auth/pages/login.page').then((m) => m.LoginPage),
     title: 'auth.login.title',
+  },
+  {
+    path: 'posts/new',
+    canMatch: [authGuard],
+    loadComponent: () => import('./features/posts/pages/post-new.page').then((m) => m.PostNewPage),
+    title: 'posts.form.newTitle',
+  },
+  {
+    path: 'posts/:id/edit',
+    canMatch: [authGuard, ownershipGuardFor('posts', postsOwnershipResolver())],
+    loadComponent: () =>
+      import('./features/posts/pages/post-edit.page').then((m) => m.PostEditPage),
+    title: 'posts.form.editTitle',
+  },
+  {
+    path: 'posts/:id',
+    canMatch: [authGuard],
+    loadComponent: () =>
+      import('./features/posts/pages/post-detail.page').then((m) => m.PostDetailPage),
+    title: 'posts.detail.title',
   },
   {
     path: 'posts',

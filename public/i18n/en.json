@@ -54,6 +54,7 @@
       "page": "Page {page}"
     },
     "detail": {
+      "title": "Post detail",
       "loading": "Loading post…",
       "error": "Could not load the post.",
       "notFound": "No post exists with that id.",
