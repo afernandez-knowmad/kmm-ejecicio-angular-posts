@@ -43,6 +43,7 @@
               }
             </ul>
           }
+          <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
         </article>
       }
     }

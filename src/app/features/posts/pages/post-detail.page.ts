@@ -1,13 +1,15 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
-import { TranslocoModule } from '@jsverse/transloco';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import { toId } from '../../../core/lib/ids';
+import { PostActionsComponent } from '../components/post-actions.component';
 import { PostAuthorCardComponent } from '../components/post-author-card.component';
 import type { Post } from '../models/post.model';
+import { PostsApi } from '../posts.api';
 import { UsersStore } from '../users.store';
 
 /**
@@ -21,13 +23,16 @@ import { UsersStore } from '../users.store';
 @Component({
   selector: 'app-post-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, PostAuthorCardComponent],
+  imports: [TranslocoModule, PostAuthorCardComponent, PostActionsComponent],
   templateUrl: './post-detail.page.html',
   styleUrl: './post-detail.page.css',
 })
 export class PostDetailPage {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly api = inject(PostsApi);
+  private readonly transloco = inject(TranslocoService);
   protected readonly usersStore = inject(UsersStore);
 
   private readonly idParam = toSignal(this.route.paramMap, {
@@ -61,6 +66,17 @@ export class PostDetailPage {
     }
     return 'resolved' as const;
   });
+
+  protected onDelete(): void {
+    const id = this.postId();
+    if (
+      typeof window !== 'undefined' &&
+      !window.confirm(this.transloco.translate('posts.detail.deleteConfirm'))
+    ) {
+      return;
+    }
+    void this.api.delete(id).then(() => this.router.navigateByUrl('/posts'));
+  }
 
   protected readonly post = computed<Post | undefined>(() => this.postResource.value());
 }
