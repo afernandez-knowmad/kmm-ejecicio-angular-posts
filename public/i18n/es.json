@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Posts",
+    "tagline": "Gestiona posts y comentarios"
+  },
+  "nav": {
+    "posts": "Posts",
+    "login": "Entrar",
+    "logout": "Salir"
+  },
+  "lang": {
+    "label": "Idioma",
+    "es": "Español",
+    "en": "Inglés"
+  }
+}
