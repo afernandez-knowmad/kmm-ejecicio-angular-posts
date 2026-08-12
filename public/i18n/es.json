@@ -30,5 +30,28 @@
       "network-error": "No se pudo conectar con el servidor. Inténtalo de nuevo.",
       "unknown": "Ha ocurrido un error inesperado."
     }
+  },
+  "posts": {
+    "list": {
+      "title": "Posts",
+      "loading": "Cargando posts…",
+      "empty": "No hay posts que coincidan con los filtros.",
+      "error": "No se pudieron cargar los posts.",
+      "count": "Mostrando {total} resultados",
+      "by": "por"
+    },
+    "filters": {
+      "searchLabel": "Buscar",
+      "searchPlaceholder": "Buscar por título o contenido",
+      "authorLabel": "Autor",
+      "anyAuthor": "Cualquier autor",
+      "tagLabel": "Etiquetas",
+      "clearTag": "Quitar etiqueta"
+    },
+    "pagination": {
+      "prev": "Anterior",
+      "next": "Siguiente",
+      "page": "Página {page}"
+    }
   }
 }

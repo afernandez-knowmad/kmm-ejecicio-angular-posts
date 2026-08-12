@@ -30,5 +30,28 @@
       "network-error": "Could not reach the server. Try again.",
       "unknown": "Something went wrong."
     }
+  },
+  "posts": {
+    "list": {
+      "title": "Posts",
+      "loading": "Loading posts…",
+      "empty": "No posts match your filters.",
+      "error": "Could not load posts.",
+      "count": "Showing {total} results",
+      "by": "by"
+    },
+    "filters": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search by title or content",
+      "authorLabel": "Author",
+      "anyAuthor": "Any author",
+      "tagLabel": "Tags",
+      "clearTag": "Clear tag"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {page}"
+    }
   }
 }
