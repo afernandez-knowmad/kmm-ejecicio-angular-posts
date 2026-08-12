@@ -42,7 +42,9 @@
     },
     "filters": {
       "searchLabel": "Buscar",
-      "searchPlaceholder": "Buscar por título o contenido"
+      "searchPlaceholder": "Buscar por título o contenido",
+      "authorLabel": "Autor",
+      "anyAuthor": "Cualquier autor"
     }
   }
 }
