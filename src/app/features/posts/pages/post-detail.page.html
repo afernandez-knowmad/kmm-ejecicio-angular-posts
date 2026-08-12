@@ -1,0 +1,37 @@
+<section class="post-detail" data-testid="post-detail">
+  @switch (status()) {
+    @case ('loading') {
+      <p class="post-detail__state" data-testid="post-detail-loading">
+        {{ 'posts.detail.loading' | transloco }}
+      </p>
+    }
+    @case ('error') {
+      <p
+        class="post-detail__state post-detail__state--error"
+        role="alert"
+        data-testid="post-detail-error"
+      >
+        {{ 'posts.detail.error' | transloco }}
+      </p>
+    }
+    @case ('not-found') {
+      <p class="post-detail__state" data-testid="post-detail-not-found">
+        {{ 'posts.detail.notFound' | transloco }}
+      </p>
+    }
+    @case ('forbidden') {
+      <p
+        class="post-detail__state post-detail__state--forbidden"
+        role="alert"
+        data-testid="post-detail-forbidden"
+      >
+        {{ 'posts.detail.forbidden' | transloco }}
+      </p>
+    }
+    @case ('resolved') {
+      <article>
+        <!-- body and author section arrive in the next commit -->
+      </article>
+    }
+  }
+</section>

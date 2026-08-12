@@ -52,6 +52,12 @@
       "prev": "Previous",
       "next": "Next",
       "page": "Page {page}"
+    },
+    "detail": {
+      "loading": "Loading post…",
+      "error": "Could not load the post.",
+      "notFound": "No post exists with that id.",
+      "forbidden": "You cannot edit or delete this post because it is not yours."
     }
   }
 }
