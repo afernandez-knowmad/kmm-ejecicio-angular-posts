@@ -23,7 +23,7 @@ import { AuthStore } from '../auth.store';
 })
 export class LoginPage {
   private readonly fb = inject(FormBuilder);
-  private readonly store = inject(AuthStore);
+  protected readonly store = inject(AuthStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
