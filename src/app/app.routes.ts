@@ -1,8 +1,16 @@
-import { Routes } from '@angular/router';
+import { CanMatchFn, Routes } from '@angular/router';
 
 import { authGuard } from './features/auth/auth.guard';
 import { ownershipGuardFor } from './features/auth/ownership.guard';
-import { postsOwnershipResolver } from './features/posts/posts.resolver';
+import { injectPostsOwnershipResolver } from './features/posts/posts.resolver';
+
+/**
+ * CanMatchFn wrapper that defers building the OwnershipResolver
+ * until the route is matched, so `inject()` runs inside an
+ * InjectionContext.
+ */
+const postOwnershipGuard: CanMatchFn = (route, segments, snapshot) =>
+  ownershipGuardFor('posts', injectPostsOwnershipResolver())(route, segments, snapshot);
 
 /**
  * Top-level routes for the app.
@@ -11,7 +19,7 @@ import { postsOwnershipResolver } from './features/posts/posts.resolver';
  * chunk is not even loaded when the user is not signed in. The login
  * route is intentionally NOT guarded so anonymous users can reach it.
  *
- * /posts/:id/edit uses both authGuard and ownershipGuardFor so the
+ * /posts/:id/edit uses both authGuard and postOwnershipGuard so the
  * edit page is not even loaded for posts the current user does not
  * own; non-owners are redirected back to /posts/:id?forbidden=1.
  */
@@ -29,7 +37,7 @@ export const routes: Routes = [
   },
   {
     path: 'posts/:id/edit',
-    canMatch: [authGuard, ownershipGuardFor('posts', postsOwnershipResolver())],
+    canMatch: [authGuard, postOwnershipGuard],
     loadComponent: () =>
       import('./features/posts/pages/post-edit.page').then((m) => m.PostEditPage),
     title: 'posts.form.editTitle',
