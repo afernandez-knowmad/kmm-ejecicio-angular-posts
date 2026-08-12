@@ -95,8 +95,10 @@ export class PostsQueryState {
       (patch.q !== undefined && patch.q !== current.q) ||
       (patch.userId !== undefined && patch.userId !== current.userId) ||
       (patch.tag !== undefined && patch.tag !== current.tag);
-    if (filterChanged) {
-      next.page = 1;
+    if (filterChanged && next.page !== 1) {
+      // Readonly contract: rebuild the object instead of mutating.
+      this._query.set({ ...next, page: 1 });
+      return;
     }
     this._query.set(next);
   }

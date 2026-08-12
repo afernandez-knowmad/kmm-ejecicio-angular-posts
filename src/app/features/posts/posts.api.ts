@@ -4,8 +4,8 @@ import { Observable, firstValueFrom } from 'rxjs';
 
 import { API_BASE_URL } from '../../core/http/api-base-url.token';
 import { toId } from '../../core/lib/ids';
-import type { Page } from './models/post-filters.model';
-import type { NewPost, Post, PostPatch, PostListQuery } from './models/post.model';
+import type { Page, PostListQuery } from './models/post-filters.model';
+import type { NewPost, Post, PostPatch } from './models/post.model';
 
 /**
  * HttpParams helper. json-server accepts `_page`, `_limit`, `q`,

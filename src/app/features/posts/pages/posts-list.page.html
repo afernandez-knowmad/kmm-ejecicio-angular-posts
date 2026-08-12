@@ -20,7 +20,7 @@
         {{ 'posts.list.error' | transloco }}
       </p>
     }
-    @case ('ready') {
+    @case ('resolved') {
       @if (items().length === 0) {
         <p class="posts-list__state posts-list__state--empty" data-testid="posts-empty">
           {{ 'posts.list.empty' | transloco }}
