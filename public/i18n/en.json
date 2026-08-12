@@ -1,0 +1,16 @@
+{
+  "app": {
+    "title": "Posts",
+    "tagline": "Manage posts and comments"
+  },
+  "nav": {
+    "posts": "Posts",
+    "login": "Log in",
+    "logout": "Log out"
+  },
+  "lang": {
+    "label": "Language",
+    "es": "Spanish",
+    "en": "English"
+  }
+}
