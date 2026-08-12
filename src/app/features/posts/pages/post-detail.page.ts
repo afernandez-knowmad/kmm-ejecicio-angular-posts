@@ -6,6 +6,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import { toId } from '../../../core/lib/ids';
+import { PostAuthorCardComponent } from '../components/post-author-card.component';
 import type { Post } from '../models/post.model';
 import { UsersStore } from '../users.store';
 
@@ -20,7 +21,7 @@ import { UsersStore } from '../users.store';
 @Component({
   selector: 'app-post-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, PostAuthorCardComponent],
   templateUrl: './post-detail.page.html',
   styleUrl: './post-detail.page.css',
 })
@@ -60,4 +61,6 @@ export class PostDetailPage {
     }
     return 'resolved' as const;
   });
+
+  protected readonly post = computed<Post | undefined>(() => this.postResource.value());
 }

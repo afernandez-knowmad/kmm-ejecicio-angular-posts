@@ -57,7 +57,8 @@
       "loading": "Cargando post…",
       "error": "No se pudo cargar el post.",
       "notFound": "No existe ningún post con ese id.",
-      "forbidden": "No puedes editar ni borrar este post porque no es tuyo."
+      "forbidden": "No puedes editar ni borrar este post porque no es tuyo.",
+      "by": "por"
     }
   }
 }
