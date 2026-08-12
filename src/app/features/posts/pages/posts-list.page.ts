@@ -1,11 +1,13 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
 import { PostsSearchComponent } from '../components/posts-search.component';
+import { PostsTagFilterComponent } from '../components/posts-tag-filter.component';
 import { PostsApi } from '../posts.api';
+import { PostsListCache } from '../posts-list-cache';
 import { PostsQueryState } from '../posts.query-state';
 import type { Post } from '../models/post.model';
 
@@ -28,13 +30,25 @@ import type { Post } from '../models/post.model';
     PostListItemComponent,
     PostsSearchComponent,
     PostsAuthorFilterComponent,
+    PostsTagFilterComponent,
   ],
   templateUrl: './posts-list.page.html',
   styleUrl: './posts-list.page.css',
 })
 export class PostsListPage {
   private readonly api = inject(PostsApi);
+  private readonly cache = inject(PostsListCache);
   protected readonly queryState = inject(PostsQueryState);
+
+  constructor() {
+    // Feed the cache so the tag filter can compute its option set.
+    effect(() => {
+      const items = this.postsResource.value();
+      if (items && items.length > 0) {
+        this.cache.observe(items);
+      }
+    });
+  }
 
   protected readonly postsResource = httpResource<Post[]>(() =>
     this.api.listRequest(() => this.queryState.query()),

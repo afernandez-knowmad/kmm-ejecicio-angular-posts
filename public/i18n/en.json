@@ -44,7 +44,9 @@
       "searchLabel": "Search",
       "searchPlaceholder": "Search by title or content",
       "authorLabel": "Author",
-      "anyAuthor": "Any author"
+      "anyAuthor": "Any author",
+      "tagLabel": "Tags",
+      "clearTag": "Clear tag"
     }
   }
 }
