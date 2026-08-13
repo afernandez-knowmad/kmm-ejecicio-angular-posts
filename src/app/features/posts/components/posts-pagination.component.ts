@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
 /**
@@ -64,24 +65,30 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
 @Component({
   selector: 'app-posts-pagination',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, IconComponent],
+  host: { class: 'block' },
   template: `
-    <nav class="posts-pagination" aria-label="pagination" data-testid="posts-pagination">
+    <nav
+      class="mt-6 flex items-center justify-between gap-4"
+      aria-label="pagination"
+      data-testid="posts-pagination"
+    >
       <button
         type="button"
-        class="posts-pagination__btn"
+        class="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
         [disabled]="!canPrev()"
         (click)="prev()"
         data-testid="posts-pagination-prev"
       >
-        {{ 'posts.pagination.prev' | transloco }}
+        <app-icon name="arrow-left" [size]="16" />
+        <span>{{ 'posts.pagination.prev' | transloco }}</span>
       </button>
 
-      <ul class="posts-pagination__pages" data-testid="posts-pagination-pages">
+      <ul class="flex items-center gap-1" data-testid="posts-pagination-pages">
         @for (slot of pages(); track trackSlot($index, slot)) {
           @if (slot === '…') {
             <li
-              class="posts-pagination__ellipsis"
+              class="px-2 text-sm text-slate-400"
               aria-hidden="true"
               data-testid="posts-pagination-ellipsis"
             >
@@ -91,8 +98,11 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
             <li>
               <button
                 type="button"
-                class="posts-pagination__page"
-                [class.is-active]="slot === page()"
+                class="inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-sm font-medium transition-colors"
+                [class.bg-brand-600]="slot === page()"
+                [class.text-white]="slot === page()"
+                [class.text-slate-600]="slot !== page()"
+                [class.hover:bg-slate-100]="slot !== page()"
                 [attr.aria-current]="slot === page() ? 'page' : null"
                 [attr.aria-label]="'posts.pagination.gotoPage' | transloco: { page: slot }"
                 (click)="goto(slot)"
@@ -107,61 +117,16 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
 
       <button
         type="button"
-        class="posts-pagination__btn"
+        class="inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent"
         [disabled]="!canNext()"
         (click)="next()"
         data-testid="posts-pagination-next"
       >
-        {{ 'posts.pagination.next' | transloco }}
+        <span>{{ 'posts.pagination.next' | transloco }}</span>
+        <app-icon name="arrow-right" [size]="16" />
       </button>
     </nav>
   `,
-  styles: [
-    `
-      .posts-pagination {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-top: 1rem;
-      }
-      .posts-pagination__pages {
-        display: flex;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        gap: 0.25rem;
-      }
-      .posts-pagination__btn,
-      .posts-pagination__page {
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.375rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        background: transparent;
-        cursor: pointer;
-        font: inherit;
-        line-height: 1;
-      }
-      .posts-pagination__btn[disabled],
-      .posts-pagination__page[disabled] {
-        opacity: 0.4;
-        cursor: not-allowed;
-      }
-      .posts-pagination__page.is-active {
-        background: #2563eb;
-        color: #fff;
-        border-color: #2563eb;
-      }
-      .posts-pagination__ellipsis {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.375rem 0.5rem;
-        font-size: 0.875rem;
-      }
-    `,
-  ],
 })
 export class PostsPaginationComponent {
   private readonly queryState = inject(PostsQueryState);

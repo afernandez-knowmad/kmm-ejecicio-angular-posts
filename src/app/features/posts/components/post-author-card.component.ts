@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { toId } from '../../../core/lib/ids';
+import { AvatarComponent } from '../../../shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 
 /**
@@ -16,29 +17,17 @@ import { UsersStore } from '../users.store';
 @Component({
   selector: 'app-post-author-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, AvatarComponent],
+  host: { class: 'inline-flex' },
   template: `
-    <aside class="post-author" data-testid="post-author-card">
-      <span class="post-author__label">{{ 'posts.detail.by' | transloco }}</span>
-      <strong class="post-author__name">{{ authorName() }}</strong>
+    <aside class="inline-flex items-center gap-2" data-testid="post-author-card">
+      <app-avatar [name]="authorName()" [size]="28" />
+      <div class="flex flex-col leading-tight">
+        <span class="text-xs text-slate-500">{{ 'posts.detail.by' | transloco }}</span>
+        <strong class="text-sm font-semibold text-slate-900">{{ authorName() }}</strong>
+      </div>
     </aside>
   `,
-  styles: [
-    `
-      .post-author {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        padding: 0.25rem 0.625rem;
-        border-radius: 999px;
-        background: rgba(0, 0, 0, 0.05);
-        font-size: 0.8125rem;
-      }
-      .post-author__label {
-        opacity: 0.7;
-      }
-    `,
-  ],
 })
 export class PostAuthorCardComponent {
   private readonly usersStore = inject(UsersStore);

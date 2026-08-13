@@ -3,120 +3,64 @@ import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { toId } from '../../../core/lib/ids';
+import { AvatarComponent } from '../../../shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 import type { Post } from '../models/post.model';
 
 /**
  * Presentational component that renders a single post as a card.
  *
- * Resolves the author name from UsersStore and renders tags. Author
- * lookup is best-effort: until UsersStore loads, we show the userId.
+ * Resolves the author from UsersStore and renders tags. Author lookup
+ * is best-effort: until UsersStore loads, we fall back to the userId.
  */
 @Component({
   selector: 'app-post-list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink],
+  imports: [TranslocoModule, RouterLink, AvatarComponent],
+  host: { class: 'block' },
   template: `
-    <article class="post-card" data-testid="post-item">
+    <article
+      class="relative rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200/70 transition-shadow hover:shadow-md"
+      data-testid="post-item"
+    >
       <a
-        class="post-card__link"
+        class="absolute inset-0 z-0 rounded-2xl focus-visible:outline-2 focus-visible:outline-brand-500"
         [routerLink]="['/posts', post().id]"
         [attr.aria-label]="ariaLabel()"
         data-testid="post-item-link"
+      ></a>
+
+      <time
+        class="absolute right-5 top-4 text-xs font-medium uppercase tracking-wide text-slate-400"
+        [attr.datetime]="post().createdAt"
+        data-testid="post-date"
       >
-        <time class="post-card__date" [attr.datetime]="post().createdAt" data-testid="post-date">
-          {{ formattedDate() }}
-        </time>
-        <h2 class="post-card__title">{{ post().title }}</h2>
-        <p class="post-card__body">{{ post().body }}</p>
-        <footer class="post-card__footer">
-          <span class="post-card__author" data-testid="post-author">
-            {{ 'posts.list.by' | transloco }} <strong>{{ authorName() }}</strong>
-          </span>
-          @if (post().tags.length > 0) {
-            <ul class="post-card__tags" data-testid="post-tags">
-              @for (tag of post().tags; track tag) {
-                <li class="post-card__tag">{{ tag }}</li>
-              }
-            </ul>
-          }
-        </footer>
-      </a>
+        {{ formattedDate() }}
+      </time>
+
+      <h2 class="mb-2 pr-16 text-lg font-semibold text-slate-900">{{ post().title }}</h2>
+      <p class="mb-4 line-clamp-2 text-sm text-slate-500">{{ post().body }}</p>
+
+      <div class="relative z-10 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2" data-testid="post-author">
+          <app-avatar [name]="authorName()" [size]="28" />
+          <span class="text-sm font-medium text-slate-700">{{ authorName() }}</span>
+        </div>
+
+        @if (post().tags.length > 0) {
+          <ul class="flex flex-wrap items-center gap-2" data-testid="post-tags">
+            @for (tag of post().tags; track tag) {
+              <li
+                class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-500"
+              >
+                {{ tag }}
+              </li>
+            }
+          </ul>
+        }
+      </div>
     </article>
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      .post-card {
-        position: relative;
-        padding: 1rem;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 0.5rem;
-        background: #fff;
-      }
-      .post-card__link {
-        display: block;
-        color: inherit;
-        text-decoration: none;
-        cursor: pointer;
-      }
-      .post-card__link:focus-visible {
-        outline: 2px solid #3b82f6;
-        outline-offset: 2px;
-        border-radius: 0.25rem;
-      }
-      .post-card__date {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.75rem;
-        font-size: 0.75rem;
-        opacity: 0.7;
-        white-space: nowrap;
-      }
-      .post-card__title {
-        font-size: 1.0625rem;
-        margin: 0 0 0.25rem;
-        font-weight: 600;
-        padding-right: 5rem;
-      }
-      .post-card__body {
-        margin: 0 0 0.75rem;
-        font-size: 0.875rem;
-        opacity: 0.85;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      .post-card__footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-      }
-      .post-card__author {
-        font-size: 0.8125rem;
-        opacity: 0.85;
-      }
-      .post-card__tags {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.25rem;
-      }
-      .post-card__tag {
-        font-size: 0.75rem;
-        padding: 0.125rem 0.5rem;
-        border-radius: 999px;
-        background: rgba(0, 0, 0, 0.05);
-      }
-    `,
-  ],
 })
 export class PostListItemComponent {
   private readonly usersStore = inject(UsersStore);

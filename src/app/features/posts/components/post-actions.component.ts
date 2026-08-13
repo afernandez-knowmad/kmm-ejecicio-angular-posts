@@ -4,6 +4,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
 import { isOwner } from '../../../core/lib/ids';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 
 /**
  * Edit / delete actions for a post.
@@ -15,53 +16,31 @@ import { isOwner } from '../../../core/lib/ids';
 @Component({
   selector: 'app-post-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, RouterLink],
+  imports: [TranslocoModule, RouterLink, IconComponent],
+  host: { class: 'inline-flex' },
   template: `
     @if (canEdit()) {
-      <div class="post-actions" data-testid="post-actions">
+      <div class="flex items-center gap-3" data-testid="post-actions">
         <a
-          class="post-actions__btn post-actions__btn--edit"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
           [routerLink]="['/posts', postId(), 'edit']"
           data-testid="post-edit-link"
         >
-          {{ 'posts.detail.edit' | transloco }}
+          <app-icon name="edit" [size]="16" />
+          <span>{{ 'posts.detail.edit' | transloco }}</span>
         </a>
         <button
           type="button"
-          class="post-actions__btn post-actions__btn--delete"
+          class="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100"
           (click)="onDelete()"
           data-testid="post-delete-button"
         >
-          {{ 'posts.detail.delete' | transloco }}
+          <app-icon name="trash" [size]="16" />
+          <span>{{ 'posts.detail.delete' | transloco }}</span>
         </button>
       </div>
     }
   `,
-  styles: [
-    `
-      .post-actions {
-        display: flex;
-        gap: 0.5rem;
-      }
-      .post-actions__btn {
-        padding: 0.375rem 0.75rem;
-        border-radius: 0.375rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        background: transparent;
-        font-size: 0.875rem;
-        cursor: pointer;
-        text-decoration: none;
-        color: inherit;
-      }
-      .post-actions__btn--edit:hover {
-        background: rgba(37, 99, 235, 0.08);
-      }
-      .post-actions__btn--delete:hover {
-        background: rgba(192, 57, 43, 0.08);
-        color: #c0392b;
-      }
-    `,
-  ],
 })
 export class PostActionsComponent {
   private readonly auth = inject(AuthStore);

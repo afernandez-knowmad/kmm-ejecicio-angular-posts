@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { debounce, form, FormField } from '@angular/forms/signals';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
 interface PostsSearchModel {
@@ -15,13 +16,17 @@ interface PostsSearchModel {
 @Component({
   selector: 'app-posts-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, TranslocoModule],
+  imports: [FormField, TranslocoModule, IconComponent],
   template: `
-    <label class="posts-search">
-      <span class="posts-search__label">{{ 'posts.filters.searchLabel' | transloco }}</span>
+    <label class="relative flex w-full items-center">
+      <app-icon
+        name="search"
+        [size]="16"
+        class="pointer-events-none absolute left-3 text-slate-400"
+      />
       <input
         type="search"
-        class="posts-search__input"
+        class="w-full rounded-full bg-slate-100 py-1.5 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
         [formField]="form.q"
         [attr.placeholder]="'posts.filters.searchPlaceholder' | transloco"
         data-testid="posts-search-input"
@@ -30,20 +35,9 @@ interface PostsSearchModel {
   `,
   styles: [
     `
-      .posts-search {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-      .posts-search__label {
-        font-size: 0.8125rem;
-        font-weight: 500;
-      }
-      .posts-search__input {
-        padding: 0.5rem 0.625rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 0.375rem;
-        font: inherit;
+      :host {
+        display: block;
+        width: 100%;
       }
     `,
   ],

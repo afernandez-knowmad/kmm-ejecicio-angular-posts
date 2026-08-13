@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
 /**
@@ -13,12 +14,16 @@ import { PostsQueryState } from '../posts.query-state';
 @Component({
   selector: 'app-posts-tag-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, IconComponent],
   template: `
-    <label class="posts-tag-filter">
-      <span class="posts-tag-filter__label">{{ 'posts.filters.tagLabel' | transloco }}</span>
+    <label class="relative flex items-center">
+      <span
+        class="pointer-events-none absolute left-3 text-xs font-semibold uppercase tracking-wide text-slate-500"
+      >
+        {{ 'posts.filters.tagLabel' | transloco }}
+      </span>
       <select
-        class="posts-tag-filter__select"
+        class="w-full appearance-none rounded-lg bg-slate-100 py-2.5 pl-20 pr-9 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
         [value]="current()"
         (change)="onChange($event)"
         data-testid="posts-tag-filter"
@@ -28,25 +33,17 @@ import { PostsQueryState } from '../posts.query-state';
           <option [value]="tag">{{ tag }}</option>
         }
       </select>
+      <app-icon
+        name="chevron-down"
+        [size]="16"
+        class="pointer-events-none absolute right-3 text-slate-400"
+      />
     </label>
   `,
   styles: [
     `
-      .posts-tag-filter {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-      }
-      .posts-tag-filter__label {
-        font-size: 0.8125rem;
-        font-weight: 500;
-      }
-      .posts-tag-filter__select {
-        padding: 0.5rem 0.625rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 0.375rem;
-        background: transparent;
-        font: inherit;
+      :host {
+        display: block;
       }
     `,
   ],
