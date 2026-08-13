@@ -4,11 +4,18 @@
  * A comment belongs to exactly one post (`postId`) and is authored by
  * exactly one user (`userId`). Ownership checks compare
  * `Comment.userId` against the authenticated user's id.
+ *
+ * NOTE on types: `db.json` stores the seed comments with `postId`
+ * and `userId` as **numbers** (e.g. `"postId": 1`), and json-server
+ * preserves that on round-trips. Routing/auth inputs are strings,
+ * so the form is responsible for converting them with `Number()`
+ * before posting. Comparisons against ids from other sources should
+ * normalise via `toId`/`isOwner` from `core/lib/ids`.
  */
 export interface Comment {
   readonly id: string;
-  readonly postId: string;
-  readonly userId: string;
+  readonly postId: number;
+  readonly userId: number;
   readonly body: string;
   /** ISO-8601 string. Parsing to `Date` is deferred to the UI layer. */
   readonly createdAt: string;

@@ -109,12 +109,28 @@ export class CommentsSectionComponent {
   });
 
   constructor() {
-    // Feed the cache from every successful response.
+    // Track the last resource value we have already pushed into the
+    // store. The httpResource that backs `commentsResource` does NOT
+    // refetch on PATCH/DELETE, so after a local edit/delete its value
+    // still holds the pre-mutation list. The Angular effect graph
+    // around httpResource still re-fires us for unrelated reasons
+    // (request function re-evaluation, status transitions, etc.),
+    // and without this guard each such re-fire would clobber the
+    // local mutation in the cache with the stale server snapshot —
+    // making the UI look like the edit "didn't take" until a manual
+    // refresh. By identity-checking the incoming value we only sync
+    // when the resource genuinely produced a new array.
+    let lastSyncedValue: readonly Comment[] | undefined;
     effect(() => {
       const value = this.commentsResource.value();
-      if (value) {
-        this.store.observe(this.postId(), value);
+      if (value === undefined) {
+        return;
       }
+      if (value === lastSyncedValue) {
+        return;
+      }
+      lastSyncedValue = value;
+      this.store.observe(this.postId(), value);
     });
   }
 

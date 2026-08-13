@@ -87,8 +87,20 @@ export class CommentFormComponent {
       this.form.markAllAsTouched();
       return;
     }
-    const userId = this.auth.user()?.id;
-    if (!userId) {
+    // The mock backend (`db.json`) stores `comments[].postId` and
+    // `comments[].userId` as **numbers**, not strings. Routing and
+    // auth expose these ids as strings, so we coerce them with
+    // `Number()` before posting. json-server's query filter
+    // (`?postId=2`) compares strictly against the stored type, so
+    // sending strings here would persist the comment but make it
+    // invisible to the next refetch — which is exactly the bug we
+    // were chasing on the comments CRUD flow.
+    const userId = Number(this.auth.user()?.id);
+    const postId = Number(this.postId());
+    if (!Number.isInteger(userId) || userId <= 0) {
+      return;
+    }
+    if (!Number.isInteger(postId) || postId <= 0) {
       return;
     }
     const body = this.form.controls.body.getRawValue().trim();
@@ -97,7 +109,7 @@ export class CommentFormComponent {
     }
     this.submitting.set(true);
     try {
-      const created = await this.api.create({ postId: this.postId(), userId, body });
+      const created = await this.api.create({ postId, userId, body });
       this.created.emit(created);
       this.form.reset({ body: '' });
     } finally {
