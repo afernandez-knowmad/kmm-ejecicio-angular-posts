@@ -39,7 +39,7 @@
       "loading": "Loading posts…",
       "empty": "No posts match your filters.",
       "error": "Could not load posts.",
-      "count": "Showing {shown} of {total} results",
+      "count": "Showing {{shown}} of {{total}} results",
       "by": "by"
     },
     "filters": {

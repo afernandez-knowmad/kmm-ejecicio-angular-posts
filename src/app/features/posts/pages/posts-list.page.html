@@ -1,29 +1,30 @@
-<a
-  class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
-  routerLink="/posts/new"
-  data-testid="posts-new-link"
-  appHeaderActions
->
-  <app-icon name="plus" [size]="16" />
-  <span>{{ 'posts.form.newTitle' | transloco }}</span>
-</a>
-
 <section class="flex flex-col gap-6">
-  <header class="flex items-center justify-between gap-4">
+  <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-bold tracking-tight text-slate-900">
       {{ 'posts.list.title' | transloco }}
     </h1>
+    <a
+      class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 text-white px-4 py-3 text-sm font-semibold shadow-sm transition-colors hover:bg-brand-700"
+      routerLink="/posts/new"
+      data-testid="posts-new-link"
+      appHeaderActions
+    >
+      <app-icon class="text-white" name="plus" [size]="16" />
+      <span class="text-white">{{ 'posts.form.newTitle' | transloco }}</span>
+    </a>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <div class="flex flex-wrap items-center gap-3">
+      <app-posts-author-filter />
+      <app-posts-tag-filter [tags]="tags()" />
+    </div>
     <p
       class="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-500"
       data-testid="posts-count"
     >
       {{ 'posts.list.count' | transloco: { shown: items().length, total: total() } }}
     </p>
-  </header>
-
-  <div class="flex flex-wrap items-center gap-3">
-    <app-posts-author-filter />
-    <app-posts-tag-filter [tags]="tags()" />
   </div>
 
   @switch (postsResource.status()) {

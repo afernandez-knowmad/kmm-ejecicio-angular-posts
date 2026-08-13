@@ -20,12 +20,12 @@ import { AuthStore } from '../auth.store';
       <button
         type="button"
         [attr.aria-label]="'nav.logout' | transloco"
-        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition-colors hover:bg-slate-100"
+        class="inline-flex w-auto px-2 h-9 items-center gap-2 justify-center rounded-lg border border-slate-200 text-slate-700 transition-colors hover:bg-slate-100"
         (click)="onLogout()"
         data-testid="logout-button"
       >
         <app-icon name="logout" [size]="18" />
-        {{ 'nav.logout' | transloco }}
+        <span>{{ 'nav.logout' | transloco }}</span>
       </button>
     }
   `,

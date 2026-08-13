@@ -39,7 +39,7 @@
       "loading": "Cargando posts…",
       "empty": "No hay posts que coincidan con los filtros.",
       "error": "No se pudieron cargar los posts.",
-      "count": "Mostrando {shown} de {total} resultados",
+      "count": "Mostrando {{shown}} de {{total}} resultados",
       "by": "por"
     },
     "filters": {
