@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { toId } from '../../../core/lib/ids';
@@ -14,26 +15,33 @@ import type { Post } from '../models/post.model';
 @Component({
   selector: 'app-post-list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, RouterLink],
   template: `
     <article class="post-card" data-testid="post-item">
-      <time class="post-card__date" [attr.datetime]="post().createdAt" data-testid="post-date">
-        {{ formattedDate() }}
-      </time>
-      <h2 class="post-card__title">{{ post().title }}</h2>
-      <p class="post-card__body">{{ post().body }}</p>
-      <footer class="post-card__footer">
-        <span class="post-card__author" data-testid="post-author">
-          {{ 'posts.list.by' | transloco }} <strong>{{ authorName() }}</strong>
-        </span>
-        @if (post().tags.length > 0) {
-          <ul class="post-card__tags" data-testid="post-tags">
-            @for (tag of post().tags; track tag) {
-              <li class="post-card__tag">{{ tag }}</li>
-            }
-          </ul>
-        }
-      </footer>
+      <a
+        class="post-card__link"
+        [routerLink]="['/posts', post().id]"
+        [attr.aria-label]="ariaLabel()"
+        data-testid="post-item-link"
+      >
+        <time class="post-card__date" [attr.datetime]="post().createdAt" data-testid="post-date">
+          {{ formattedDate() }}
+        </time>
+        <h2 class="post-card__title">{{ post().title }}</h2>
+        <p class="post-card__body">{{ post().body }}</p>
+        <footer class="post-card__footer">
+          <span class="post-card__author" data-testid="post-author">
+            {{ 'posts.list.by' | transloco }} <strong>{{ authorName() }}</strong>
+          </span>
+          @if (post().tags.length > 0) {
+            <ul class="post-card__tags" data-testid="post-tags">
+              @for (tag of post().tags; track tag) {
+                <li class="post-card__tag">{{ tag }}</li>
+              }
+            </ul>
+          }
+        </footer>
+      </a>
     </article>
   `,
   styles: [
@@ -47,6 +55,17 @@ import type { Post } from '../models/post.model';
         border: 1px solid rgba(0, 0, 0, 0.08);
         border-radius: 0.5rem;
         background: #fff;
+      }
+      .post-card__link {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .post-card__link:focus-visible {
+        outline: 2px solid #3b82f6;
+        outline-offset: 2px;
+        border-radius: 0.25rem;
       }
       .post-card__date {
         position: absolute;
@@ -126,6 +145,13 @@ export class PostListItemComponent {
       day: 'numeric',
     }).format(date);
   });
+
+  /**
+   * Accessible label for the wrapping link. Built from the post title
+   * so screen readers announce it as a navigation target rather than a
+   * bare "link".
+   */
+  protected readonly ariaLabel = computed(() => this.post().title);
 
   private readonly lang = computed(() => this.transloco.getActiveLang());
 

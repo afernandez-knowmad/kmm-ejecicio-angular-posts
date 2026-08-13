@@ -17,9 +17,8 @@
         <article class="post-detail__article" data-testid="post-detail-resolved">
           <header class="post-detail__header">
             <h1 class="post-detail__title">{{ p.title }}</h1>
-            <app-post-author-card [userId]="p.userId" />
+            <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
           </header>
-          <p class="post-detail__body">{{ p.body }}</p>
           @if (p.tags.length > 0) {
             <ul class="post-detail__tags" data-testid="post-detail-tags">
               @for (tag of p.tags; track tag) {
@@ -27,7 +26,9 @@
               }
             </ul>
           }
-          <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
+          <app-post-author-card [userId]="p.userId" />
+
+          <p class="post-detail__body">{{ p.body }}</p>
 
           @defer (on viewport) {
             <app-comments-section [postId]="p.id" />

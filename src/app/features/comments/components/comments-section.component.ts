@@ -31,9 +31,9 @@ import { CommentFormComponent } from './comment-form.component';
   ],
   template: `
     <section class="comments-section" data-testid="comments-section">
-      <h2 class="comments-section__title">{{ 'comments.list.title' | transloco }}</h2>
-
-      <app-comment-form [postId]="postId()" (created)="onCreated($event)" />
+      <h2 class="comments-section__title">
+        {{ 'comments.list.title' | transloco: { count: items().length } }}
+      </h2>
 
       @switch (status()) {
         @case ('loading') {
@@ -61,6 +61,8 @@ import { CommentFormComponent } from './comment-form.component';
           }
         }
       }
+
+      <app-comment-form [postId]="postId()" (created)="onCreated($event)" />
     </section>
   `,
   styles: [
@@ -117,7 +119,11 @@ export class CommentsSectionComponent {
   }
 
   protected onCreated(comment: Comment): void {
-    this.store.prepend(this.postId(), comment);
+    // Local-first: push into the cache so the new comment shows up
+    // immediately (sorted by createdAt by the store), then force a
+    // refetch so the cache reconciles with the backend.
+    this.store.observe(this.postId(), [comment, ...this.items()]);
+    this.commentsResource.reload();
   }
 
   protected onUpdated(comment: Comment): void {

@@ -65,24 +65,6 @@
       "delete": "Delete",
       "deleteConfirm": "Delete this post?"
     },
-    "comments": {
-      "list": {
-        "title": "Comments",
-        "loading": "Loading comments…",
-        "empty": "Be the first to comment.",
-        "error": "Could not load comments."
-      },
-      "form": {
-        "bodyPlaceholder": "Write a comment…",
-        "submit": "Comment",
-        "save": "Save",
-        "cancel": "Cancel"
-      },
-      "actions": {
-        "edit": "Edit",
-        "delete": "Delete"
-      }
-    },
     "form": {
       "newTitle": "New post",
       "editTitle": "Edit post",
@@ -92,6 +74,24 @@
       "tagsPlaceholder": "angular, signals, zoneless",
       "create": "Create",
       "save": "Save"
+    }
+  },
+  "comments": {
+    "list": {
+      "title": "Comments ({{count}})",
+      "loading": "Loading comments…",
+      "empty": "Be the first to comment.",
+      "error": "Could not load comments."
+    },
+    "form": {
+      "bodyPlaceholder": "Write your comment",
+      "submit": "Post comment",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "actions": {
+      "edit": "edit",
+      "delete": "delete"
     }
   }
 }

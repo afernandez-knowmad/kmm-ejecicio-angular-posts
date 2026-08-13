@@ -6,6 +6,7 @@ import {
   input,
   output,
   signal,
+  untracked,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
@@ -108,12 +109,24 @@ export class CommentEditFormComponent {
 
   protected readonly submitting = signal(false);
 
+  /**
+   * Tracks which comment id the form has been seeded for. We only
+   * seed the form when this changes — never on every input tick.
+   * Reading the control's current value inside `untracked()` keeps
+   * the form out of the reactive graph so writing to it doesn't
+   * re-trigger the effect (which would loop forever under OnPush).
+   */
+  private lastSeededId: string | null = null;
+
   constructor() {
     effect(() => {
       const c = this.comment();
-      // Seed once per comment change.
-      if (this.form.controls.body.value !== c.body) {
-        this.form.patchValue({ body: c.body });
+      if (this.lastSeededId !== c.id) {
+        this.lastSeededId = c.id;
+        const current = untracked(() => this.form.controls.body.value);
+        if (current !== c.body) {
+          this.form.patchValue({ body: c.body });
+        }
       }
     });
   }
