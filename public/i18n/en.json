@@ -15,35 +15,37 @@
   },
   "auth": {
     "login": {
-      "title": "Sign in",
-      "subtitle": "Use one of the mock users (alice / bruno / carla / diego).",
+      "title": "Welcome back",
+      "subtitle": "Enter your credentials",
       "username": "Username",
       "password": "Password",
-      "submit": "Log in",
+      "submit": "Sign in",
       "submitting": "Signing in…",
-      "usernamePlaceholder": "e.g. alice",
-      "passwordPlaceholder": "Your password"
+      "usernamePlaceholder": "Username",
+      "passwordPlaceholder": "••••••••"
     },
     "errors": {
       "unknown-user": "No user exists with that name.",
       "wrong-password": "The password is not correct.",
       "network-error": "Could not reach the server. Try again.",
-      "unknown": "Something went wrong."
+      "unknown": "Something went wrong.",
+      "required": "This field is required."
     }
   },
   "posts": {
     "list": {
-      "title": "Posts",
+      "title": "Posts list",
+      "subtitle": "Discover and manage your publications",
       "loading": "Loading posts…",
       "empty": "No posts match your filters.",
       "error": "Could not load posts.",
-      "count": "Showing {total} results",
+      "count": "Showing {shown} of {total} results",
       "by": "by"
     },
     "filters": {
       "searchLabel": "Search",
-      "searchPlaceholder": "Search by title or content",
-      "authorLabel": "Author",
+      "searchPlaceholder": "Search posts",
+      "authorLabel": "Authors",
       "anyAuthor": "Any author",
       "tagLabel": "Tags",
       "anyTag": "Any tag",
@@ -71,27 +73,35 @@
       "titleLabel": "Title",
       "bodyLabel": "Body",
       "tagsLabel": "Tags",
-      "tagsPlaceholder": "angular, signals, zoneless",
-      "create": "Create",
-      "save": "Save"
+      "tagsPlaceholder": "tags, separated by comma",
+      "titlePlaceholder": "Post title…",
+      "bodyPlaceholder": "Post body…",
+      "create": "Publish",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   },
   "comments": {
     "list": {
-      "title": "Comments ({{count}})",
+      "title": "Comments / {{count}}",
       "loading": "Loading comments…",
       "empty": "Be the first to comment.",
       "error": "Could not load comments."
     },
     "form": {
-      "bodyPlaceholder": "Write your comment",
+      "bodyPlaceholder": "Add comment…",
       "submit": "Post comment",
       "save": "Save",
       "cancel": "Cancel"
     },
     "actions": {
-      "edit": "edit",
-      "delete": "delete"
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "relativeTime": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "ago": "{value} ago"
     }
   }
 }

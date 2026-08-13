@@ -15,43 +15,45 @@
   },
   "auth": {
     "login": {
-      "title": "Inicia sesión",
-      "subtitle": "Usa tu usuario mock (alice / bruno / carla / diego).",
+      "title": "Bienvenido",
+      "subtitle": "Introduce tus credenciales",
       "username": "Usuario",
       "password": "Contraseña",
-      "submit": "Entrar",
-      "submitting": "Entrando…",
-      "usernamePlaceholder": "p. ej. alice",
-      "passwordPlaceholder": "Tu contraseña"
+      "submit": "Acceder",
+      "submitting": "Accediendo…",
+      "usernamePlaceholder": "Usuario",
+      "passwordPlaceholder": "••••••••"
     },
     "errors": {
       "unknown-user": "No existe ningún usuario con ese nombre.",
       "wrong-password": "La contraseña no es correcta.",
       "network-error": "No se pudo conectar con el servidor. Inténtalo de nuevo.",
-      "unknown": "Ha ocurrido un error inesperado."
+      "unknown": "Ha ocurrido un error inesperado.",
+      "required": "Este campo es obligatorio."
     }
   },
   "posts": {
     "list": {
-      "title": "Posts",
+      "title": "Lista de posts",
+      "subtitle": "Descubre y gestiona tus publicaciones",
       "loading": "Cargando posts…",
       "empty": "No hay posts que coincidan con los filtros.",
       "error": "No se pudieron cargar los posts.",
-      "count": "Mostrando {total} resultados",
+      "count": "Mostrando {shown} de {total} resultados",
       "by": "por"
     },
     "filters": {
       "searchLabel": "Buscar",
-      "searchPlaceholder": "Buscar por título o contenido",
-      "authorLabel": "Autor",
+      "searchPlaceholder": "Buscar posts",
+      "authorLabel": "Autores",
       "anyAuthor": "Cualquier autor",
-      "tagLabel": "Etiquetas",
-      "anyTag": "Cualquier etiqueta",
-      "clearTag": "Quitar etiqueta"
+      "tagLabel": "Tags",
+      "anyTag": "Cualquier tag",
+      "clearTag": "Quitar tag"
     },
     "pagination": {
-      "prev": "Anterior",
-      "next": "Siguiente",
+      "prev": "Previous",
+      "next": "Next",
       "gotoPage": "Ir a la página {page}"
     },
     "detail": {
@@ -62,7 +64,7 @@
       "forbidden": "No puedes editar ni borrar este post porque no es tuyo.",
       "by": "por",
       "edit": "Editar",
-      "delete": "Borrar",
+      "delete": "Eliminar",
       "deleteConfirm": "¿Borrar este post?"
     },
     "form": {
@@ -70,28 +72,36 @@
       "editTitle": "Editar post",
       "titleLabel": "Título",
       "bodyLabel": "Contenido",
-      "tagsLabel": "Etiquetas",
-      "tagsPlaceholder": "angular, signals, zoneless",
-      "create": "Crear",
-      "save": "Guardar"
+      "tagsLabel": "Tags",
+      "tagsPlaceholder": "tags, separados por coma",
+      "titlePlaceholder": "Título del post…",
+      "bodyPlaceholder": "Contenido del post…",
+      "create": "Publicar",
+      "save": "Guardar",
+      "cancel": "Cancelar"
     }
   },
   "comments": {
     "list": {
-      "title": "Comentarios ({{count}})",
+      "title": "Comentarios / {{count}}",
       "loading": "Cargando comentarios…",
       "empty": "Sé el primero en comentar.",
       "error": "No se pudieron cargar los comentarios."
     },
     "form": {
-      "bodyPlaceholder": "Escriba su comentario",
+      "bodyPlaceholder": "Añadir comentario…",
       "submit": "Publicar comentario",
       "save": "Guardar",
       "cancel": "Cancelar"
     },
     "actions": {
-      "edit": "editar",
-      "delete": "eliminar"
+      "edit": "Editar",
+      "delete": "Eliminar"
+    },
+    "relativeTime": {
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "ago": "hace {value}"
     }
   }
 }

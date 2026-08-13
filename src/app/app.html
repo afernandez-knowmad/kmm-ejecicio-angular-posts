@@ -1,25 +1,28 @@
-<header class="app-header">
-  <div class="app-header__inner">
-    <a class="app-header__brand" routerLink="/posts">
-      <span class="app-header__brand-title">{{ 'app.title' | transloco }}</span>
-      <span class="app-header__brand-tagline">{{ 'app.tagline' | transloco }}</span>
+<header class="sticky top-0 z-10 border-b border-slate-200 bg-white">
+  <div class="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3">
+    <a
+      class="flex items-center text-slate-900 no-underline"
+      routerLink="/posts"
+      data-testid="app-brand-link"
+    >
+      <span class="text-base font-semibold tracking-tight">TechPoC</span>
     </a>
 
-    <!-- <nav class="app-header__nav" aria-label="primary">
-      <a routerLink="/posts" routerLinkActive="is-active">{{ 'nav.posts' | transloco }}</a>
-    </nav> -->
+    <div class="flex-1"></div>
 
-    <div class="app-header__actions">
-      <app-logout-button />
+    <div class="flex items-center gap-3">
+      @if (store.isAuthenticated()) {
+        <div class="w-72">
+          <app-posts-search />
+        </div>
+      }
+      <ng-content select="[appHeaderActions]" />
       <app-lang-switcher />
+      <app-logout-button />
     </div>
   </div>
 </header>
 
-<main class="app-main">
+<main class="mx-auto w-full max-w-6xl px-6 py-8">
   <router-outlet />
 </main>
-
-<footer class="app-footer">
-  <small>© {{ year() }} — Posts demo</small>
-</footer>
