@@ -26,8 +26,8 @@ import { IconComponent } from '../../../shared/ui/icon/icon.component';
           [routerLink]="['/posts', postId(), 'edit']"
           data-testid="post-edit-link"
         >
-          <app-icon name="edit" [size]="16" />
-          <span>{{ 'posts.detail.edit' | transloco }}</span>
+          <app-icon class="text-white" name="edit" [size]="16" />
+          <span class="text-white">{{ 'posts.detail.edit' | transloco }}</span>
         </a>
         <button
           type="button"

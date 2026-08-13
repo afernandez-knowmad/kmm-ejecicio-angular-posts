@@ -10,7 +10,6 @@ import { LoadingStateComponent } from '../../../shared/ui/loading-state.componen
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
 import { PostsPaginationComponent } from '../components/posts-pagination.component';
-import { PostsSearchComponent } from '../components/posts-search.component';
 import { PostsTagFilterComponent } from '../components/posts-tag-filter.component';
 import type { ServerPage } from '../models/post-filters.model';
 import { PostsApi } from '../posts.api';
@@ -42,7 +41,6 @@ import type { Post } from '../models/post.model';
     RouterLink,
     IconComponent,
     PostListItemComponent,
-    PostsSearchComponent,
     PostsAuthorFilterComponent,
     PostsTagFilterComponent,
     PostsPaginationComponent,
