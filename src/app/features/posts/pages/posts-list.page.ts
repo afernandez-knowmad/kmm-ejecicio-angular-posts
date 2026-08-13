@@ -1,5 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
@@ -33,6 +34,7 @@ import type { Post } from '../models/post.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
+    RouterLink,
     PostListItemComponent,
     PostsSearchComponent,
     PostsAuthorFilterComponent,
