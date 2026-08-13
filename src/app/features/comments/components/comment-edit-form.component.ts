@@ -8,11 +8,15 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { CommentsApi } from '../comments.api';
 import type { Comment } from '../models/comment.model';
+
+interface CommentEditModel {
+  body: string;
+}
 
 /**
  * Inline edit form for a comment. Seeds its value from the input
@@ -21,20 +25,20 @@ import type { Comment } from '../models/comment.model';
 @Component({
   selector: 'app-comment-edit-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslocoModule],
+  imports: [FormField, TranslocoModule],
   template: `
-    <form class="comment-edit-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <form class="comment-edit-form" (submit)="onSubmit($event)" novalidate>
       <textarea
         class="comment-edit-form__input"
         rows="3"
-        formControlName="body"
+        [formField]="form.body"
         data-testid="comment-edit-input"
       ></textarea>
       <div class="comment-edit-form__actions">
         <button
           type="submit"
           class="comment-edit-form__btn"
-          [disabled]="form.invalid || submitting()"
+          [disabled]="!form().valid() || submitting()"
           data-testid="comment-edit-submit"
         >
           {{ 'comments.form.save' | transloco }}
@@ -94,7 +98,6 @@ import type { Comment } from '../models/comment.model';
   ],
 })
 export class CommentEditFormComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly api = inject(CommentsApi);
 
   readonly postId = input.required<string>();
@@ -103,8 +106,10 @@ export class CommentEditFormComponent {
   readonly saved = output<Comment>();
   readonly cancelled = output<void>();
 
-  protected readonly form = this.fb.nonNullable.group({
-    body: ['', [Validators.required, Validators.minLength(2)]],
+  protected readonly editModel = signal<CommentEditModel>({ body: '' });
+  protected readonly form = form(this.editModel, (p) => {
+    required(p.body);
+    minLength(p.body, 2);
   });
 
   protected readonly submitting = signal(false);
@@ -112,9 +117,9 @@ export class CommentEditFormComponent {
   /**
    * Tracks which comment id the form has been seeded for. We only
    * seed the form when this changes — never on every input tick.
-   * Reading the control's current value inside `untracked()` keeps
-   * the form out of the reactive graph so writing to it doesn't
-   * re-trigger the effect (which would loop forever under OnPush).
+   * Reading the current model value inside `untracked()` keeps it
+   * out of the reactive graph so writing to it doesn't re-trigger
+   * the effect (which would loop forever under OnPush).
    */
   private lastSeededId: string | null = null;
 
@@ -123,24 +128,29 @@ export class CommentEditFormComponent {
       const c = this.comment();
       if (this.lastSeededId !== c.id) {
         this.lastSeededId = c.id;
-        const current = untracked(() => this.form.controls.body.value);
+        const current = untracked(() => this.editModel().body);
         if (current !== c.body) {
-          this.form.patchValue({ body: c.body });
+          this.editModel.set({ body: c.body });
         }
       }
     });
   }
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid || this.submitting()) {
-      this.form.markAllAsTouched();
+  protected onSubmit(event: Event): void {
+    event.preventDefault();
+    if (!this.form().valid() || this.submitting()) {
+      this.form().markAsTouched();
       return;
     }
-    const body = this.form.controls.body.getRawValue().trim();
+    const body = this.editModel().body.trim();
     if (body.length === 0) {
       return;
     }
     this.submitting.set(true);
+    void this.updateComment(body);
+  }
+
+  private async updateComment(body: string): Promise<void> {
     try {
       const updated = await this.api.update(this.comment().id, { body });
       this.saved.emit(updated);

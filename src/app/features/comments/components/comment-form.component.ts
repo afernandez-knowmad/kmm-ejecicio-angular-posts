@@ -1,11 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
 import { toId } from '../../../core/lib/ids';
 import { CommentsApi } from '../comments.api';
 import type { Comment } from '../models/comment.model';
+
+interface CommentFormModel {
+  body: string;
+}
 
 /**
  * Inline form to create a new comment on a post.
@@ -16,20 +20,20 @@ import type { Comment } from '../models/comment.model';
 @Component({
   selector: 'app-comment-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslocoModule],
+  imports: [FormField, TranslocoModule],
   template: `
-    <form class="comment-form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <form class="comment-form" (submit)="onSubmit($event)" novalidate>
       <textarea
         class="comment-form__input"
         rows="3"
-        formControlName="body"
+        [formField]="form.body"
         [attr.placeholder]="'comments.form.bodyPlaceholder' | transloco"
         data-testid="comment-form-input"
       ></textarea>
       <button
         type="submit"
         class="comment-form__submit"
-        [disabled]="form.invalid || submitting()"
+        [disabled]="!form().valid() || submitting()"
         data-testid="comment-form-submit"
       >
         {{ 'comments.form.submit' | transloco }}
@@ -70,22 +74,28 @@ import type { Comment } from '../models/comment.model';
   ],
 })
 export class CommentFormComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthStore);
   private readonly api = inject(CommentsApi);
 
   readonly postId = input.required<string>();
   readonly created = output<Comment>();
 
-  protected readonly form = this.fb.nonNullable.group({
-    body: ['', [Validators.required, Validators.minLength(2)]],
+  protected readonly commentModel = signal<CommentFormModel>({ body: '' });
+  protected readonly form = form(this.commentModel, (p) => {
+    required(p.body);
+    minLength(p.body, 2);
+    validate(p.body, ({ value }) => {
+      const body = value().trim();
+      return body.length === 0 ? { kind: 'required' } : undefined;
+    });
   });
 
   protected readonly submitting = signal(false);
 
-  protected async onSubmit(): Promise<void> {
-    if (this.form.invalid || this.submitting()) {
-      this.form.markAllAsTouched();
+  protected onSubmit(event: Event): void {
+    event.preventDefault();
+    if (!this.form().valid() || this.submitting()) {
+      this.form().markAsTouched();
       return;
     }
     // ids are kept as strings end-to-end. json-server's query filter
@@ -96,24 +106,26 @@ export class CommentFormComponent {
     const postId = toId(this.postId());
     const userId = toId(this.auth.user()?.id);
     if (postId.length === 0) {
-       
       console.error('[comment-form] missing postId; cannot post comment');
       return;
     }
     if (userId.length === 0) {
       // The auth guard prevents this branch in practice, but if the
       // session expires mid-session we don't want a silent no-op.
-       
+
       console.error('[comment-form] missing userId; cannot post comment');
       return;
     }
-    const body = this.form.controls.body.getRawValue().trim();
+    const body = this.commentModel().body.trim();
     if (body.length === 0) {
-      this.form.controls.body.setErrors({ required: true });
-      this.form.markAllAsTouched();
+      this.form().markAsTouched();
       return;
     }
     this.submitting.set(true);
+    void this.createComment(postId, userId, body);
+  }
+
+  private async createComment(postId: string, userId: string, body: string): Promise<void> {
     try {
       // json-server does not always auto-generate timestamps on
       // POST, so we send one explicitly. Without it the new row is
@@ -122,9 +134,8 @@ export class CommentFormComponent {
       const createdAt = new Date().toISOString();
       const created = await this.api.create({ postId, userId, body, createdAt });
       this.created.emit(created);
-      this.form.reset({ body: '' });
+      this.form().reset({ body: '' });
     } catch (err) {
-       
       console.error('[comment-form] failed to post comment', err);
     } finally {
       this.submitting.set(false);
