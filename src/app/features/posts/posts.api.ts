@@ -8,13 +8,17 @@ import type { Page, PostListQuery } from './models/post-filters.model';
 import type { NewPost, Post, PostPatch } from './models/post.model';
 
 /**
- * HttpParams helper. json-server accepts `_page`, `_limit`, `q`,
- * `userId`, and `tags_like` (matches one of the tags).
+ * HttpParams helper. json-server v1-beta.15 (used by this project)
+ * returns the full filtered array on a plain GET /posts. The new
+ * beta also supports a paginated wrapper, but it ignores _page and
+ * _limit on certain routes and ends up returning { data: [] }, so
+ * we fetch the full list and paginate in the client.
+ *
+ * q, userId and tags_like are sent as-is because they work
+ * correctly against the seed data.
  */
 function buildListParams(query: PostListQuery): HttpParams {
-  let params = new HttpParams()
-    .set('_page', String(query.page))
-    .set('_limit', String(query.pageSize));
+  let params = new HttpParams();
 
   const q = query.q?.trim();
   if (q) {
@@ -30,24 +34,26 @@ function buildListParams(query: PostListQuery): HttpParams {
 }
 
 /**
- * Total count comes from the `X-Total-Count` response header in
- * json-server. We parse it defensively so a missing header does not
- * break the UI.
+ * Slice the array returned by the backend into the requested page.
+ * Page numbers are 1-based.
  */
-function readTotal(
-  res: HttpClient,
-  headers: { get(name: string): string | null } | undefined,
-): number {
-  const raw = headers?.get('X-Total-Count') ?? '0';
-  const parsed = Number.parseInt(raw, 10);
-  return Number.isFinite(parsed) ? parsed : 0;
+function slicePage<T>(items: readonly T[], query: PostListQuery): Page<T> {
+  const total = items.length;
+  const start = (query.page - 1) * query.pageSize;
+  return {
+    items: items.slice(start, start + query.pageSize),
+    total,
+    page: query.page,
+    pageSize: query.pageSize,
+  };
 }
 
 /**
  * PostsApi talks to the `/posts` collection of the mock backend.
  *
- * - listResource returns an `httpResource` for the list page so the
- *   request re-runs whenever the PostListQuery signal changes.
+ * - listRequest returns { url, params } for an httpResource; the
+ *   backend returns the full filtered array and pagination is
+ *   applied client-side.
  * - The other endpoints are imperative and return Promises, since
  *   mutations are not reactive.
  */
@@ -76,25 +82,19 @@ export class PostsApi {
 
   /**
    * Observable variant of `list`; lets the caller decide between
-   * subscribe / firstValueFrom.
+   * subscribe / firstValueFrom. Pagination happens locally after
+   * the filtered array is returned.
    */
   listObservable(query: PostListQuery): Observable<Page<Post>> {
     const params = buildListParams(query);
     return new Observable<Page<Post>>((subscriber) => {
-      const sub = this.http
-        .get<Post[]>(`${this.baseUrl}/posts`, { params, observe: 'response' })
-        .subscribe({
-          next: (res) => {
-            subscriber.next({
-              items: res.body ?? [],
-              total: readTotal(this.http, res.headers),
-              page: query.page,
-              pageSize: query.pageSize,
-            });
-            subscriber.complete();
-          },
-          error: (err) => subscriber.error(err),
-        });
+      const sub = this.http.get<Post[]>(`${this.baseUrl}/posts`, { params }).subscribe({
+        next: (items) => {
+          subscriber.next(slicePage(items ?? [], query));
+          subscriber.complete();
+        },
+        error: (err) => subscriber.error(err),
+      });
       return () => sub.unsubscribe();
     });
   }
