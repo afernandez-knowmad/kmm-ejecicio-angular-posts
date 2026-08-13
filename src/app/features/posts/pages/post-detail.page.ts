@@ -12,7 +12,6 @@ import { ForbiddenStateComponent } from '../../../shared/ui/forbidden-state.comp
 import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
 import { CommentsSectionComponent } from '../../comments/components/comments-section.component';
 import { PostActionsComponent } from '../components/post-actions.component';
-import { PostAuthorCardComponent } from '../components/post-author-card.component';
 import type { Post } from '../models/post.model';
 import { PostsApi } from '../posts.api';
 import { UsersStore } from '../users.store';
@@ -30,7 +29,6 @@ import { UsersStore } from '../users.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     TranslocoModule,
-    PostAuthorCardComponent,
     PostActionsComponent,
     CommentsSectionComponent,
     LoadingStateComponent,

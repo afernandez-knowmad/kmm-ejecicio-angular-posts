@@ -11,7 +11,6 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
 import { isOwner, toId } from '../../../core/lib/ids';
-import { AvatarComponent } from '../../../shared/ui/avatar.component';
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { UsersStore } from '../../posts/users.store';
 import { CommentEditFormComponent } from './comment-edit-form.component';
@@ -29,23 +28,20 @@ import type { Comment } from '../models/comment.model';
 @Component({
   selector: 'app-comment-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, CommentEditFormComponent, AvatarComponent, IconComponent],
+  imports: [TranslocoModule, CommentEditFormComponent, IconComponent],
   host: { class: 'block' },
   template: `
-    <article class="flex flex-col gap-2" data-testid="comment-item">
+    <article class="flex flex-col gap-1" data-testid="comment-item">
       <header class="flex items-start justify-between gap-3">
-        <div class="flex items-center gap-2">
-          <app-avatar [name]="authorName()" [size]="28" />
-          <div class="flex flex-col leading-tight">
-            <strong class="text-sm font-semibold text-slate-900">{{ authorName() }}</strong>
-            <time
-              class="text-xs text-slate-400"
-              [attr.datetime]="comment().createdAt"
-              data-testid="comment-date"
-            >
-              {{ formattedDate() }}
-            </time>
-          </div>
+        <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0 leading-tight">
+          <strong class="text-sm font-semibold text-slate-900">{{ authorName() }}</strong>
+          <time
+            class="text-xs italic text-slate-400"
+            [attr.datetime]="comment().createdAt"
+            data-testid="comment-date"
+          >
+            {{ formattedDate() }}
+          </time>
         </div>
 
         @if (canEdit() && !editing()) {

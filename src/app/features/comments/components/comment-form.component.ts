@@ -22,9 +22,22 @@ interface CommentFormModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, TranslocoModule],
   template: `
-    <form class="flex flex-col gap-3" (submit)="onSubmit($event)" novalidate>
+    <form
+      class="flex flex-col gap-4 rounded-xl bg-slate-50 p-5"
+      (submit)="onSubmit($event)"
+      novalidate
+      data-testid="comment-form"
+    >
+      <label
+        class="text-sm font-semibold text-slate-900"
+        for="comment-form-input"
+        data-testid="comment-form-label"
+      >
+        {{ 'comments.form.label' | transloco }}
+      </label>
       <textarea
-        class="min-h-24 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        id="comment-form-input"
+        class="min-h-24 w-full rounded-lg bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
         rows="3"
         [formField]="form.body"
         [attr.placeholder]="'comments.form.bodyPlaceholder' | transloco"

@@ -89,7 +89,8 @@
       "error": "No se pudieron cargar los comentarios."
     },
     "form": {
-      "bodyPlaceholder": "Añadir comentario…",
+      "label": "Añadir comentario",
+      "bodyPlaceholder": "Escribe tu comentario…",
       "submit": "Publicar comentario",
       "save": "Guardar",
       "cancel": "Cancelar"

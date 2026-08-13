@@ -14,7 +14,10 @@
     }
     @case ('resolved') {
       @if (post(); as p) {
-        <article class="flex flex-col gap-6" data-testid="post-detail-resolved">
+        <article
+          class="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8"
+          data-testid="post-detail-resolved"
+        >
           <header
             class="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-between"
           >
@@ -24,22 +27,19 @@
             <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
           </header>
 
-          <div class="flex items-center justify-between gap-4">
-            <app-post-author-card [userId]="p.userId" />
-            @if (p.tags.length > 0) {
-              <ul class="flex flex-wrap items-center gap-2" data-testid="post-detail-tags">
-                @for (tag of p.tags; track tag) {
-                  <li
-                    class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-500"
-                  >
-                    {{ tag }}
-                  </li>
-                }
-              </ul>
-            }
-          </div>
-
           <p class="whitespace-pre-line text-base leading-relaxed text-slate-700">{{ p.body }}</p>
+
+          @if (p.tags.length > 0) {
+            <ul class="flex flex-wrap items-center gap-2" data-testid="post-detail-tags">
+              @for (tag of p.tags; track tag) {
+                <li
+                  class="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium uppercase tracking-wide text-slate-500"
+                >
+                  {{ tag }}
+                </li>
+              }
+            </ul>
+          }
 
           @defer (on viewport) {
             <app-comments-section [postId]="p.id" />

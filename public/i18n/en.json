@@ -89,7 +89,8 @@
       "error": "Could not load comments."
     },
     "form": {
-      "bodyPlaceholder": "Add comment…",
+      "label": "Add comment",
+      "bodyPlaceholder": "Write your comment…",
       "submit": "Post comment",
       "save": "Save",
       "cancel": "Cancel"
