@@ -10,12 +10,6 @@
   </div>
 
   @switch (postsResource.status()) {
-    @case ('loading') {
-      <app-loading-state labelKey="posts.list.loading" testId="posts-loading" />
-    }
-    @case ('error') {
-      <app-error-state labelKey="posts.list.error" testId="posts-error" />
-    }
     @case ('resolved') {
       @if (items().length === 0) {
         <app-empty-state labelKey="posts.list.empty" testId="posts-empty" />
@@ -32,6 +26,13 @@
         </p>
         <app-posts-pagination />
       }
+    }
+    @case ('error') {
+      <app-error-state labelKey="posts.list.error" testId="posts-error" />
+    }
+    @default {
+      <!-- idle | loading | reloading | local: show loading -->
+      <app-loading-state labelKey="posts.list.loading" testId="posts-loading" />
     }
   }
 </section>
