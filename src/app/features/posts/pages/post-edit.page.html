@@ -4,22 +4,22 @@
   </header>
 
   @if (postResource.status() === 'resolved') {
-    <form class="post-form__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <form class="post-form__form" (submit)="onSubmit($event)" novalidate>
       <label class="post-form__field">
         <span class="post-form__label">{{ 'posts.form.titleLabel' | transloco }}</span>
-        <input type="text" formControlName="title" data-testid="post-form-title" />
+        <input type="text" [formField]="form.title" data-testid="post-form-title" />
       </label>
 
       <label class="post-form__field">
         <span class="post-form__label">{{ 'posts.form.bodyLabel' | transloco }}</span>
-        <textarea formControlName="body" rows="6" data-testid="post-form-body"></textarea>
+        <textarea [formField]="form.body" rows="6" data-testid="post-form-body"></textarea>
       </label>
 
       <label class="post-form__field">
         <span class="post-form__label">{{ 'posts.form.tagsLabel' | transloco }}</span>
         <input
           type="text"
-          formControlName="tags"
+          [formField]="form.tags"
           [attr.placeholder]="'posts.form.tagsPlaceholder' | transloco"
           data-testid="post-form-tags"
         />

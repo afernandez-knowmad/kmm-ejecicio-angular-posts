@@ -1,17 +1,12 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { debounce, form, FormField } from '@angular/forms/signals';
 import { TranslocoModule } from '@jsverse/transloco';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { PostsQueryState } from '../posts.query-state';
+
+interface PostsSearchModel {
+  q: string;
+}
 
 /**
  * Debounced text search input. Emits changes through PostsQueryState
@@ -20,14 +15,14 @@ import { PostsQueryState } from '../posts.query-state';
 @Component({
   selector: 'app-posts-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslocoModule],
+  imports: [FormField, TranslocoModule],
   template: `
     <label class="posts-search">
       <span class="posts-search__label">{{ 'posts.filters.searchLabel' | transloco }}</span>
       <input
         type="search"
         class="posts-search__input"
-        [formControl]="control"
+        [formField]="form.q"
         [attr.placeholder]="'posts.filters.searchPlaceholder' | transloco"
         data-testid="posts-search-input"
       />
@@ -54,29 +49,32 @@ import { PostsQueryState } from '../posts.query-state';
   ],
 })
 export class PostsSearchComponent {
-  private readonly fb = inject(FormBuilder);
   private readonly queryState = inject(PostsQueryState);
-  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly control = this.fb.nonNullable.control('');
-
-  // Initialise the input from the current query once.
-  private readonly initialised = signal(false);
+  protected readonly searchModel = signal<PostsSearchModel>({
+    q: this.queryState.q(),
+  });
+  protected readonly form = form(this.searchModel, (p) => {
+    debounce(p.q, 250);
+  });
 
   constructor() {
-    this.control.valueChanges
-      .pipe(debounceTime(250), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        this.queryState.setQuery({ q: value.trim() || undefined });
-      });
-
     // Keep the input in sync if the query changes externally (e.g.
-    // browser back/forward navigation).
+    // browser back/forward navigation). A query that merely trims the
+    // current input is allowed to remain untrimmed in the control.
     effect(() => {
-      const q = this.queryState.q() ?? '';
-      if (q !== this.control.value && !this.initialised()) {
-        this.control.setValue(q, { emitEvent: false });
-        this.initialised.set(true);
+      const q = this.queryState.q();
+      const current = this.searchModel().q;
+      if (q !== current && q !== current.trim()) {
+        this.searchModel.set({ q });
+      }
+    });
+
+    effect(() => {
+      const q = this.searchModel().q.trim() || undefined;
+      const currentQ = this.queryState.query().q;
+      if (q !== currentQ) {
+        this.queryState.setQuery({ q });
       }
     });
   }
