@@ -1,14 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { PostsQueryState } from '../posts.query-state';
-import { PostsListCache } from '../posts-list-cache';
 
 /**
  * Chip group that filters posts by tag.
  *
- * Tag options are derived from PostsListCache.availableTags() which
- * accumulates every tag seen in loaded pages. Empty string resets.
+ * Tag options are passed in by the parent page as a `tags` input,
+ * derived from the current page of posts. Empty string resets the
+ * active tag.
  */
 @Component({
   selector: 'app-posts-tag-filter',
@@ -82,9 +82,10 @@ import { PostsListCache } from '../posts-list-cache';
 })
 export class PostsTagFilterComponent {
   private readonly queryState = inject(PostsQueryState);
-  private readonly cache = inject(PostsListCache);
 
-  protected readonly tags = this.cache.availableTags;
+  /** Tags to render as chips. Provided by the parent page. */
+  readonly tags = input.required<readonly string[]>();
+
   protected readonly current = computed(() => this.queryState.tag() ?? '');
 
   protected onToggle(tag: string): void {

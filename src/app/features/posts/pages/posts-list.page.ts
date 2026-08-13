@@ -1,5 +1,5 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
@@ -10,8 +10,8 @@ import { PostsAuthorFilterComponent } from '../components/posts-author-filter.co
 import { PostsPaginationComponent } from '../components/posts-pagination.component';
 import { PostsSearchComponent } from '../components/posts-search.component';
 import { PostsTagFilterComponent } from '../components/posts-tag-filter.component';
+import type { ServerPage } from '../models/post-filters.model';
 import { PostsApi } from '../posts.api';
-import { PostsListCache } from '../posts-list-cache';
 import { PostsQueryState } from '../posts.query-state';
 import type { Post } from '../models/post.model';
 
@@ -19,12 +19,14 @@ import type { Post } from '../models/post.model';
  * Posts list page.
  *
  * Subscribes to PostsQueryState for filters and pagination, and uses
- * `httpResource` to fetch the matching posts. Renders explicit
- * loading / empty / error states.
+ * `httpResource` to fetch the matching posts. json-server v1-beta
+ * returns a `ServerPage<Post>` wrapper when `_page` / `_per_page` are
+ * present; we read `data` for the current page and `items` for the
+ * total number of records matching the filter.
  *
- * Author lookup and tag chips will arrive in later commits; for now
- * each row shows just title + body excerpt and the total count comes
- * from the items length (the real total is a follow-up).
+ * Tag options are derived from the CURRENT page of posts only — no
+ * accumulation, no in-memory cache. Re-enable a proper tag index in
+ * a follow-up once it is bounded.
  */
 @Component({
   selector: 'app-posts-list-page',
@@ -45,23 +47,34 @@ import type { Post } from '../models/post.model';
 })
 export class PostsListPage {
   private readonly api = inject(PostsApi);
-  private readonly cache = inject(PostsListCache);
   protected readonly queryState = inject(PostsQueryState);
 
-  constructor() {
-    // Feed the cache so the tag filter can compute its option set.
-    effect(() => {
-      const items = this.postsResource.value();
-      if (items && items.length > 0) {
-        this.cache.observe(items);
-      }
-    });
-  }
-
-  protected readonly postsResource = httpResource<Post[]>(() =>
+  protected readonly postsResource = httpResource<ServerPage<Post>>(() =>
     this.api.listRequest(() => this.queryState.query()),
   );
 
-  protected readonly items = computed<Post[]>(() => this.postsResource.value() ?? []);
-  protected readonly total = computed<number>(() => this.items().length);
+  protected readonly items = computed<readonly Post[]>(
+    () => this.postsResource.value()?.data ?? [],
+  );
+  protected readonly total = computed<number>(() => this.postsResource.value()?.items ?? 0);
+  protected readonly pageSize = computed<number>(() => this.queryState.pageSize());
+
+  /**
+   * Tag options shown by the chip filter.
+   *
+   * Derived from the CURRENT page of posts only — no accumulation,
+   * no in-memory cache. The previous implementation grew a signal-
+   * backed array unboundedly on every resource resolution, which
+   * froze the page after a handful of interactions. Re-enable
+   * caching in a follow-up once it is properly bounded.
+   */
+  protected readonly tags = computed<readonly string[]>(() => {
+    const set = new Set<string>();
+    for (const p of this.items()) {
+      for (const t of p.tags) {
+        set.add(t);
+      }
+    }
+    return Array.from(set).sort();
+  });
 }

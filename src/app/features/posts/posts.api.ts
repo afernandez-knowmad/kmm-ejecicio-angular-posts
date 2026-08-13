@@ -4,21 +4,30 @@ import { Observable, firstValueFrom } from 'rxjs';
 
 import { API_BASE_URL } from '../../core/http/api-base-url.token';
 import { toId } from '../../core/lib/ids';
-import type { Page, PostListQuery } from './models/post-filters.model';
+import type { PostListQuery, ServerPage } from './models/post-filters.model';
 import type { NewPost, Post, PostPatch } from './models/post.model';
 
 /**
- * HttpParams helper. json-server v1-beta.15 (used by this project)
- * returns the full filtered array on a plain GET /posts. The new
- * beta also supports a paginated wrapper, but it ignores _page and
- * _limit on certain routes and ends up returning { data: [] }, so
- * we fetch the full list and paginate in the client.
+ * HttpParams helper for the posts list endpoint.
  *
- * q, userId and tags_like are sent as-is because they work
- * correctly against the seed data.
+ * json-server v1-beta paginates whenever `_page` and `_per_page` are
+ * provided. It returns a wrapper shaped like `{ first, prev, next,
+ * last, pages, items, data }`, where `data` holds the current page and
+ * `items` is the total number of records matching the filter.
+ *
+ * - `q`            : free-text search over title and body (json-server
+ *                    full-text filter; works against the seed data).
+ * - `userId`       : exact match on `Post.userId`.
+ * - `tags_like`    : array-contains filter. json-server v1-beta ignores
+ *                    this for paginated requests (known beta quirk),
+ *                    so the tag filter is effectively a no-op until we
+ *                    either migrate to a custom route or filter
+ *                    client-side after fetching all matching posts.
  */
 function buildListParams(query: PostListQuery): HttpParams {
-  let params = new HttpParams();
+  let params = new HttpParams()
+    .set('_page', String(query.page))
+    .set('_per_page', String(query.pageSize));
 
   const q = query.q?.trim();
   if (q) {
@@ -34,26 +43,11 @@ function buildListParams(query: PostListQuery): HttpParams {
 }
 
 /**
- * Slice the array returned by the backend into the requested page.
- * Page numbers are 1-based.
- */
-function slicePage<T>(items: readonly T[], query: PostListQuery): Page<T> {
-  const total = items.length;
-  const start = (query.page - 1) * query.pageSize;
-  return {
-    items: items.slice(start, start + query.pageSize),
-    total,
-    page: query.page,
-    pageSize: query.pageSize,
-  };
-}
-
-/**
  * PostsApi talks to the `/posts` collection of the mock backend.
  *
- * - listRequest returns { url, params } for an httpResource; the
- *   backend returns the full filtered array and pagination is
- *   applied client-side.
+ * - `listRequest` returns `{ url, params }` for an httpResource. The
+ *   backend returns a `ServerPage<Post>` wrapper which the page then
+ *   flattens for rendering.
  * - The other endpoints are imperative and return Promises, since
  *   mutations are not reactive.
  */
@@ -76,27 +70,17 @@ export class PostsApi {
    * Imperative single-shot fetch of the list. Useful for prefetch on
    * hover or for one-off consumers that do not need reactivity.
    */
-  listOnce(query: PostListQuery): Promise<Page<Post>> {
+  listOnce(query: PostListQuery): Promise<ServerPage<Post>> {
     return firstValueFrom(this.listObservable(query));
   }
 
   /**
    * Observable variant of `list`; lets the caller decide between
-   * subscribe / firstValueFrom. Pagination happens locally after
-   * the filtered array is returned.
+   * subscribe / firstValueFrom. The backend handles pagination.
    */
-  listObservable(query: PostListQuery): Observable<Page<Post>> {
+  listObservable(query: PostListQuery): Observable<ServerPage<Post>> {
     const params = buildListParams(query);
-    return new Observable<Page<Post>>((subscriber) => {
-      const sub = this.http.get<Post[]>(`${this.baseUrl}/posts`, { params }).subscribe({
-        next: (items) => {
-          subscriber.next(slicePage(items ?? [], query));
-          subscriber.complete();
-        },
-        error: (err) => subscriber.error(err),
-      });
-      return () => sub.unsubscribe();
-    });
+    return this.http.get<ServerPage<Post>>(`${this.baseUrl}/posts`, { params });
   }
 
   getById(id: string): Promise<Post> {

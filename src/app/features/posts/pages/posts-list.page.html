@@ -6,7 +6,7 @@
   <div class="posts-list__filters">
     <app-posts-search />
     <app-posts-author-filter />
-    <app-posts-tag-filter />
+    <app-posts-tag-filter [tags]="tags()" />
   </div>
 
   @switch (postsResource.status()) {
@@ -24,7 +24,7 @@
         <p class="posts-list__count" data-testid="posts-count">
           {{ 'posts.list.count' | transloco: { total: total() } }}
         </p>
-        <app-posts-pagination />
+        <app-posts-pagination [total]="total()" />
       }
     }
     @case ('error') {
