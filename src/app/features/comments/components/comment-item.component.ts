@@ -11,6 +11,8 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
 import { isOwner, toId } from '../../../core/lib/ids';
+import { AvatarComponent } from '../../../shared/ui/avatar.component';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { UsersStore } from '../../posts/users.store';
 import { CommentEditFormComponent } from './comment-edit-form.component';
 import { CommentsApi } from '../comments.api';
@@ -27,20 +29,47 @@ import type { Comment } from '../models/comment.model';
 @Component({
   selector: 'app-comment-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, CommentEditFormComponent],
+  imports: [TranslocoModule, CommentEditFormComponent, AvatarComponent, IconComponent],
+  host: { class: 'block' },
   template: `
-    <article class="comment-item" data-testid="comment-item">
-      <time
-        class="comment-item__date"
-        [attr.datetime]="comment().createdAt"
-        data-testid="comment-date"
-      >
-        {{ formattedDate() }}
-      </time>
-      <header class="comment-item__header">
-        <span class="comment-item__author">
-          {{ authorName() }}
-        </span>
+    <article class="flex flex-col gap-2" data-testid="comment-item">
+      <header class="flex items-start justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <app-avatar [name]="authorName()" [size]="28" />
+          <div class="flex flex-col leading-tight">
+            <strong class="text-sm font-semibold text-slate-900">{{ authorName() }}</strong>
+            <time
+              class="text-xs text-slate-400"
+              [attr.datetime]="comment().createdAt"
+              data-testid="comment-date"
+            >
+              {{ formattedDate() }}
+            </time>
+          </div>
+        </div>
+
+        @if (canEdit() && !editing()) {
+          <div class="flex items-center gap-1" data-testid="comment-actions">
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-slate-100 hover:text-brand-600"
+              (click)="startEdit()"
+              [attr.aria-label]="'comments.actions.edit' | transloco"
+              data-testid="comment-edit-button"
+            >
+              <app-icon name="edit" [size]="14" />
+            </button>
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full text-slate-400 transition-colors hover:bg-red-50 hover:text-red-600"
+              (click)="onDelete()"
+              [attr.aria-label]="'comments.actions.delete' | transloco"
+              data-testid="comment-delete-button"
+            >
+              <app-icon name="trash" [size]="14" />
+            </button>
+          </div>
+        }
       </header>
 
       @if (editing()) {
@@ -51,86 +80,12 @@ import type { Comment } from '../models/comment.model';
           (cancelled)="onCancel()"
         />
       } @else {
-        <p class="comment-item__body">{{ comment().body }}</p>
-        @if (canEdit()) {
-          <footer class="comment-item__actions" data-testid="comment-actions">
-            <button
-              type="button"
-              class="comment-item__btn"
-              (click)="startEdit()"
-              data-testid="comment-edit-button"
-            >
-              {{ 'comments.actions.edit' | transloco }}
-            </button>
-            <button
-              type="button"
-              class="comment-item__btn comment-item__btn--delete"
-              (click)="onDelete()"
-              data-testid="comment-delete-button"
-            >
-              {{ 'comments.actions.delete' | transloco }}
-            </button>
-          </footer>
-        }
+        <p class="text-sm leading-relaxed text-slate-700 whitespace-pre-line">
+          {{ comment().body }}
+        </p>
       }
     </article>
   `,
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-      .comment-item {
-        position: relative;
-        padding: 0.75rem;
-        border: 1px solid rgba(0, 0, 0, 0.08);
-        border-radius: 0.5rem;
-        background: #fff;
-      }
-      .comment-item__date {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.75rem;
-        font-size: 0.75rem;
-        opacity: 0.7;
-        white-space: nowrap;
-      }
-      .comment-item__header {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.375rem;
-        padding-right: 5rem;
-      }
-      .comment-item__author {
-        font-size: 0.8125rem;
-        font-weight: 600;
-      }
-      .comment-item__body {
-        margin: 0;
-        font-size: 0.875rem;
-        line-height: 1.45;
-        white-space: pre-line;
-      }
-      .comment-item__actions {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 0.5rem;
-      }
-      .comment-item__btn {
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        background: transparent;
-        font-size: 0.75rem;
-        cursor: pointer;
-      }
-      .comment-item__btn--delete:hover {
-        background: rgba(192, 57, 43, 0.08);
-        color: #c0392b;
-      }
-    `,
-  ],
 })
 export class CommentItemComponent {
   private readonly auth = inject(AuthStore);

@@ -22,53 +22,30 @@ interface CommentFormModel {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FormField, TranslocoModule],
   template: `
-    <form class="comment-form" (submit)="onSubmit($event)" novalidate>
+    <form class="flex flex-col gap-3" (submit)="onSubmit($event)" novalidate>
       <textarea
-        class="comment-form__input"
+        class="min-h-24 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
         rows="3"
         [formField]="form.body"
         [attr.placeholder]="'comments.form.bodyPlaceholder' | transloco"
         data-testid="comment-form-input"
       ></textarea>
-      <button
-        type="submit"
-        class="comment-form__submit"
-        [disabled]="!form().valid() || submitting()"
-        data-testid="comment-form-submit"
-      >
-        {{ 'comments.form.submit' | transloco }}
-      </button>
+      <div class="flex justify-end">
+        <button
+          type="submit"
+          class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+          [disabled]="!form().valid() || submitting()"
+          data-testid="comment-form-submit"
+        >
+          {{ 'comments.form.submit' | transloco }}
+        </button>
+      </div>
     </form>
   `,
   styles: [
     `
-      .comment-form {
-        display: flex;
-        gap: 0.5rem;
-        align-items: flex-start;
-        margin-top: 0.5rem;
-      }
-      .comment-form__input {
-        flex: 1;
-        padding: 0.5rem 0.625rem;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 0.375rem;
-        font: inherit;
-        background: transparent;
-        resize: vertical;
-      }
-      .comment-form__submit {
-        padding: 0.5rem 0.875rem;
-        border-radius: 0.5rem;
-        border: 0;
-        background: #2563eb;
-        color: #fff;
-        font-weight: 600;
-        cursor: pointer;
-      }
-      .comment-form__submit[disabled] {
-        opacity: 0.5;
-        cursor: not-allowed;
+      :host {
+        display: block;
       }
     `,
   ],

@@ -30,8 +30,8 @@ import { CommentFormComponent } from './comment-form.component';
     EmptyStateComponent,
   ],
   template: `
-    <section class="comments-section" data-testid="comments-section">
-      <h2 class="comments-section__title">
+    <section class="flex flex-col gap-5" data-testid="comments-section">
+      <h2 class="text-xs font-semibold uppercase tracking-wide text-slate-500">
         {{ 'comments.list.title' | transloco: { count: items().length } }}
       </h2>
 
@@ -46,7 +46,7 @@ import { CommentFormComponent } from './comment-form.component';
           @if (items().length === 0) {
             <app-empty-state labelKey="comments.list.empty" testId="comments-empty" />
           } @else {
-            <ul class="comments-section__items" data-testid="comments-items">
+            <ul class="flex flex-col gap-4" data-testid="comments-items">
               @for (comment of items(); track comment.id) {
                 <li>
                   <app-comment-item
@@ -69,18 +69,6 @@ import { CommentFormComponent } from './comment-form.component';
     `
       :host {
         display: block;
-      }
-      .comments-section__title {
-        font-size: 1.125rem;
-        font-weight: 700;
-        margin: 0 0 0.5rem;
-      }
-      .comments-section__items {
-        list-style: none;
-        padding: 0;
-        margin: 0.75rem 0 0;
-        display: grid;
-        gap: 0.5rem;
       }
     `,
   ],
