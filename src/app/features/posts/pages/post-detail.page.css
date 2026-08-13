@@ -2,18 +2,6 @@
   display: block;
 }
 
-.post-detail__state {
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.post-detail__state--error,
-.post-detail__state--forbidden {
-  background: rgba(192, 57, 43, 0.1);
-  color: #c0392b;
-}
-
 .post-detail__article {
   display: flex;
   flex-direction: column;

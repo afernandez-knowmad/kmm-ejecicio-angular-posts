@@ -2,6 +2,9 @@ import { httpResource } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
+import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
+import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
 import { PostsPaginationComponent } from '../components/posts-pagination.component';
@@ -33,6 +36,9 @@ import type { Post } from '../models/post.model';
     PostsAuthorFilterComponent,
     PostsTagFilterComponent,
     PostsPaginationComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './posts-list.page.html',
   styleUrl: './posts-list.page.css',

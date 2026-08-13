@@ -5,6 +5,9 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { CommentsApi } from '../comments.api';
 import { CommentsStore } from '../comments.store';
 import type { Comment } from '../models/comment.model';
+import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
+import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
+import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
 import { CommentItemComponent } from './comment-item.component';
 import { CommentFormComponent } from './comment-form.component';
 
@@ -18,7 +21,14 @@ import { CommentFormComponent } from './comment-form.component';
 @Component({
   selector: 'app-comments-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, CommentItemComponent, CommentFormComponent],
+  imports: [
+    TranslocoModule,
+    CommentItemComponent,
+    CommentFormComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
+  ],
   template: `
     <section class="comments-section" data-testid="comments-section">
       <h2 class="comments-section__title">{{ 'comments.list.title' | transloco }}</h2>
@@ -27,24 +37,14 @@ import { CommentFormComponent } from './comment-form.component';
 
       @switch (status()) {
         @case ('loading') {
-          <p class="comments-section__state" data-testid="comments-loading">
-            {{ 'comments.list.loading' | transloco }}
-          </p>
+          <app-loading-state labelKey="comments.list.loading" testId="comments-loading" />
         }
         @case ('error') {
-          <p
-            class="comments-section__state comments-section__state--error"
-            role="alert"
-            data-testid="comments-error"
-          >
-            {{ 'comments.list.error' | transloco }}
-          </p>
+          <app-error-state labelKey="comments.list.error" testId="comments-error" />
         }
         @case ('ready') {
           @if (items().length === 0) {
-            <p class="comments-section__state" data-testid="comments-empty">
-              {{ 'comments.list.empty' | transloco }}
-            </p>
+            <app-empty-state labelKey="comments.list.empty" testId="comments-empty" />
           } @else {
             <ul class="comments-section__items" data-testid="comments-items">
               @for (comment of items(); track comment.id) {
@@ -72,16 +72,6 @@ import { CommentFormComponent } from './comment-form.component';
         font-size: 1.125rem;
         font-weight: 700;
         margin: 0 0 0.5rem;
-      }
-      .comments-section__state {
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        background: rgba(0, 0, 0, 0.04);
-        margin-top: 0.75rem;
-      }
-      .comments-section__state--error {
-        background: rgba(192, 57, 43, 0.1);
-        color: #c0392b;
       }
       .comments-section__items {
         list-style: none;

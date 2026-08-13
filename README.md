@@ -90,3 +90,27 @@ Husky automáticamente). Si los hooks no se activan:
 ```bash
 npm run prepare
 ```
+
+## Arquitectura
+
+El proyecto sigue **Screaming Architecture**: la estructura de
+`src/app/` está guiada por dominio (`features/<dominio>/`). Cada
+feature contiene sus modelos, servicios, páginas y componentes; lo
+compartido vive en `shared/ui` y `shared/lib`, y lo transversal en
+`core/`.
+
+### Estados UI compartidos
+
+Cualquier vista que muestra una respuesta HTTP consume uno de los
+componentes presentacionales en `src/app/shared/ui/`:
+
+| Componente                | Uso                             | role/aria              |
+| ------------------------- | ------------------------------- | ---------------------- |
+| `LoadingStateComponent`   | Peticiones en curso             | `status` + `aria-live` |
+| `EmptyStateComponent`     | Respuesta vacía                 | -                      |
+| `ErrorStateComponent`     | Fallo de carga o de mutación    | `alert`                |
+| `ForbiddenStateComponent` | Redirección del ownership guard | `alert`                |
+
+Cada uno acepta `labelKey` (clave de transloco) y un `testId`
+opcional, de modo que se enchufan directamente en un `@switch` del
+status del recurso.
