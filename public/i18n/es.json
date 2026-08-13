@@ -51,7 +51,7 @@
     "pagination": {
       "prev": "Anterior",
       "next": "Siguiente",
-      "page": "Página {page}"
+      "gotoPage": "Ir a la página {page}"
     },
     "detail": {
       "title": "Detalle del post",
