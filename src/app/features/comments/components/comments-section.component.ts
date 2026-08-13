@@ -135,10 +135,13 @@ export class CommentsSectionComponent {
   }
 
   protected onCreated(comment: Comment): void {
-    // Local-first: push into the cache so the new comment shows up
-    // immediately (sorted by createdAt by the store), then force a
-    // refetch so the cache reconciles with the backend.
-    this.store.observe(this.postId(), [comment, ...this.items()]);
+    // Local-first: prepend the new comment so it shows up at the
+    // top of the list (newest first, oldest at the bottom), then
+    // force a refetch so the cache reconciles with the backend.
+    // Using `prepend` keeps the cache sort invariant in the hands
+    // of the store instead of relying on the caller to know the
+    // current ordering.
+    this.store.prepend(this.postId(), comment);
     this.commentsResource.reload();
   }
 

@@ -109,7 +109,12 @@ export class CommentFormComponent {
     }
     this.submitting.set(true);
     try {
-      const created = await this.api.create({ postId, userId, body });
+      // json-server does not always auto-generate timestamps on
+      // POST, so we send one explicitly. Without it the new row is
+      // persisted with `createdAt: undefined`, which then breaks the
+      // store sort (NaN comparisons are unstable in V8).
+      const createdAt = new Date().toISOString();
+      const created = await this.api.create({ postId, userId, body, createdAt });
       this.created.emit(created);
       this.form.reset({ body: '' });
     } finally {

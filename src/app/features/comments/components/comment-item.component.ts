@@ -7,13 +7,14 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
 import { isOwner, toId } from '../../../core/lib/ids';
 import { UsersStore } from '../../posts/users.store';
 import { CommentEditFormComponent } from './comment-edit-form.component';
 import { CommentsApi } from '../comments.api';
+import { formatRelativeTime } from '../lib/relative-time';
 import type { Comment } from '../models/comment.model';
 
 /**
@@ -29,6 +30,13 @@ import type { Comment } from '../models/comment.model';
   imports: [TranslocoModule, CommentEditFormComponent],
   template: `
     <article class="comment-item" data-testid="comment-item">
+      <time
+        class="comment-item__date"
+        [attr.datetime]="comment().createdAt"
+        data-testid="comment-date"
+      >
+        {{ formattedDate() }}
+      </time>
       <header class="comment-item__header">
         <span class="comment-item__author">
           {{ authorName() }}
@@ -73,16 +81,26 @@ import type { Comment } from '../models/comment.model';
         display: block;
       }
       .comment-item {
+        position: relative;
         padding: 0.75rem;
         border: 1px solid rgba(0, 0, 0, 0.08);
         border-radius: 0.5rem;
         background: #fff;
+      }
+      .comment-item__date {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
+        font-size: 0.75rem;
+        opacity: 0.7;
+        white-space: nowrap;
       }
       .comment-item__header {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 0.375rem;
+        padding-right: 5rem;
       }
       .comment-item__author {
         font-size: 0.8125rem;
@@ -118,6 +136,7 @@ export class CommentItemComponent {
   private readonly auth = inject(AuthStore);
   private readonly usersStore = inject(UsersStore);
   private readonly api = inject(CommentsApi);
+  private readonly transloco = inject(TranslocoService);
 
   readonly postId = input.required<string>();
   readonly comment = input.required<Comment>();
@@ -133,6 +152,26 @@ export class CommentItemComponent {
     const id = toId(this.comment().userId);
     const user = this.usersStore.byId().get(id);
     return user?.name ?? `#${id}`;
+  });
+
+  private readonly lang = computed(() => this.transloco.getActiveLang());
+
+  /**
+   * Display the relative bucket + absolute time, separated by a
+   * comma: "Hoy, 10:01" / "Ayer, 09:30" / "12/2/2026, 10:01".
+   *
+   * json-server does not always assign `createdAt` to comments
+   * created via POST, so we fall back to the local clock when the
+   * backend left it empty. Otherwise the row would render with no
+   * date at all.
+   */
+  protected readonly formattedDate = computed(() => {
+    const iso = this.comment().createdAt || new Date().toISOString();
+    const { label, time } = formatRelativeTime(iso, new Date(), this.lang());
+    if (!label) {
+      return '';
+    }
+    return time ? `${label}, ${time}` : label;
   });
 
   constructor() {

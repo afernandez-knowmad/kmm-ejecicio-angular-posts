@@ -22,7 +22,7 @@ import type { Comment } from './models/comment.model';
  * same set after a local mutation, the cache stays put.
  *
  * Output is always sorted by `createdAt` descending (most recent
- * first).
+ * first, oldest at the bottom of the list).
  */
 @Injectable({ providedIn: 'root' })
 export class CommentsStore {
@@ -82,17 +82,37 @@ const EMPTY: readonly Comment[] = Object.freeze([]) as readonly Comment[];
 
 /**
  * Sort comments by `createdAt` descending — most recent first.
- * Comments without a parseable timestamp keep their relative order.
+ *
+ * json-server occasionally persists a comment with `createdAt`
+ * missing (it does not auto-generate one on every POST). NaN-based
+ * subtraction makes V8's `sort` ordering undefined, so a row with a
+ * missing timestamp can land anywhere. To keep ordering
+ * deterministic, items without a parseable timestamp are treated as
+ * "now" (i.e. the most recent), so they sort to the top alongside
+ * any comment just created.
  */
 function sortByCreatedDesc(comments: readonly Comment[]): readonly Comment[] {
   const copy = [...comments];
   copy.sort((a, b) => {
-    const ta = Date.parse(a.createdAt);
-    const tb = Date.parse(b.createdAt);
+    const ta = parseCreatedAt(a.createdAt);
+    const tb = parseCreatedAt(b.createdAt);
     // Newer first.
     return tb - ta;
   });
   return copy;
+}
+
+/**
+ * Parse `createdAt` to a millisecond timestamp. Returns `Date.now()`
+ * (i.e. "treat as the most recent") when the value is missing or
+ * unparseable, so the row orders to the top of the descending list.
+ */
+function parseCreatedAt(value: string | undefined): number {
+  if (!value) {
+    return Date.now();
+  }
+  const t = Date.parse(value);
+  return Number.isNaN(t) ? Date.now() : t;
 }
 
 /**

@@ -24,10 +24,12 @@ export interface Comment {
 /**
  * Payload accepted by the api when creating a new comment.
  *
- * `id` and `createdAt` are assigned by the backend, so they are not part
- * of the input contract.
+ * `id` is assigned by the backend. `createdAt` is optional because
+ * json-server is unreliable about auto-generating it on POST, so the
+ * form sends one explicitly to guarantee the persisted row has a
+ * usable timestamp for sorting/display.
  */
-export type NewComment = Omit<Comment, 'id' | 'createdAt'>;
+export type NewComment = Omit<Comment, 'id'> & { readonly createdAt?: string };
 
 /**
  * Payload accepted by the api when updating a comment.
