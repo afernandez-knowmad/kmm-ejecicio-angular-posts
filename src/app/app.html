@@ -1,13 +1,13 @@
 <header class="app-header">
   <div class="app-header__inner">
-    <a class="app-header__brand" routerLink="/">
+    <a class="app-header__brand" routerLink="/posts">
       <span class="app-header__brand-title">{{ 'app.title' | transloco }}</span>
       <span class="app-header__brand-tagline">{{ 'app.tagline' | transloco }}</span>
     </a>
 
-    <nav class="app-header__nav" aria-label="primary">
+    <!-- <nav class="app-header__nav" aria-label="primary">
       <a routerLink="/posts" routerLinkActive="is-active">{{ 'nav.posts' | transloco }}</a>
-    </nav>
+    </nav> -->
 
     <div class="app-header__actions">
       <app-logout-button />
