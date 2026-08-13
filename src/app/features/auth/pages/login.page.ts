@@ -1,54 +1,68 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../auth.store';
 import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
 
+interface LoginModel {
+  name: string;
+  password: string;
+}
+
 /**
  * Standalone login page.
  *
- * Uses ReactiveForms with `nonNullable` controls so we can keep a
- * Signal-based view of the form via `toSignal(valueChanges)`. When
- * `@angular/forms/signals` stabilises this can be migrated to
- * `signal()`-backed fields without changing the public surface.
+ * Built on `@angular/forms/signals` (Angular v22). The form is declared
+ * with `form(model, schema(...))`; the schema applies `required` and
+ * `minLength` validators to each field path. Each control is bound to
+ * an `<input>` via the `FormField` directive (`[formField]`).
  */
 @Component({
   selector: 'app-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslocoModule, ErrorStateComponent],
+  imports: [FormField, TranslocoModule, ErrorStateComponent],
   templateUrl: './login.page.html',
   styleUrl: './login.page.css',
 })
 export class LoginPage {
-  private readonly fb = inject(FormBuilder);
   protected readonly store = inject(AuthStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    password: ['', [Validators.required, Validators.minLength(4)]],
+  protected readonly loginModel = signal<LoginModel>({ name: '', password: '' });
+  protected readonly form = form(this.loginModel, (p) => {
+    required(p.name);
+    minLength(p.name, 2);
+    required(p.password);
+    minLength(p.password, 4);
   });
 
-  private readonly status = toSignal(this.form.statusChanges, {
-    initialValue: 'PENDING' as 'PENDING' | 'VALID' | 'INVALID',
-  });
-  protected readonly canSubmit = computed(() => this.status() === 'VALID' && !this.store.loading());
+  protected readonly canSubmit = computed(() => this.form().valid() && !this.store.loading());
 
   protected readonly errorMessage = computed(() => {
     const err = this.store.error();
     return err ? `auth.errors.${err}` : null;
   });
 
-  protected onSubmit(): void {
-    if (!this.form.valid) {
-      this.form.markAllAsTouched();
+  /** Flips to true on first submit attempt; used to gate field error rendering. */
+  private readonly submitAttempted = signal(false);
+
+  protected readonly showNameError = computed(
+    () => this.submitAttempted() && this.form.name().errors().length > 0,
+  );
+  protected readonly showPasswordError = computed(
+    () => this.submitAttempted() && this.form.password().errors().length > 0,
+  );
+
+  protected onSubmit(event?: Event): void {
+    event?.preventDefault();
+    if (!this.form().valid()) {
+      this.submitAttempted.set(true);
       return;
     }
-    const { name, password } = this.form.getRawValue();
+    const { name, password } = this.loginModel();
     void this.store.login({ name, password }).then(() => this.navigateAfterLogin());
   }
 

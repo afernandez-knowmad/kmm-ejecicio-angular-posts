@@ -64,3 +64,8 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.login__error {
+  color: #b91c1c;
+  font-size: 0.75rem;
+}

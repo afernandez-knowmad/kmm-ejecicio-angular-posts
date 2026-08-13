@@ -4,15 +4,20 @@
     <p class="login__subtitle">{{ 'auth.login.subtitle' | transloco }}</p>
   </header>
 
-  <form class="login__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <form class="login__form" (submit)="onSubmit($event)" novalidate>
     <label class="login__field">
       <span class="login__label">{{ 'auth.login.username' | transloco }}</span>
       <input
         type="text"
         autocomplete="username"
-        formControlName="name"
+        [formField]="form.name"
         [attr.placeholder]="'auth.login.usernamePlaceholder' | transloco"
       />
+      @if (showNameError()) {
+        <small class="login__error">
+          {{ 'auth.errors.required' | transloco }}
+        </small>
+      }
     </label>
 
     <label class="login__field">
@@ -20,9 +25,14 @@
       <input
         type="password"
         autocomplete="current-password"
-        formControlName="password"
+        [formField]="form.password"
         [attr.placeholder]="'auth.login.passwordPlaceholder' | transloco"
       />
+      @if (showPasswordError()) {
+        <small class="login__error">
+          {{ 'auth.errors.required' | transloco }}
+        </small>
+      }
     </label>
 
     @if (errorMessage(); as key) {
