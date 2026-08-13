@@ -46,6 +46,7 @@
       "authorLabel": "Autor",
       "anyAuthor": "Cualquier autor",
       "tagLabel": "Etiquetas",
+      "anyTag": "Cualquier etiqueta",
       "clearTag": "Quitar etiqueta"
     },
     "pagination": {
