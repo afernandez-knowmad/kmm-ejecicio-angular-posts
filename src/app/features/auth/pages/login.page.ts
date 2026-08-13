@@ -5,6 +5,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../auth.store';
 import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 
 interface LoginModel {
   name: string;
@@ -22,9 +23,15 @@ interface LoginModel {
 @Component({
   selector: 'app-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, TranslocoModule, ErrorStateComponent],
+  imports: [FormField, TranslocoModule, ErrorStateComponent, IconComponent],
   templateUrl: './login.page.html',
-  styleUrl: './login.page.css',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class LoginPage {
   protected readonly store = inject(AuthStore);

@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { AuthStore } from '../auth.store';
 
 /**
- * Header button that clears the session and redirects to /login.
+ * Header logout button with icon and label.
  *
  * Renders nothing when there is no active session so it can sit
  * unconditionally in the app shell.
@@ -13,29 +14,21 @@ import { AuthStore } from '../auth.store';
 @Component({
   selector: 'app-logout-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule],
+  imports: [TranslocoModule, IconComponent],
   template: `
     @if (store.isAuthenticated()) {
-      <button type="button" class="logout-button" (click)="onLogout()" data-testid="logout-button">
+      <button
+        type="button"
+        [attr.aria-label]="'nav.logout' | transloco"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-700 transition-colors hover:bg-slate-100"
+        (click)="onLogout()"
+        data-testid="logout-button"
+      >
+        <app-icon name="logout" [size]="18" />
         {{ 'nav.logout' | transloco }}
       </button>
     }
   `,
-  styles: [
-    `
-      .logout-button {
-        background: transparent;
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        border-radius: 0.375rem;
-        padding: 0.25rem 0.625rem;
-        font-size: 0.875rem;
-        cursor: pointer;
-      }
-      .logout-button:hover {
-        background: rgba(0, 0, 0, 0.04);
-      }
-    `,
-  ],
 })
 export class LogoutButtonComponent {
   protected readonly store = inject(AuthStore);

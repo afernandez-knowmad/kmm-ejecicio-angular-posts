@@ -1,55 +1,78 @@
-<section class="login">
-  <header class="login__header">
-    <h1 class="login__title">{{ 'auth.login.title' | transloco }}</h1>
-    <p class="login__subtitle">{{ 'auth.login.subtitle' | transloco }}</p>
-  </header>
+<section class="flex min-h-[70vh] items-center justify-center">
+  <div class="w-full max-w-sm rounded-2xl bg-white p-8 shadow-sm ring-1 ring-slate-200/70">
+    <header class="mb-6 text-center">
+      <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+        {{ 'auth.login.title' | transloco }}
+      </h1>
+      <p class="mt-1 text-sm text-slate-500">
+        {{ 'auth.login.subtitle' | transloco }}
+      </p>
+    </header>
 
-  <form class="login__form" (submit)="onSubmit($event)" novalidate>
-    <label class="login__field">
-      <span class="login__label">{{ 'auth.login.username' | transloco }}</span>
-      <input
-        type="text"
-        autocomplete="username"
-        [formField]="form.name"
-        [attr.placeholder]="'auth.login.usernamePlaceholder' | transloco"
-      />
-      @if (showNameError()) {
-        <small class="login__error">
-          {{ 'auth.errors.required' | transloco }}
-        </small>
+    <form class="flex flex-col gap-5" (submit)="onSubmit($event)" novalidate>
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-slate-600">
+          {{ 'auth.login.username' | transloco }}
+        </span>
+        <span
+          class="relative flex items-center rounded-lg bg-slate-100 ring-1 ring-transparent transition focus-within:bg-white focus-within:ring-brand-500"
+        >
+          <app-icon name="user" [size]="18" class="absolute left-3 text-slate-400" />
+          <input
+            type="text"
+            autocomplete="username"
+            class="w-full rounded-lg bg-transparent py-3 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            [formField]="form.name"
+            [attr.placeholder]="'auth.login.usernamePlaceholder' | transloco"
+          />
+        </span>
+        @if (showNameError()) {
+          <small class="text-xs text-red-600">
+            {{ 'auth.errors.required' | transloco }}
+          </small>
+        }
+      </label>
+
+      <label class="flex flex-col gap-1.5">
+        <span class="text-xs font-semibold uppercase tracking-wide text-slate-600">
+          {{ 'auth.login.password' | transloco }}
+        </span>
+        <span
+          class="relative flex items-center rounded-lg bg-slate-100 ring-1 ring-transparent transition focus-within:bg-white focus-within:ring-brand-500"
+        >
+          <app-icon name="lock" [size]="18" class="absolute left-3 text-slate-400" />
+          <input
+            type="password"
+            autocomplete="current-password"
+            class="w-full rounded-lg bg-transparent py-3 pl-10 pr-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none"
+            [formField]="form.password"
+            [attr.placeholder]="'auth.login.passwordPlaceholder' | transloco"
+          />
+        </span>
+        @if (showPasswordError()) {
+          <small class="text-xs text-red-600">
+            {{ 'auth.errors.required' | transloco }}
+          </small>
+        }
+      </label>
+
+      @if (errorMessage(); as key) {
+        <app-error-state [labelKey]="key" testId="login-error" />
       }
-    </label>
 
-    <label class="login__field">
-      <span class="login__label">{{ 'auth.login.password' | transloco }}</span>
-      <input
-        type="password"
-        autocomplete="current-password"
-        [formField]="form.password"
-        [attr.placeholder]="'auth.login.passwordPlaceholder' | transloco"
-      />
-      @if (showPasswordError()) {
-        <small class="login__error">
-          {{ 'auth.errors.required' | transloco }}
-        </small>
-      }
-    </label>
-
-    @if (errorMessage(); as key) {
-      <app-error-state [labelKey]="key" testId="login-error" />
-    }
-
-    <button
-      type="submit"
-      class="login__submit"
-      [disabled]="!canSubmit()"
-      data-testid="login-submit"
-    >
-      @if (store.loading()) {
-        {{ 'auth.login.submitting' | transloco }}
-      } @else {
-        {{ 'auth.login.submit' | transloco }}
-      }
-    </button>
-  </form>
+      <button
+        type="submit"
+        class="mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+        [disabled]="!canSubmit()"
+        data-testid="login-submit"
+      >
+        @if (store.loading()) {
+          {{ 'auth.login.submitting' | transloco }}
+        } @else {
+          <span>{{ 'auth.login.submit' | transloco }}</span>
+          <app-icon name="arrow-right" [size]="16" />
+        }
+      </button>
+    </form>
+  </div>
 </section>
