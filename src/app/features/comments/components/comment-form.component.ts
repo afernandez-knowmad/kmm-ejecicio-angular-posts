@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
+import { toId } from '../../../core/lib/ids';
 import { CommentsApi } from '../comments.api';
 import type { Comment } from '../models/comment.model';
 
@@ -87,24 +88,29 @@ export class CommentFormComponent {
       this.form.markAllAsTouched();
       return;
     }
-    // The mock backend (`db.json`) stores `comments[].postId` and
-    // `comments[].userId` as **numbers**, not strings. Routing and
-    // auth expose these ids as strings, so we coerce them with
-    // `Number()` before posting. json-server's query filter
-    // (`?postId=2`) compares strictly against the stored type, so
-    // sending strings here would persist the comment but make it
-    // invisible to the next refetch — which is exactly the bug we
-    // were chasing on the comments CRUD flow.
-    const userId = Number(this.auth.user()?.id);
-    const postId = Number(this.postId());
-    if (!Number.isInteger(userId) || userId <= 0) {
+    // ids are kept as strings end-to-end. json-server's query filter
+    // and POST payloads accept either numeric or alphanumeric
+    // strings, so we never coerce with `Number()` — posts created
+    // dynamically get ids like `"n1I0hof7I3o"` which would NaN-out
+    // and silently break the create flow.
+    const postId = toId(this.postId());
+    const userId = toId(this.auth.user()?.id);
+    if (postId.length === 0) {
+       
+      console.error('[comment-form] missing postId; cannot post comment');
       return;
     }
-    if (!Number.isInteger(postId) || postId <= 0) {
+    if (userId.length === 0) {
+      // The auth guard prevents this branch in practice, but if the
+      // session expires mid-session we don't want a silent no-op.
+       
+      console.error('[comment-form] missing userId; cannot post comment');
       return;
     }
     const body = this.form.controls.body.getRawValue().trim();
     if (body.length === 0) {
+      this.form.controls.body.setErrors({ required: true });
+      this.form.markAllAsTouched();
       return;
     }
     this.submitting.set(true);
@@ -117,6 +123,9 @@ export class CommentFormComponent {
       const created = await this.api.create({ postId, userId, body, createdAt });
       this.created.emit(created);
       this.form.reset({ body: '' });
+    } catch (err) {
+       
+      console.error('[comment-form] failed to post comment', err);
     } finally {
       this.submitting.set(false);
     }

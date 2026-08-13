@@ -35,7 +35,7 @@ import { CommentFormComponent } from './comment-form.component';
         {{ 'comments.list.title' | transloco: { count: items().length } }}
       </h2>
 
-      @switch (status()) {
+      @switch (displayState()) {
         @case ('loading') {
           <app-loading-state labelKey="comments.list.loading" testId="comments-loading" />
         }
@@ -97,7 +97,21 @@ export class CommentsSectionComponent {
 
   protected readonly items = this.store.forPost(() => this.postId());
 
-  protected readonly status = computed(() => {
+  /**
+   * Display state for the switch.
+   *
+   * The cache (`items()`) is the source of truth for what to draw.
+   * We only fall back to the loading/error branches when the cache
+   * has no data to show yet — otherwise we'd flash a spinner on
+   * every local mutation (create/edit/delete) when `reload()`
+   * briefly drives the resource to `'reloading'`, hiding the
+   * optimistic update we just pushed into the store.
+   */
+  protected readonly displayState = computed(() => {
+    const hasItems = this.items().length > 0;
+    if (hasItems) {
+      return 'ready' as const;
+    }
     const r = this.commentsResource;
     if (r.status() === 'loading' || r.status() === 'reloading') {
       return 'loading' as const;

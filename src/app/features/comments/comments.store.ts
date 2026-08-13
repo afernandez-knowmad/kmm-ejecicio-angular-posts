@@ -127,7 +127,13 @@ function sameComments(a: readonly Comment[], b: readonly Comment[]): boolean {
   for (let i = 0; i < a.length; i++) {
     const x = a[i];
     const y = b[i];
-    if (x.id !== y.id || x.body !== y.body || x.userId !== y.userId || x.postId !== y.postId) {
+    if (
+      x.id !== y.id ||
+      x.body !== y.body ||
+      x.userId !== y.userId ||
+      x.postId !== y.postId ||
+      x.createdAt !== y.createdAt
+    ) {
       return false;
     }
   }
