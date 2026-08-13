@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
 
 interface PostFormModel {
@@ -22,9 +23,15 @@ interface PostFormModel {
 @Component({
   selector: 'app-post-new-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, TranslocoModule],
+  imports: [FormField, TranslocoModule, IconComponent],
   templateUrl: './post-new.page.html',
-  styleUrl: './post-new.page.css',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class PostNewPage {
   private readonly auth = inject(AuthStore);
@@ -40,6 +47,10 @@ export class PostNewPage {
   });
 
   protected readonly canSubmit = computed(() => this.form().valid() && this.auth.isAuthenticated());
+
+  protected onCancel(): void {
+    void this.router.navigateByUrl('/posts');
+  }
 
   protected onSubmit(event: Event): void {
     event.preventDefault();

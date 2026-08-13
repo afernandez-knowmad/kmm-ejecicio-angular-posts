@@ -1,13 +1,27 @@
-<section class="posts-list">
-  <header class="posts-list__header">
-    <h1 class="posts-list__title">{{ 'posts.list.title' | transloco }}</h1>
-    <a class="posts-list__new" routerLink="/posts/new" data-testid="posts-new-link">
-      {{ 'posts.form.newTitle' | transloco }}
-    </a>
+<a
+  class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
+  routerLink="/posts/new"
+  data-testid="posts-new-link"
+  appHeaderActions
+>
+  <app-icon name="plus" [size]="16" />
+  <span>{{ 'posts.form.newTitle' | transloco }}</span>
+</a>
+
+<section class="flex flex-col gap-6">
+  <header class="flex items-center justify-between gap-4">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+      {{ 'posts.list.title' | transloco }}
+    </h1>
+    <p
+      class="text-[0.6875rem] font-semibold uppercase tracking-wider text-slate-500"
+      data-testid="posts-count"
+    >
+      {{ 'posts.list.count' | transloco: { shown: items().length, total: total() } }}
+    </p>
   </header>
 
-  <div class="posts-list__filters">
-    <app-posts-search />
+  <div class="flex flex-wrap items-center gap-3">
     <app-posts-author-filter />
     <app-posts-tag-filter [tags]="tags()" />
   </div>
@@ -17,16 +31,13 @@
       @if (items().length === 0) {
         <app-empty-state labelKey="posts.list.empty" testId="posts-empty" />
       } @else {
-        <ul class="posts-list__items" data-testid="posts-items">
+        <ul class="flex flex-col gap-4" data-testid="posts-items">
           @for (post of items(); track post.id) {
             <li>
               <app-post-list-item [post]="post" />
             </li>
           }
         </ul>
-        <p class="posts-list__count" data-testid="posts-count">
-          {{ 'posts.list.count' | transloco: { total: total() } }}
-        </p>
         <app-posts-pagination [total]="total()" />
       }
     }

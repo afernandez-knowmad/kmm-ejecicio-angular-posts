@@ -14,6 +14,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import { toId } from '../../../core/lib/ids';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
 import type { Post } from '../models/post.model';
 
@@ -33,9 +34,15 @@ interface PostFormModel {
 @Component({
   selector: 'app-post-edit-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, TranslocoModule],
+  imports: [FormField, TranslocoModule, IconComponent],
   templateUrl: './post-edit.page.html',
-  styleUrl: './post-edit.page.css',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class PostEditPage {
   private readonly route = inject(ActivatedRoute);
@@ -61,6 +68,10 @@ export class PostEditPage {
     minLength(p.body, 10);
   });
   protected readonly canSubmit = computed(() => this.form().valid());
+
+  protected onCancel(): void {
+    void this.router.navigate(['/posts', this.postId()]);
+  }
 
   private lastSeededPost: Post | undefined;
 

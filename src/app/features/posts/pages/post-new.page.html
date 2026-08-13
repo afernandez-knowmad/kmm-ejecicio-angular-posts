@@ -1,36 +1,77 @@
-<section class="post-form" data-testid="post-form-new">
-  <header class="post-form__header">
-    <h1 class="post-form__title">{{ 'posts.form.newTitle' | transloco }}</h1>
+<section class="mx-auto flex max-w-3xl flex-col gap-6" data-testid="post-form-new">
+  <header class="flex flex-col gap-1">
+    <h1 class="text-2xl font-bold tracking-tight text-slate-900">
+      {{ 'posts.form.newTitle' | transloco }}
+    </h1>
+    <p class="text-sm text-slate-500">
+      {{ 'posts.list.subtitle' | transloco }}
+    </p>
   </header>
 
-  <form class="post-form__form" (submit)="onSubmit($event)" novalidate>
-    <label class="post-form__field">
-      <span class="post-form__label">{{ 'posts.form.titleLabel' | transloco }}</span>
-      <input type="text" [formField]="form.title" data-testid="post-form-title" />
-    </label>
-
-    <label class="post-form__field">
-      <span class="post-form__label">{{ 'posts.form.bodyLabel' | transloco }}</span>
-      <textarea [formField]="form.body" rows="6" data-testid="post-form-body"></textarea>
-    </label>
-
-    <label class="post-form__field">
-      <span class="post-form__label">{{ 'posts.form.tagsLabel' | transloco }}</span>
+  <form class="flex flex-col gap-5" (submit)="onSubmit($event)" novalidate>
+    <label class="flex flex-col gap-1.5">
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-600">
+        {{ 'posts.form.titleLabel' | transloco }}
+      </span>
       <input
         type="text"
-        [formField]="form.tags"
-        [attr.placeholder]="'posts.form.tagsPlaceholder' | transloco"
-        data-testid="post-form-tags"
+        class="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        [formField]="form.title"
+        [attr.placeholder]="'posts.form.titlePlaceholder' | transloco"
+        data-testid="post-form-title"
       />
     </label>
 
-    <button
-      type="submit"
-      class="post-form__submit"
-      [disabled]="!canSubmit()"
-      data-testid="post-form-submit"
-    >
-      {{ 'posts.form.create' | transloco }}
-    </button>
+    <label class="flex flex-col gap-1.5">
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-600">
+        {{ 'posts.form.bodyLabel' | transloco }}
+      </span>
+      <textarea
+        class="min-h-64 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        [formField]="form.body"
+        rows="10"
+        [attr.placeholder]="'posts.form.bodyPlaceholder' | transloco"
+        data-testid="post-form-body"
+      ></textarea>
+    </label>
+
+    <label class="flex flex-col gap-1.5">
+      <span class="text-xs font-semibold uppercase tracking-wide text-slate-600">
+        {{ 'posts.form.tagsLabel' | transloco }}
+      </span>
+      <span class="relative flex items-center">
+        <app-icon
+          name="hash"
+          [size]="16"
+          class="pointer-events-none absolute left-3 text-slate-400"
+        />
+        <input
+          type="text"
+          class="w-full rounded-lg bg-slate-100 py-3 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+          [formField]="form.tags"
+          [attr.placeholder]="'posts.form.tagsPlaceholder' | transloco"
+          data-testid="post-form-tags"
+        />
+      </span>
+    </label>
+
+    <div class="mt-2 flex items-center justify-between border-t border-slate-200 pt-5">
+      <button
+        type="button"
+        class="text-sm font-semibold text-slate-500 transition-colors hover:text-slate-700"
+        (click)="onCancel()"
+        data-testid="post-form-cancel"
+      >
+        {{ 'posts.form.cancel' | transloco }}
+      </button>
+      <button
+        type="submit"
+        class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50"
+        [disabled]="!canSubmit()"
+        data-testid="post-form-submit"
+      >
+        {{ 'posts.form.create' | transloco }}
+      </button>
+    </div>
   </form>
 </section>

@@ -5,6 +5,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 
 import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
+import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
@@ -25,6 +26,10 @@ import type { Post } from '../models/post.model';
  * present; we read `data` for the current page and `items` for the
  * total number of records matching the filter.
  *
+ * The page also projects the search box and the "new post" button
+ * into the app shell header via the `appHeaderSearch` and
+ * `appHeaderActions` content slots — see `app.html`.
+ *
  * Tag options are derived from the CURRENT page of posts only — no
  * accumulation, no in-memory cache. Re-enable a proper tag index in
  * a follow-up once it is bounded.
@@ -35,6 +40,7 @@ import type { Post } from '../models/post.model';
   imports: [
     TranslocoModule,
     RouterLink,
+    IconComponent,
     PostListItemComponent,
     PostsSearchComponent,
     PostsAuthorFilterComponent,
@@ -45,7 +51,13 @@ import type { Post } from '../models/post.model';
     EmptyStateComponent,
   ],
   templateUrl: './posts-list.page.html',
-  styleUrl: './posts-list.page.css',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class PostsListPage {
   private readonly api = inject(PostsApi);

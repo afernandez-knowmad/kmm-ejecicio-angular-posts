@@ -39,7 +39,13 @@ import { UsersStore } from '../users.store';
     ForbiddenStateComponent,
   ],
   templateUrl: './post-detail.page.html',
-  styleUrl: './post-detail.page.css',
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+    `,
+  ],
 })
 export class PostDetailPage {
   private readonly route = inject(ActivatedRoute);
