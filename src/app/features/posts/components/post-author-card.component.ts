@@ -1,12 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
+import { toId } from '../../../core/lib/ids';
 import { UsersStore } from '../users.store';
 
 /**
  * Presentational card showing the post author. Resolves the name
  * from UsersStore.byId; falls back to the userId until the store
  * loads.
+ *
+ * The lookup normalises the incoming id to a string because the mock
+ * backend stores `userId` as a number on posts while `users[].id` is
+ * a string, so a raw `Map.get` would always miss.
  */
 @Component({
   selector: 'app-post-author-card',
@@ -41,8 +46,9 @@ export class PostAuthorCardComponent {
   readonly userId = input.required<string>();
 
   protected readonly authorName = computed(() => {
-    const user = this.usersStore.byId().get(this.userId());
-    return user?.name ?? `#${this.userId()}`;
+    const id = toId(this.userId());
+    const user = this.usersStore.byId().get(id);
+    return user?.name ?? `#${id}`;
   });
 
   constructor() {

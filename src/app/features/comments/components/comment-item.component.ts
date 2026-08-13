@@ -10,7 +10,7 @@ import {
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../../auth/auth.store';
-import { isOwner } from '../../../core/lib/ids';
+import { isOwner, toId } from '../../../core/lib/ids';
 import { UsersStore } from '../../posts/users.store';
 import { CommentEditFormComponent } from './comment-edit-form.component';
 import { CommentsApi } from '../comments.api';
@@ -130,8 +130,9 @@ export class CommentItemComponent {
   protected readonly canEdit = computed(() => isOwner(this.comment().userId, this.auth.user()?.id));
 
   protected readonly authorName = computed(() => {
-    const user = this.usersStore.byId().get(this.comment().userId);
-    return user?.name ?? `#${this.comment().userId}`;
+    const id = toId(this.comment().userId);
+    const user = this.usersStore.byId().get(id);
+    return user?.name ?? `#${id}`;
   });
 
   constructor() {

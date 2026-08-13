@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { TranslocoModule } from '@jsverse/transloco';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
+import { toId } from '../../../core/lib/ids';
 import { UsersStore } from '../users.store';
 import type { Post } from '../models/post.model';
 
@@ -16,6 +17,9 @@ import type { Post } from '../models/post.model';
   imports: [TranslocoModule],
   template: `
     <article class="post-card" data-testid="post-item">
+      <time class="post-card__date" [attr.datetime]="post().createdAt" data-testid="post-date">
+        {{ formattedDate() }}
+      </time>
       <h2 class="post-card__title">{{ post().title }}</h2>
       <p class="post-card__body">{{ post().body }}</p>
       <footer class="post-card__footer">
@@ -25,7 +29,7 @@ import type { Post } from '../models/post.model';
         @if (post().tags.length > 0) {
           <ul class="post-card__tags" data-testid="post-tags">
             @for (tag of post().tags; track tag) {
-              <li class="post-card__tag">#{{ tag }}</li>
+              <li class="post-card__tag">{{ tag }}</li>
             }
           </ul>
         }
@@ -38,15 +42,25 @@ import type { Post } from '../models/post.model';
         display: block;
       }
       .post-card {
+        position: relative;
         padding: 1rem;
         border: 1px solid rgba(0, 0, 0, 0.08);
         border-radius: 0.5rem;
         background: #fff;
       }
+      .post-card__date {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.75rem;
+        font-size: 0.75rem;
+        opacity: 0.7;
+        white-space: nowrap;
+      }
       .post-card__title {
         font-size: 1.0625rem;
         margin: 0 0 0.25rem;
         font-weight: 600;
+        padding-right: 5rem;
       }
       .post-card__body {
         margin: 0 0 0.75rem;
@@ -87,13 +101,33 @@ import type { Post } from '../models/post.model';
 })
 export class PostListItemComponent {
   private readonly usersStore = inject(UsersStore);
+  private readonly transloco = inject(TranslocoService);
 
   readonly post = input.required<Post>();
 
   protected readonly authorName = computed(() => {
-    const user = this.usersStore.byId().get(this.post().userId);
-    return user?.name ?? `#${this.post().userId}`;
+    const id = toId(this.post().userId);
+    const user = this.usersStore.byId().get(id);
+    return user?.name ?? `#${id}`;
   });
+
+  protected readonly formattedDate = computed(() => {
+    const iso = this.post().createdAt;
+    if (!iso) {
+      return '';
+    }
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) {
+      return '';
+    }
+    return new Intl.DateTimeFormat(this.lang(), {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    }).format(date);
+  });
+
+  private readonly lang = computed(() => this.transloco.getActiveLang());
 
   constructor() {
     void this.usersStore.ensureLoaded();
