@@ -49,12 +49,6 @@
   font: inherit;
 }
 
-.login__error {
-  color: #c0392b;
-  font-size: 0.875rem;
-  margin: 0;
-}
-
 .login__submit {
   margin-top: 0.5rem;
   padding: 0.625rem 1rem;

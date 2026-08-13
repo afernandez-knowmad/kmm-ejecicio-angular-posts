@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../auth.store';
+import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
 
 /**
  * Standalone login page.
@@ -17,7 +18,7 @@ import { AuthStore } from '../auth.store';
 @Component({
   selector: 'app-login-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, TranslocoModule],
+  imports: [ReactiveFormsModule, TranslocoModule, ErrorStateComponent],
   templateUrl: './login.page.html',
   styleUrl: './login.page.css',
 })

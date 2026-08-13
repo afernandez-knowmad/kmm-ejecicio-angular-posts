@@ -26,7 +26,7 @@
     </label>
 
     @if (errorMessage(); as key) {
-      <p class="login__error" role="alert" data-testid="login-error">{{ key | transloco }}</p>
+      <app-error-state [labelKey]="key" testId="login-error" />
     }
 
     <button
