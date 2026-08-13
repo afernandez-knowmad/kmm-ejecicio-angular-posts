@@ -11,20 +11,14 @@
 
   @switch (postsResource.status()) {
     @case ('loading') {
-      <p class="posts-list__state posts-list__state--loading" data-testid="posts-loading">
-        {{ 'posts.list.loading' | transloco }}
-      </p>
+      <app-loading-state labelKey="posts.list.loading" testId="posts-loading" />
     }
     @case ('error') {
-      <p class="posts-list__state posts-list__state--error" role="alert" data-testid="posts-error">
-        {{ 'posts.list.error' | transloco }}
-      </p>
+      <app-error-state labelKey="posts.list.error" testId="posts-error" />
     }
     @case ('resolved') {
       @if (items().length === 0) {
-        <p class="posts-list__state posts-list__state--empty" data-testid="posts-empty">
-          {{ 'posts.list.empty' | transloco }}
-        </p>
+        <app-empty-state labelKey="posts.list.empty" testId="posts-empty" />
       } @else {
         <ul class="posts-list__items" data-testid="posts-items">
           @for (post of items(); track post.id) {

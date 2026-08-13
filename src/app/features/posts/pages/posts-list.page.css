@@ -12,17 +12,6 @@
   margin: 0;
 }
 
-.posts-list__state {
-  padding: 1rem;
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.04);
-}
-
-.posts-list__state--error {
-  background: rgba(192, 57, 43, 0.1);
-  color: #c0392b;
-}
-
 .posts-list__items {
   list-style: none;
   padding: 0;
