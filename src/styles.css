@@ -60,6 +60,17 @@ select {
   color: inherit;
 }
 
+/*
+ * Form fields share a soft slate-blue background so the user can tell
+ * them apart from read-only surfaces and chips at a glance. The
+ * selector scopes the styling to elements that live inside a <form>
+ * so the header search box and the filter <select>s (which are not
+ * inside a form) keep their original look.
+ */
+form :where(input, textarea, select) {
+  background-color: #d9e4ea;
+}
+
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
