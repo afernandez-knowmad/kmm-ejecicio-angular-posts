@@ -64,6 +64,24 @@
       "delete": "Borrar",
       "deleteConfirm": "¿Borrar este post?"
     },
+    "comments": {
+      "list": {
+        "title": "Comentarios",
+        "loading": "Cargando comentarios…",
+        "empty": "Sé el primero en comentar.",
+        "error": "No se pudieron cargar los comentarios."
+      },
+      "form": {
+        "bodyPlaceholder": "Escribe un comentario…",
+        "submit": "Comentar",
+        "save": "Guardar",
+        "cancel": "Cancelar"
+      },
+      "actions": {
+        "edit": "Editar",
+        "delete": "Borrar"
+      }
+    },
     "form": {
       "newTitle": "Nuevo post",
       "editTitle": "Editar post",
