@@ -30,6 +30,10 @@ interface LoginModel {
       :host {
         display: block;
       }
+
+      form :where(input) {
+        background-color: #f3f3f3;
+      }
     `,
   ],
 })
