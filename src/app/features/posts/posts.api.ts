@@ -15,8 +15,12 @@ import type { NewPost, Post, PostPatch } from './models/post.model';
  * last, pages, items, data }`, where `data` holds the current page and
  * `items` is the total number of records matching the filter.
  *
- * - `q`            : free-text search over title and body (json-server
- *                    full-text filter; works against the seed data).
+ * - `_where`       : JSON-encoded filter object. We use it for the
+ *                    free-text search by emitting an `or` clause with
+ *                    `contains` matches against `title` and `body`.
+ *                    json-server v1-beta ships a no-op `q` filter for
+ *                    paginated requests, so `_where` is the only
+ *                    reliable way to do a substring search here.
  * - `userId`       : exact match on `Post.userId`.
  * - `tags_like`    : array-contains filter. json-server v1-beta ignores
  *                    this for paginated requests (known beta quirk),
@@ -31,7 +35,15 @@ function buildListParams(query: PostListQuery): HttpParams {
 
   const q = query.q?.trim();
   if (q) {
-    params = params.set('q', q);
+    // Case-insensitive substring match across title and body. Keeps
+    // the URL stable while the user types — `contains` is anchored on
+    // the value as-is, no regex escaping required.
+    params = params.set(
+      '_where',
+      JSON.stringify({
+        or: [{ title: { contains: q } }, { body: { contains: q } }],
+      }),
+    );
   }
   if (query.userId) {
     params = params.set('userId', toId(query.userId));

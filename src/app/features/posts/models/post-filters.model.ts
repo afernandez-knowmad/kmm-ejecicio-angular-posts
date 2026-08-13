@@ -8,7 +8,13 @@ import type { Post } from './post.model';
  * query params.
  */
 export interface PostListQuery {
-  /** Free-text search applied to title and body. */
+  /**
+   * Free-text search applied to title and body. Serialised as a
+   * JSON-encoded `_where` clause with `contains` matches against
+   * `title` and `body` (case-insensitive substring). json-server
+   * v1-beta ships a no-op `q` filter for paginated requests, so we
+   * bypass it and use `_where` instead.
+   */
   readonly q?: string;
   /** Filter by author id (matches `Post.userId`). */
   readonly userId?: string;
