@@ -9,26 +9,15 @@ import { TranslocoModule } from '@jsverse/transloco';
   selector: 'app-empty-state',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule],
+  host: { class: 'block' },
   template: `
-    <p class="state state--empty" [attr.data-testid]="testId()">
+    <p
+      class="rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-500"
+      [attr.data-testid]="testId()"
+    >
       {{ labelKey() | transloco }}
     </p>
   `,
-  styles: [
-    `
-      .state {
-        margin: 0;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        background: rgba(0, 0, 0, 0.04);
-        font-size: 0.875rem;
-      }
-      .state--empty {
-        background: rgba(0, 0, 0, 0.03);
-        color: rgba(0, 0, 0, 0.65);
-      }
-    `,
-  ],
 })
 export class EmptyStateComponent {
   readonly labelKey = input.required<string>();

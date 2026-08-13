@@ -9,25 +9,16 @@ import { TranslocoModule } from '@jsverse/transloco';
   selector: 'app-error-state',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule],
+  host: { class: 'block' },
   template: `
-    <p class="state state--error" role="alert" [attr.data-testid]="testId()">
+    <p
+      class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700"
+      role="alert"
+      [attr.data-testid]="testId()"
+    >
       {{ labelKey() | transloco }}
     </p>
   `,
-  styles: [
-    `
-      .state {
-        margin: 0;
-        padding: 0.75rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-      }
-      .state--error {
-        background: rgba(192, 57, 43, 0.1);
-        color: #c0392b;
-      }
-    `,
-  ],
 })
 export class ErrorStateComponent {
   readonly labelKey = input.required<string>();
