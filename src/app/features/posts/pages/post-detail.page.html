@@ -1,32 +1,16 @@
 <section class="post-detail" data-testid="post-detail">
   @switch (status()) {
     @case ('loading') {
-      <p class="post-detail__state" data-testid="post-detail-loading">
-        {{ 'posts.detail.loading' | transloco }}
-      </p>
+      <app-loading-state labelKey="posts.detail.loading" testId="post-detail-loading" />
     }
     @case ('error') {
-      <p
-        class="post-detail__state post-detail__state--error"
-        role="alert"
-        data-testid="post-detail-error"
-      >
-        {{ 'posts.detail.error' | transloco }}
-      </p>
+      <app-error-state labelKey="posts.detail.error" testId="post-detail-error" />
     }
     @case ('not-found') {
-      <p class="post-detail__state" data-testid="post-detail-not-found">
-        {{ 'posts.detail.notFound' | transloco }}
-      </p>
+      <app-empty-state labelKey="posts.detail.notFound" testId="post-detail-not-found" />
     }
     @case ('forbidden') {
-      <p
-        class="post-detail__state post-detail__state--forbidden"
-        role="alert"
-        data-testid="post-detail-forbidden"
-      >
-        {{ 'posts.detail.forbidden' | transloco }}
-      </p>
+      <app-forbidden-state labelKey="posts.detail.forbidden" testId="post-detail-forbidden" />
     }
     @case ('resolved') {
       @if (post(); as p) {

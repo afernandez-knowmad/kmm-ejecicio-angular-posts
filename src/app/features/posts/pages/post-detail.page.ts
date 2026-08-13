@@ -6,6 +6,10 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import { toId } from '../../../core/lib/ids';
+import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
+import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
+import { ForbiddenStateComponent } from '../../../shared/ui/forbidden-state.component';
+import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
 import { CommentsSectionComponent } from '../../comments/components/comments-section.component';
 import { PostActionsComponent } from '../components/post-actions.component';
 import { PostAuthorCardComponent } from '../components/post-author-card.component';
@@ -29,6 +33,10 @@ import { UsersStore } from '../users.store';
     PostAuthorCardComponent,
     PostActionsComponent,
     CommentsSectionComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    EmptyStateComponent,
+    ForbiddenStateComponent,
   ],
   templateUrl: './post-detail.page.html',
   styleUrl: './post-detail.page.css',
