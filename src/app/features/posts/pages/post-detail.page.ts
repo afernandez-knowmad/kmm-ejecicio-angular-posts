@@ -6,6 +6,7 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '../../../core/http/api-base-url.token';
 import { toId } from '../../../core/lib/ids';
+import { CommentsSectionComponent } from '../../comments/components/comments-section.component';
 import { PostActionsComponent } from '../components/post-actions.component';
 import { PostAuthorCardComponent } from '../components/post-author-card.component';
 import type { Post } from '../models/post.model';
@@ -23,7 +24,12 @@ import { UsersStore } from '../users.store';
 @Component({
   selector: 'app-post-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TranslocoModule, PostAuthorCardComponent, PostActionsComponent],
+  imports: [
+    TranslocoModule,
+    PostAuthorCardComponent,
+    PostActionsComponent,
+    CommentsSectionComponent,
+  ],
   templateUrl: './post-detail.page.html',
   styleUrl: './post-detail.page.css',
 })

@@ -44,6 +44,14 @@
             </ul>
           }
           <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />
+
+          @defer (on viewport) {
+            <app-comments-section [postId]="p.id" />
+          } @placeholder {
+            <p class="post-detail__defer-placeholder" data-testid="comments-defer-placeholder">
+              {{ 'comments.list.loading' | transloco }}
+            </p>
+          }
         </article>
       }
     }
