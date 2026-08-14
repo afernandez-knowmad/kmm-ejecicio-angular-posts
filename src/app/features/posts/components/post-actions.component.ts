@@ -22,7 +22,7 @@ import { IconComponent } from '@shared/ui/icon/icon.component';
     @if (canEdit()) {
       <div class="flex items-center gap-3" data-testid="post-actions">
         <a
-          class="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
+          class="inline-flex h-[38px] items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-brand-700"
           [routerLink]="['/posts', postId(), 'edit']"
           data-testid="post-edit-link"
         >
@@ -31,7 +31,7 @@ import { IconComponent } from '@shared/ui/icon/icon.component';
         </a>
         <button
           type="button"
-          class="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100"
+          class="inline-flex h-[38px] items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100"
           (click)="onDelete()"
           data-testid="post-delete-button"
         >
