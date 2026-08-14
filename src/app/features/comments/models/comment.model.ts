@@ -5,18 +5,19 @@
  * exactly one user (`userId`). Ownership checks compare
  * `Comment.userId` against the authenticated user's id.
  *
- * NOTE on types: the seed in `db.json` keeps `postId`/`userId` as
- * numeric strings, but json-server's query filter (`?postId=...`)
- * and POST payloads accept any string. Crucially, ids for resources
- * created dynamically (e.g. `POST /posts`) are alphanumeric, so we
- * model these fields as `string` end-to-end and never coerce with
- * `Number()`. Comparisons against ids from other sources should
- * normalise via `toId`/`isOwner` from `core/lib/ids`.
+ * NOTE on types: json-server v1-beta stores ids in whatever type the
+ * client sends. The seed in `db.json` keeps `postId`/`userId` as
+ * **numbers** (`1`, `2`, ...), while `POST /posts` and `POST /comments`
+ * auto-generate **alphanumeric** ids (`"n1I0hof7I3o"`). We therefore
+ * model these fields as `string | number` and rely on `toBackendId`
+ * in the api layer to send the type the backend expects for each
+ * case. Comparisons against ids from other sources should normalise
+ * via `toId`/`isOwner` from `core/lib/ids`.
  */
 export interface Comment {
   readonly id: string;
-  readonly postId: string;
-  readonly userId: string;
+  readonly postId: string | number;
+  readonly userId: string | number;
   readonly body: string;
   /** ISO-8601 string. Parsing to `Date` is deferred to the UI layer. */
   readonly createdAt: string;
@@ -30,7 +31,11 @@ export interface Comment {
  * form sends one explicitly to guarantee the persisted row has a
  * usable timestamp for sorting/display.
  */
-export type NewComment = Omit<Comment, 'id'> & { readonly createdAt?: string };
+export type NewComment = Omit<Comment, 'id' | 'postId' | 'userId'> & {
+  readonly postId: string | number;
+  readonly userId: string | number;
+  readonly createdAt?: string;
+};
 
 /**
  * Payload accepted by the api when updating a comment.

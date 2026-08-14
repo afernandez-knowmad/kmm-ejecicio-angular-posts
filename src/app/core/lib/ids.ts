@@ -31,6 +31,28 @@ export function toNumericId(value: string | number | null | undefined): number {
 }
 
 /**
+ * Coerce an id to the shape json-server expects for the seeded data.
+ *
+ * json-server v1-beta filters with strict type matching: querying
+ * `?postId=1` only matches records whose `postId` is the **number**
+ * 1, and `?postId="1"` only matches the string `"1"`. The seed in
+ * `db.json` keeps resource ids as **numeric** strings (`"1"`,
+ * `"2"`, ...), but `POST /posts` auto-generates **alphanumeric**
+ * ids (`"n1I0hof7I3o"`). Sending a numeric seed as a string (or
+ * vice-versa) silently breaks the create flow: the POST succeeds
+ * with 200, but the resulting row never re-appears in the list
+ * query — so the UI looks like the comment "didn't take".
+ *
+ * This helper returns the numeric form when the value is purely
+ * numeric (so it matches the seed), and the string form otherwise
+ * (so it matches auto-generated ids).
+ */
+export function toBackendId(value: string | number | null | undefined): string | number {
+  const n = toNumericId(value);
+  return Number.isFinite(n) ? n : toId(value);
+}
+
+/**
  * Strict ownership check.
  *
  * Returns `true` only when both ids are defined and equal as strings.

@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 
 import { API_BASE_URL } from '../../core/http/api-base-url.token';
-import { toId } from '../../core/lib/ids';
+import { toBackendId, toId } from '../../core/lib/ids';
 import type { Comment, CommentPatch, NewComment } from './models/comment.model';
 
 /**
@@ -19,11 +19,16 @@ export class CommentsApi {
 
   /**
    * Build the URL + params pair used by the httpResource.
+   *
+   * The query value is normalised via `toBackendId` so json-server's
+   * type-strict filter matches the seed (numeric ids stored as
+   * numbers) without breaking dynamically-created posts (whose ids
+   * are alphanumeric strings).
    */
   listByPostRequest(postId: () => string): { url: string; params: HttpParams } {
     return {
       url: `${this.baseUrl}/comments`,
-      params: new HttpParams().set('postId', toId(postId())),
+      params: new HttpParams().set('postId', toBackendId(postId())),
     };
   }
 
@@ -32,7 +37,7 @@ export class CommentsApi {
   }
 
   listByPost$(postId: string): Observable<Comment[]> {
-    const params = new HttpParams().set('postId', toId(postId));
+    const params = new HttpParams().set('postId', toBackendId(postId));
     return this.http.get<Comment[]>(`${this.baseUrl}/comments`, { params });
   }
 
@@ -40,8 +45,23 @@ export class CommentsApi {
     return firstValueFrom(this.http.get<Comment>(`${this.baseUrl}/comments/${toId(id)}`));
   }
 
+  /**
+   * Create a comment.
+   *
+   * `postId` and `userId` are coerced via `toBackendId` so the
+   * persisted row matches the type the rest of the collection uses
+   * (number for seeded ids, string for auto-generated ones). Without
+   * this, a comment posted against a seeded post (`postId: "1"` as
+   * a string) would never re-appear in `GET /comments?postId=1`,
+   * because json-server's query filter is type-strict.
+   */
   create(payload: NewComment): Promise<Comment> {
-    return firstValueFrom(this.http.post<Comment>(`${this.baseUrl}/comments`, payload));
+    const body = {
+      ...payload,
+      postId: toBackendId(payload.postId),
+      userId: toBackendId(payload.userId),
+    };
+    return firstValueFrom(this.http.post<Comment>(`${this.baseUrl}/comments`, body));
   }
 
   update(id: string, patch: CommentPatch): Promise<Comment> {
