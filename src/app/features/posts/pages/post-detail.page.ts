@@ -11,11 +11,11 @@ import { EmptyStateComponent } from '@shared/ui/empty-state.component';
 import { ErrorStateComponent } from '@shared/ui/error-state.component';
 import { ForbiddenStateComponent } from '@shared/ui/forbidden-state.component';
 import { LoadingStateComponent } from '@shared/ui/loading-state.component';
-import { CommentsSectionComponent } from '@features/comments/components/comments-section.component';
 import { PostActionsComponent } from '../components/post-actions.component';
 import type { Post } from '../models/post.model';
 import { PostsApi } from '../posts.api';
 import { UsersStore } from '../users.store';
+import { CommentsSectionComponent } from '@features/comments/components/comments-section.component';
 
 /**
  * Post detail page.

@@ -1,10 +1,19 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { CommentsApi } from '../comments.api';
 import { CommentsStore } from '../comments.store';
 import type { Comment } from '../models/comment.model';
+import type { ServerPage } from '@features/posts/models/post-filters.model';
 import { EmptyStateComponent } from '@shared/ui/empty-state.component';
 import { ErrorStateComponent } from '@shared/ui/error-state.component';
 import { LoadingStateComponent } from '@shared/ui/loading-state.component';
@@ -14,9 +23,10 @@ import { CommentFormComponent } from './comment-form.component';
 /**
  * Container component for the comments section of a post detail.
  *
- * Drives the httpResource for /comments?postId=..., feeds
- * CommentsStore, and renders explicit loading/error/empty/resolved
- * states.
+ * Drives the httpResource for the FIRST page of `/comments?postId=...`,
+ * feeds CommentsStore, and renders explicit loading/error/empty/resolved
+ * states. Subsequent pages are loaded on demand via the "Cargar más"
+ * button at the bottom of the list — see `onLoadMore`.
  */
 @Component({
   selector: 'app-comments-section',
@@ -58,6 +68,28 @@ import { CommentFormComponent } from './comment-form.component';
                 </li>
               }
             </ul>
+
+            @if (hasMore()) {
+              <div class="flex justify-center">
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  (click)="onLoadMore()"
+                  [disabled]="loadingMore()"
+                  data-testid="comments-load-more"
+                >
+                  @if (loadingMore()) {
+                    {{ 'comments.list.loadingMore' | transloco }}
+                  } @else {
+                    {{ 'comments.list.loadMore' | transloco }}
+                  }
+                </button>
+              </div>
+            } @else {
+              <p class="text-center text-xs text-slate-400" data-testid="comments-end">
+                {{ 'comments.list.end' | transloco }}
+              </p>
+            }
           }
         }
       }
@@ -79,11 +111,16 @@ export class CommentsSectionComponent {
 
   readonly postId = input.required<string>();
 
-  protected readonly commentsResource = httpResource<Comment[]>(() =>
+  /** Next page to fetch when the user clicks "Cargar más". */
+  private readonly nextPage = signal(2);
+
+  protected readonly commentsResource = httpResource<ServerPage<Comment>>(() =>
     this.api.listByPostRequest(() => this.postId()),
   );
 
   protected readonly items = this.store.forPost(() => this.postId());
+  protected readonly hasMore = this.store.hasMoreFor(() => this.postId());
+  protected readonly loadingMore = this.store.loadingMoreFor(() => this.postId());
 
   /**
    * Display state for the switch.
@@ -122,7 +159,7 @@ export class CommentsSectionComponent {
     // making the UI look like the edit "didn't take" until a manual
     // refresh. By identity-checking the incoming value we only sync
     // when the resource genuinely produced a new array.
-    let lastSyncedValue: readonly Comment[] | undefined;
+    let lastSyncedValue: ServerPage<Comment> | undefined;
     effect(() => {
       const value = this.commentsResource.value();
       if (value === undefined) {
@@ -132,8 +169,35 @@ export class CommentsSectionComponent {
         return;
       }
       lastSyncedValue = value;
-      this.store.observe(this.postId(), value);
+      const hasMore = value.next !== null;
+      this.store.observe(this.postId(), value.data, hasMore);
+      // Recompute the next page from the actual response so we
+      // never request a page beyond `last`.
+      this.nextPage.set((value.next ?? value.last) + 1);
     });
+  }
+
+  /**
+   * Fetch the next page from the api and ingest it via the store.
+   * The `loadingMore` flag is set synchronously so the user cannot
+   * trigger a second request while this one is in flight.
+   */
+  protected async onLoadMore(): Promise<void> {
+    if (!this.hasMore() || this.loadingMore()) {
+      return;
+    }
+    const postId = this.postId();
+    const page = this.nextPage();
+    this.store.setLoadingMore(postId, true);
+
+    try {
+      const response = await this.api.listByPostOnce(postId, page);
+      this.store.loadMore(postId, response.data, response.next !== null);
+      this.nextPage.set((response.next ?? response.last) + 1);
+    } catch {
+      // Reset so the user can retry by clicking the button again.
+      this.store.setLoadingMore(postId, false);
+    }
   }
 
   protected onCreated(comment: Comment): void {

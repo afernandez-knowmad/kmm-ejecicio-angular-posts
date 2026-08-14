@@ -6,6 +6,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { CommentsSectionComponent } from './comments-section.component';
 import { UsersStore } from '@features/posts/users.store';
 import { provideTestApp } from '@core/testing/test-providers';
+import type { ServerPage } from '@features/posts/models/post-filters.model';
 import type { Comment } from '../models/comment.model';
 
 const POST_ID = '42';
@@ -18,6 +19,22 @@ function makeComment(over: Partial<Comment> = {}): Comment {
     body: 'first comment',
     createdAt: '2026-01-01T00:00:00.000Z',
     ...over,
+  };
+}
+
+/**
+ * Build a `ServerPage`-shaped response that matches what
+ * json-server v1-beta returns for paginated comments.
+ */
+function makePage(comments: readonly Comment[], hasMore = false): ServerPage<Comment> {
+  return {
+    first: 1,
+    prev: null,
+    next: hasMore ? 2 : null,
+    last: hasMore ? 2 : 1,
+    pages: hasMore ? 2 : 1,
+    items: comments.length,
+    data: comments,
   };
 }
 
@@ -49,9 +66,10 @@ describe('CommentsSectionComponent', () => {
     // status, so we should see the loading state.
     expect(view.getByTestId('comments-loading')).toBeTruthy();
 
-    // Flush the GET triggered by the httpResource.
+    // Flush the GET triggered by the httpResource with the paginated
+    // shape json-server returns.
     const req = httpTesting.expectOne((r: { url: string }) => r.url.includes('/comments'));
-    req.flush([makeComment()]);
+    req.flush(makePage([makeComment()]));
 
     await view.fixture.whenStable();
 
@@ -74,7 +92,7 @@ describe('CommentsSectionComponent', () => {
 
     const httpTesting = TestBed.inject(HttpTestingController);
     const req = httpTesting.expectOne((r: { url: string }) => r.url.includes('/comments'));
-    req.flush([]);
+    req.flush(makePage([]));
 
     await view.fixture.whenStable();
 
@@ -92,8 +110,7 @@ describe('CommentsSectionComponent', () => {
    * cache after the fixture is torn down).
    *
    * The user-facing error UI is exercised end-to-end in
-   * `e2e/posts-crud.spec.ts` (the failure path is hit by killing the
-   * mock backend before asserting the empty/error fallback).
+   * `e2e/posts-crud.spec.ts`.
    */
   it.skip('renders the error state when the request fails', async () => {
     // Covered by the e2e suite — see comment above.

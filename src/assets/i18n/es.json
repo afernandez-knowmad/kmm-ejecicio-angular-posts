@@ -86,6 +86,9 @@
     "list": {
       "title": "Comentarios / {{count}}",
       "loading": "Cargando comentarios…",
+      "loadingMore": "Cargando más comentarios…",
+      "loadMore": "Cargar más",
+      "end": "No hay más comentarios.",
       "empty": "Sé el primero en comentar.",
       "error": "No se pudieron cargar los comentarios."
     },
