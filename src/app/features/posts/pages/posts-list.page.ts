@@ -72,6 +72,55 @@ export class PostsListPage {
   protected readonly pageSize = computed<number>(() => this.queryState.pageSize());
 
   /**
+   * 1-based index of the first item of the current page.
+   * Returns 0 when there are no results at all so the message can
+   * be cleanly switched to a dedicated "no results" translation.
+   */
+  protected readonly rangeStart = computed<number>(() => {
+    if (this.total() === 0) {
+      return 0;
+    }
+    return (this.queryState.page() - 1) * this.pageSize() + 1;
+  });
+
+  /**
+   * 1-based index of the last item of the current page (inclusive).
+   * Uses `items().length` rather than `pageSize()` so the trailing
+   * page, which often holds a partial slice, is reported correctly.
+   */
+  protected readonly rangeEnd = computed<number>(() => {
+    const start = this.rangeStart();
+    return start === 0 ? 0 : start + this.items().length - 1;
+  });
+
+  /**
+   * Translation key for the result count badge. Picks a dedicated
+   * "empty" key when the filter returns nothing so we never end up
+   * showing "Showing 0-0 of 0 results".
+   */
+  protected readonly countKey = computed<'posts.list.count' | 'posts.list.countEmpty'>(() =>
+    this.total() === 0 ? 'posts.list.countEmpty' : 'posts.list.count',
+  );
+
+  /**
+   * Params bag fed to the `transloco` pipe. The empty state carries
+   * no params; the populated state carries the range plus the total.
+   */
+  protected readonly countParams = computed<Record<string, number>>(() => {
+    if (this.total() === 0) {
+      // Cast: an empty literal can't satisfy `Record<string, number>`
+      // by inference, but it's the value the pipe expects for keys
+      // with no params.
+      return {} as Record<string, number>;
+    }
+    return {
+      start: this.rangeStart(),
+      end: this.rangeEnd(),
+      total: this.total(),
+    };
+  });
+
+  /**
    * Tag options shown by the chip filter.
    *
    * Derived from the CURRENT page of posts only — no accumulation,
