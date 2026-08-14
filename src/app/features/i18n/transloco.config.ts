@@ -6,7 +6,7 @@ import { TranslocoHttpLoader } from './transloco.loader';
  * Languages supported by the app. The first entry is the default.
  *
  * Adding a new locale is a two-step change:
- *   1. Drop the new json file under `public/i18n/<code>.json`.
+ *   1. Drop the new json file under `src/assets/i18n/<code>.json`.
  *   2. Add the code to this array.
  */
 export const SUPPORTED_LANGS = ['es', 'en'] as const;
@@ -48,8 +48,8 @@ export const translocoConfig: TranslocoConfig = {
 
 /**
  * App-level Transloco providers. Wires Transloco with the http loader
- * pointed at `public/i18n/<lang>.json` (already served as a static
- * asset by Angular's build config).
+ * pointed at `src/assets/i18n/<lang>.json` (served at `/assets/i18n/...`
+ * by Angular's build config in `angular.json`).
  */
 export const provideAppTransloco = () =>
   provideTransloco({
