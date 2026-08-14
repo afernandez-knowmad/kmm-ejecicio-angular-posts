@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, input, output, signal } fro
 import { form, FormField, minLength, required, validate } from '@angular/forms/signals';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { AuthStore } from '../../auth/auth.store';
-import { toId } from '../../../core/lib/ids';
+import { AuthStore } from '@features/auth/auth.store';
+import { toId } from '@core/lib/ids';
 import { CommentsApi } from '../comments.api';
 import type { Comment } from '../models/comment.model';
 

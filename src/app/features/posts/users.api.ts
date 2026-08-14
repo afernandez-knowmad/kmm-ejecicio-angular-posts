@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom, shareReplay } from 'rxjs';
 
-import { API_BASE_URL } from '../../core/http/api-base-url.token';
-import type { PublicUser } from '../auth/models/user.model';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import type { PublicUser } from '@features/auth/models/user.model';
 
 /**
  * Drop the password field. Lifted to a top-level function so ESLint

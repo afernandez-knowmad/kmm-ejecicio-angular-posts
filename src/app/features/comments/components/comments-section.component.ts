@@ -5,9 +5,9 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { CommentsApi } from '../comments.api';
 import { CommentsStore } from '../comments.store';
 import type { Comment } from '../models/comment.model';
-import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
-import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
-import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
+import { EmptyStateComponent } from '@shared/ui/empty-state.component';
+import { ErrorStateComponent } from '@shared/ui/error-state.component';
+import { LoadingStateComponent } from '@shared/ui/loading-state.component';
 import { CommentItemComponent } from './comment-item.component';
 import { CommentFormComponent } from './comment-form.component';
 

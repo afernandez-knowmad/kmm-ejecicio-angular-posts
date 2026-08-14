@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 
-import { API_BASE_URL } from '../../core/http/api-base-url.token';
-import { toBackendId, toId } from '../../core/lib/ids';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { toBackendId, toId } from '@core/lib/ids';
 import type { Comment, CommentPatch, NewComment } from './models/comment.model';
 
 /**

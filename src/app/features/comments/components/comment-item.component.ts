@@ -9,10 +9,10 @@ import {
 } from '@angular/core';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
-import { AuthStore } from '../../auth/auth.store';
-import { isOwner, toId } from '../../../core/lib/ids';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
-import { UsersStore } from '../../posts/users.store';
+import { AuthStore } from '@features/auth/auth.store';
+import { isOwner, toId } from '@core/lib/ids';
+import { IconComponent } from '@shared/ui/icon/icon.component';
+import { UsersStore } from '@features/posts/users.store';
 import { CommentEditFormComponent } from './comment-edit-form.component';
 import { CommentsApi } from '../comments.api';
 import { formatRelativeTime } from '../lib/relative-time';

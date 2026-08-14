@@ -1,6 +1,6 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 
-import type { PublicUser } from '../auth/models/user.model';
+import type { PublicUser } from '@features/auth/models/user.model';
 import { UsersApi } from './users.api';
 
 /**
