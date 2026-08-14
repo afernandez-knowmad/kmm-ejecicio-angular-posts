@@ -31,7 +31,7 @@ import type { Comment } from '../models/comment.model';
   imports: [TranslocoModule, CommentEditFormComponent, IconComponent],
   host: { class: 'block' },
   template: `
-    <article class="flex flex-col gap-1" data-testid="comment-item">
+    <article class="flex flex-col gap-2 sm:gap-1" data-testid="comment-item">
       <header class="flex items-start justify-between gap-3">
         <div class="flex flex-wrap items-baseline gap-x-2 gap-y-0 leading-tight">
           <strong class="text-sm font-semibold text-slate-900">{{ authorName() }}</strong>

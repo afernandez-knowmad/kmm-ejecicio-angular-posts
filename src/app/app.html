@@ -1,28 +1,41 @@
 <header class="sticky top-0 z-10 border-b border-slate-200 bg-white">
-  <div class="mx-auto flex max-w-6xl items-center gap-6 px-6 py-3">
-    <a
-      class="flex items-center text-slate-900 no-underline"
-      routerLink="/posts"
-      data-testid="app-brand-link"
-    >
-      <span class="text-base font-semibold tracking-tight">TechPoC</span>
-    </a>
+  <div
+    class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-6 sm:px-6"
+  >
+    <div class="flex items-center justify-between gap-3 sm:flex-row">
+      <a
+        class="flex items-center text-slate-900 no-underline"
+        routerLink="/posts"
+        data-testid="app-brand-link"
+      >
+        <span class="text-base font-semibold tracking-tight">TechPoC</span>
+      </a>
 
-    <div class="flex-1"></div>
-
-    <div class="flex items-center gap-3">
-      @if (showSearch()) {
-        <div class="w-72">
-          <app-posts-search />
-        </div>
-      }
-      <ng-content select="[appHeaderActions]" />
-      <app-lang-switcher />
-      <app-logout-button />
+      <!--
+        Single row of actions in the header. On mobile it sits next
+        to the brand (justify-between on the parent row). On sm:+
+        the parent row collapses (sm:flex-row is the same here, but
+        the parent has `sm:items-center` which already provides the
+        layout context) — the desktop wrapper renders the same
+        components on the right, so we only emit one DOM copy.
+      -->
+      <div class="flex items-center gap-3" data-testid="app-header-actions">
+        <ng-content select="[appHeaderActions]" />
+        <app-lang-switcher />
+        <app-logout-button />
+      </div>
     </div>
+
+    <div class="order-3 hidden flex-1 sm:order-0 sm:block"></div>
+
+    @if (showSearch()) {
+      <div class="order-2 w-full sm:order-0 sm:w-72">
+        <app-posts-search />
+      </div>
+    }
   </div>
 </header>
 
-<main class="mx-auto w-full max-w-6xl px-6 py-8">
+<main class="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
   <router-outlet />
 </main>

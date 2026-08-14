@@ -15,13 +15,13 @@
     @case ('resolved') {
       @if (post(); as p) {
         <article
-          class="flex flex-col gap-6 rounded-2xl bg-white p-6 shadow-sm sm:p-8"
+          class="flex flex-col gap-5 rounded-2xl bg-white p-5 shadow-sm sm:gap-6 sm:p-8"
           data-testid="post-detail-resolved"
         >
           <header
             class="flex flex-col items-start gap-4 sm:flex-row sm:items-start sm:justify-between"
           >
-            <h1 class="max-w-3xl text-3xl font-bold tracking-tight text-slate-900">
+            <h1 class="max-w-3xl text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
               {{ p.title }}
             </h1>
             <app-post-actions [postId]="p.id" [userId]="p.userId" (delete)="onDelete()" />

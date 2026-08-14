@@ -81,7 +81,7 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
         data-testid="posts-pagination-prev"
       >
         <app-icon name="arrow-left" [size]="16" />
-        <span>{{ 'posts.pagination.prev' | transloco }}</span>
+        <span class="hidden sm:inline">{{ 'posts.pagination.prev' | transloco }}</span>
       </button>
 
       <ul class="flex items-center gap-1" data-testid="posts-pagination-pages">
@@ -122,7 +122,7 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
         (click)="next()"
         data-testid="posts-pagination-next"
       >
-        <span>{{ 'posts.pagination.next' | transloco }}</span>
+        <span class="hidden sm:inline">{{ 'posts.pagination.next' | transloco }}</span>
         <app-icon name="arrow-right" [size]="16" />
       </button>
     </nav>
