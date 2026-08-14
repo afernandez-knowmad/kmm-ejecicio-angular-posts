@@ -1,8 +1,9 @@
 import { httpResource } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
+import { Title } from '@angular/platform-browser';
 
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { toId } from '@core/lib/ids';
@@ -51,6 +52,7 @@ export class PostDetailPage {
   private readonly baseUrl = inject(API_BASE_URL);
   private readonly api = inject(PostsApi);
   private readonly transloco = inject(TranslocoService);
+  private readonly title = inject(Title);
   protected readonly usersStore = inject(UsersStore);
 
   private readonly idParam = toSignal(this.route.paramMap, {
@@ -97,4 +99,24 @@ export class PostDetailPage {
   }
 
   protected readonly post = computed<Post | undefined>(() => this.postResource.value());
+
+  /**
+   * Once the post resolves, prepend the prefix label ("Detalle del post")
+   * to the actual post title so the document tab shows something like
+   * `Detalle del post · Post 1: practical Angular topic 1 | TechPoC`.
+   *
+   * Using `effect` (rather than a setter on the resource) lets the
+   * title update again if the resource is refreshed while the page
+   * stays mounted (e.g. after the user edits and returns).
+   */
+  constructor() {
+    effect(() => {
+      const p = this.post();
+      if (!p) {
+        return;
+      }
+      const prefix = this.transloco.translate('posts.detail.title');
+      this.title.setTitle(`${prefix} · ${p.title} | TechPoC`);
+    });
+  }
 }

@@ -4,9 +4,10 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideRouter, TitleStrategy, withViewTransitions } from '@angular/router';
 
 import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { TranslocoTitleStrategy } from '@core/i18n/transloco-title.strategy';
 import { routes } from './app.routes';
 import { provideAuthHydration } from '@features/auth/hydrate-auth-session';
 import { authInterceptor } from '@features/auth/auth.interceptor';
@@ -28,5 +29,9 @@ export const appConfig: ApplicationConfig = {
     provideAppTransloco(),
     { provide: API_BASE_URL, useValue: DEFAULT_API_BASE_URL },
     provideAuthHydration(),
+    // The default Angular `TitleStrategy` paints the route's `title`
+    // field verbatim. We override it so the field is treated as a
+    // Transloco key and decorated with the ` | TechPoC` suffix.
+    { provide: TitleStrategy, useClass: TranslocoTitleStrategy },
   ],
 };
