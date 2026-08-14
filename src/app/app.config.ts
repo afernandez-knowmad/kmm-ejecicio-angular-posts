@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { API_BASE_URL } from './core/http/api-base-url.token';
 import { routes } from './app.routes';
@@ -18,7 +18,7 @@ const DEFAULT_API_BASE_URL = 'http://localhost:3000';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideRouter(routes),
+    provideRouter(routes, withViewTransitions()),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAppTransloco(),
     { provide: API_BASE_URL, useValue: DEFAULT_API_BASE_URL },
