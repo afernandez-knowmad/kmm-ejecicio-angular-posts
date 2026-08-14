@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { AuthStore } from '../auth.store';
 
 /**

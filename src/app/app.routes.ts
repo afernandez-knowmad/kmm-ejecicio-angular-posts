@@ -1,8 +1,8 @@
 import { CanMatchFn, Routes } from '@angular/router';
 
-import { authGuard } from './features/auth/auth.guard';
-import { ownershipGuardFor } from './features/auth/ownership.guard';
-import { injectPostsOwnershipResolver } from './features/posts/posts.resolver';
+import { authGuard } from '@features/auth/auth.guard';
+import { ownershipGuardFor } from '@features/auth/ownership.guard';
+import { injectPostsOwnershipResolver } from '@features/posts/posts.resolver';
 
 /**
  * CanMatchFn wrapper that defers building the OwnershipResolver

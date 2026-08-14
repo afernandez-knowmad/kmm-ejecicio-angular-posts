@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment, UrlTree } from '@angular/router';
 
-import { isOwner } from '../../core/lib/ids';
+import { isOwner } from '@core/lib/ids';
 import { AuthStore } from './auth.store';
 
 /**

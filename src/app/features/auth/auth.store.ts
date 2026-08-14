@@ -1,6 +1,6 @@
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 
-import { toId } from '../../core/lib/ids';
+import { toId } from '@core/lib/ids';
 import { AuthApi } from './auth.api';
 import { AuthSessionStorage } from './auth.session-storage';
 import type { AuthError } from './auth.types';

@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { AuthStore } from '../auth.store';
-import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { ErrorStateComponent } from '@shared/ui/error-state.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 
 interface LoginModel {
   name: string;
