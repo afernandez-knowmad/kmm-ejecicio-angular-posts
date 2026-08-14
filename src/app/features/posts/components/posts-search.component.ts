@@ -1,22 +1,27 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { debounce, form, FormField } from '@angular/forms/signals';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
 import { IconComponent } from '../../../shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
-interface PostsSearchModel {
-  q: string;
-}
+const SEARCH_DEBOUNCE_MS = 250;
 
 /**
- * Debounced text search input. Emits changes through PostsQueryState
- * so the URL stays in sync.
+ * Debounced text search input. Writes through `PostsQueryState` so
+ * the URL stays in sync.
+ *
+ * The input is fully controlled by `queryState.q()`. The previous
+ * implementation built a signal model via the experimental
+ * `@angular/forms/signals` `form()` API and reconciled it with
+ * `PostsQueryState` through two `effect`s; that loop occasionally
+ * reset the input back to the previous query value while the user
+ * was still typing. Driving the input directly with `[value]` and
+ * `(input)` removes the reconciliation entirely.
  */
 @Component({
   selector: 'app-posts-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormField, TranslocoModule, IconComponent],
+  imports: [TranslocoModule, IconComponent],
   template: `
     <label class="relative flex w-full items-center">
       <app-icon
@@ -27,7 +32,8 @@ interface PostsSearchModel {
       <input
         type="search"
         class="w-full rounded-full bg-slate-100 py-1.5 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
-        [formField]="form.q"
+        [value]="queryState.q()"
+        (input)="onInput($event)"
         [attr.placeholder]="'posts.filters.searchPlaceholder' | transloco"
         data-testid="posts-search-input"
       />
@@ -43,33 +49,31 @@ interface PostsSearchModel {
   ],
 })
 export class PostsSearchComponent {
-  private readonly queryState = inject(PostsQueryState);
+  protected readonly queryState = inject(PostsQueryState);
+  private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly searchModel = signal<PostsSearchModel>({
-    q: this.queryState.q(),
-  });
-  protected readonly form = form(this.searchModel, (p) => {
-    debounce(p.q, 250);
-  });
+  private debounceId: ReturnType<typeof setTimeout> | undefined;
 
   constructor() {
-    // Keep the input in sync if the query changes externally (e.g.
-    // browser back/forward navigation). A query that merely trims the
-    // current input is allowed to remain untrimmed in the control.
-    effect(() => {
-      const q = this.queryState.q();
-      const current = this.searchModel().q;
-      if (q !== current && q !== current.trim()) {
-        this.searchModel.set({ q });
-      }
-    });
+    this.destroyRef.onDestroy(() => this.clearDebounce());
+  }
 
-    effect(() => {
-      const q = this.searchModel().q.trim() || undefined;
-      const currentQ = this.queryState.query().q;
-      if (q !== currentQ) {
-        this.queryState.setQuery({ q });
+  protected onInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const value = target.value;
+    this.clearDebounce();
+    this.debounceId = setTimeout(() => {
+      const trimmed = value.trim() || undefined;
+      if (trimmed !== this.queryState.query().q) {
+        this.queryState.setQuery({ q: trimmed });
       }
-    });
+    }, SEARCH_DEBOUNCE_MS);
+  }
+
+  private clearDebounce(): void {
+    if (this.debounceId !== undefined) {
+      clearTimeout(this.debounceId);
+      this.debounceId = undefined;
+    }
   }
 }
