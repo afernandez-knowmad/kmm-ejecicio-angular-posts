@@ -3,10 +3,10 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { EmptyStateComponent } from '../../../shared/ui/empty-state.component';
-import { ErrorStateComponent } from '../../../shared/ui/error-state.component';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
-import { LoadingStateComponent } from '../../../shared/ui/loading-state.component';
+import { EmptyStateComponent } from '@shared/ui/empty-state.component';
+import { ErrorStateComponent } from '@shared/ui/error-state.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
+import { LoadingStateComponent } from '@shared/ui/loading-state.component';
 import { PostListItemComponent } from '../components/post-list-item.component';
 import { PostsAuthorFilterComponent } from '../components/posts-author-filter.component';
 import { PostsPaginationComponent } from '../components/posts-pagination.component';

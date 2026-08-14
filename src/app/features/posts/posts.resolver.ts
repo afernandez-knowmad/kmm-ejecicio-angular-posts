@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 
-import type { OwnedResource, OwnershipResolver } from '../auth/ownership.guard';
+import type { OwnedResource, OwnershipResolver } from '@features/auth/ownership.guard';
 import { PostsApi } from './posts.api';
 
 /**

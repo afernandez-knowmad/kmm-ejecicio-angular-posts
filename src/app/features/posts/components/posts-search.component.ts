@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
 const SEARCH_DEBOUNCE_MS = 250;

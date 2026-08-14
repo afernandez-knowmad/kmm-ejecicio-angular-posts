@@ -2,8 +2,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 
-import { API_BASE_URL } from '../../core/http/api-base-url.token';
-import { toId } from '../../core/lib/ids';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { toId } from '@core/lib/ids';
 import type { PostListQuery, ServerPage } from './models/post-filters.model';
 import type { NewPost, Post, PostPatch } from './models/post.model';
 

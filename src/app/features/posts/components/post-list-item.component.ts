@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { RouterLink } from '@angular/router';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
-import { toId } from '../../../core/lib/ids';
-import { AvatarComponent } from '../../../shared/ui/avatar.component';
+import { toId } from '@core/lib/ids';
+import { AvatarComponent } from '@shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 import type { Post } from '../models/post.model';
 

@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { RouterLink } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { AuthStore } from '../../auth/auth.store';
-import { isOwner } from '../../../core/lib/ids';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { AuthStore } from '@features/auth/auth.store';
+import { isOwner } from '@core/lib/ids';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 
 /**
  * Edit / delete actions for a post.

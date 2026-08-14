@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { toId } from '../../../core/lib/ids';
-import { AvatarComponent } from '../../../shared/ui/avatar.component';
+import { toId } from '@core/lib/ids';
+import { AvatarComponent } from '@shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 
 /**

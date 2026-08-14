@@ -12,9 +12,9 @@ import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { API_BASE_URL } from '../../../core/http/api-base-url.token';
-import { toId } from '../../../core/lib/ids';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
+import { toId } from '@core/lib/ids';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
 import type { Post } from '../models/post.model';
 

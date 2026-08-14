@@ -3,8 +3,8 @@ import { form, FormField, minLength, required } from '@angular/forms/signals';
 import { Router } from '@angular/router';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { AuthStore } from '../../auth/auth.store';
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { AuthStore } from '@features/auth/auth.store';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
 
 interface PostFormModel {

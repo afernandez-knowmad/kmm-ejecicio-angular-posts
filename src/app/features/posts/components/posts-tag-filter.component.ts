@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-import { IconComponent } from '../../../shared/ui/icon/icon.component';
+import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
 /**
