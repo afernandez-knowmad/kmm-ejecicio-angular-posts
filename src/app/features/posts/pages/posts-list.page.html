@@ -30,7 +30,9 @@
   @switch (postsResource.status()) {
     @case ('resolved') {
       @if (items().length === 0) {
-        <app-empty-state labelKey="posts.list.empty" testId="posts-empty" />
+        <div class="flex justify-center py-12" data-testid="posts-empty-wrapper">
+          <app-empty-state labelKey="posts.list.empty" testId="posts-empty" />
+        </div>
       } @else {
         <ul class="flex flex-col gap-4" data-testid="posts-items">
           @for (post of items(); track post.id) {
@@ -39,7 +41,9 @@
             </li>
           }
         </ul>
-        <app-posts-pagination [total]="total()" />
+        @if (total() > pageSize()) {
+          <app-posts-pagination [total]="total()" />
+        }
       }
     }
     @case ('error') {

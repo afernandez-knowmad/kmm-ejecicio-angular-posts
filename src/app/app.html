@@ -1,38 +1,45 @@
 <header class="sticky top-0 z-10 border-b border-slate-200 bg-white">
   <div
-    class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:gap-6 sm:px-6"
+    class="mx-auto grid max-w-6xl grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 sm:flex sm:gap-6 sm:px-6"
   >
-    <div class="flex items-center justify-between gap-3 sm:flex-row">
-      <a
-        class="flex items-center text-slate-900 no-underline"
-        routerLink="/posts"
-        data-testid="app-brand-link"
-      >
-        <span class="text-base font-semibold tracking-tight">TechPoC</span>
-      </a>
+    <!--
+      Single DOM copy of each piece, repositioned per viewport via
+      `order-*` utilities.
 
-      <!--
-        Single row of actions in the header. On mobile it sits next
-        to the brand (justify-between on the parent row). On sm:+
-        the parent row collapses (sm:flex-row is the same here, but
-        the parent has `sm:items-center` which already provides the
-        layout context) — the desktop wrapper renders the same
-        components on the right, so we only emit one DOM copy.
-      -->
-      <div class="flex items-center gap-3" data-testid="app-header-actions">
-        <ng-content select="[appHeaderActions]" />
-        <app-lang-switcher />
-        <app-logout-button />
-      </div>
+      Mobile (default — grid 2 columns):
+        Row 1:   brand (order-1)          |  actions (order-2)
+        Row 2:   search (order-3, col-span-2, full width)
+
+      Desktop (sm: — flex row):
+        brand (order-1) | search (order-2) | spacer (order-3) | actions (order-4)
+
+      The grid layout is what makes `order-2` for actions sit on
+      the same row as the brand on mobile (the algorithm fills the
+      1fr/auto columns first, then wraps to a new row). On desktop
+      the same source order renders as a single flex row with the
+      spacer pushing the actions to the far right.
+    -->
+    <a
+      class="order-1 flex items-center text-slate-900 no-underline"
+      routerLink="/posts"
+      data-testid="app-brand-link"
+    >
+      <span class="text-base font-semibold tracking-tight">TechPoC</span>
+    </a>
+
+    <div class="order-2 flex items-center gap-3 sm:order-4" data-testid="app-header-actions">
+      <ng-content select="[appHeaderActions]" />
+      <app-lang-switcher />
+      <app-logout-button />
     </div>
 
-    <div class="order-3 hidden flex-1 sm:order-0 sm:block"></div>
-
     @if (showSearch()) {
-      <div class="order-2 w-full sm:order-0 sm:w-72">
+      <div class="order-3 col-span-2 w-full sm:order-3 sm:col-span-1 sm:w-72">
         <app-posts-search />
       </div>
     }
+
+    <div class="hidden sm:order-2 sm:block sm:flex-1"></div>
   </div>
 </header>
 
