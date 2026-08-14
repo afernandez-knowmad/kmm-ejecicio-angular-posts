@@ -62,7 +62,9 @@ function initialsFromName(name: string, count = 2): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <span
-      class="inline-flex items-center justify-center rounded-full font-semibold select-none"
+      class="inline-flex shrink-0 items-center justify-center rounded-full font-semibold select-none"
+      [style.width.px]="size()"
+      [style.height.px]="size()"
       [style.background-color]="bg()"
       [style.color]="fg()"
       [style.font-size]="fontSize()"
