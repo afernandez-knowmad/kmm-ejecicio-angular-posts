@@ -16,14 +16,17 @@ import { UsersStore } from '../users.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TranslocoModule, IconComponent],
   template: `
-    <label class="relative flex items-center">
+    <label
+      class="flex items-stretch overflow-hidden rounded-lg border border-slate-200 bg-slate-100 transition-colors focus-within:border-brand-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-brand-500"
+      data-testid="posts-author-filter-wrapper"
+    >
       <span
-        class="pointer-events-none absolute left-3 text-xs font-semibold uppercase tracking-wide text-slate-500"
+        class="flex items-center bg-slate-200/70 px-3 text-xs font-semibold uppercase tracking-wide text-slate-500"
       >
         {{ 'posts.filters.authorLabel' | transloco }}
       </span>
       <select
-        class="w-full appearance-none rounded-lg bg-slate-100 py-2.5 pl-24 pr-9 text-sm text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        class="w-full appearance-none bg-transparent py-2.5 pl-3 pr-2 text-sm text-slate-900 focus:outline-none"
         [value]="current()"
         (change)="onChange($event)"
         data-testid="posts-author-filter"
@@ -33,11 +36,9 @@ import { UsersStore } from '../users.store';
           <option [value]="user.id">{{ user.name }}</option>
         }
       </select>
-      <app-icon
-        name="chevron-down"
-        [size]="16"
-        class="pointer-events-none absolute right-3 text-slate-400"
-      />
+      <span class="pointer-events-none flex items-center pr-3 text-slate-400" aria-hidden="true">
+        <app-icon name="chevron-down" [size]="16" />
+      </span>
     </label>
   `,
   styles: [

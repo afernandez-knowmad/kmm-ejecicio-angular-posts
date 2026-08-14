@@ -7,11 +7,13 @@ export type IconName =
   | 'lock'
   | 'arrow-right'
   | 'arrow-left'
+  | 'arrow-up-right'
   | 'hash'
   | 'chevron-down'
   | 'edit'
   | 'trash'
-  | 'plus';
+  | 'plus'
+  | 'close';
 
 /**
  * Stand-alone icon component. Renders SVG paths from a small bundled
@@ -63,6 +65,10 @@ export type IconName =
           <line x1="19" y1="12" x2="5" y2="12" />
           <polyline points="12 19 5 12 12 5" />
         }
+        @case ('arrow-up-right') {
+          <line x1="7" y1="17" x2="17" y2="7" />
+          <polyline points="7 7 17 7 17 17" />
+        }
         @case ('hash') {
           <line x1="4" y1="9" x2="20" y2="9" />
           <line x1="4" y1="15" x2="20" y2="15" />
@@ -87,6 +93,10 @@ export type IconName =
         @case ('plus') {
           <line x1="12" y1="5" x2="12" y2="19" />
           <line x1="5" y1="12" x2="19" y2="12" />
+        }
+        @case ('close') {
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
         }
       }
     </svg>

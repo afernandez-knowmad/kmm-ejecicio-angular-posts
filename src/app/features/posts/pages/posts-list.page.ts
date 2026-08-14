@@ -72,6 +72,17 @@ export class PostsListPage {
   protected readonly pageSize = computed<number>(() => this.queryState.pageSize());
 
   /**
+   * True when any filter (search, author or tag) is currently set.
+   * Drives the "Clear filters" button inside the empty state.
+   */
+  protected readonly hasActiveFilters = this.queryState.hasActiveFilters;
+
+  /** Reset every user-driven filter and jump back to the first page. */
+  protected clearFilters(): void {
+    this.queryState.resetFilters();
+  }
+
+  /**
    * 1-based index of the first item of the current page.
    * Returns 0 when there are no results at all so the message can
    * be cleanly switched to a dedicated "no results" translation.

@@ -50,7 +50,8 @@
       "anyAuthor": "Cualquier autor",
       "tagLabel": "Tags",
       "anyTag": "Cualquier tag",
-      "clearTag": "Quitar tag"
+      "clearTag": "Quitar tag",
+      "clearFilters": "Limpiar filtros"
     },
     "pagination": {
       "prev": "Previous",

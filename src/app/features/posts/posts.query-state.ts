@@ -68,6 +68,16 @@ export class PostsQueryState {
   readonly page = computed(() => this._query().page);
   readonly pageSize = computed(() => this._query().pageSize);
 
+  /**
+   * True when any user-driven filter (search, author or tag) is set.
+   * Used by the list page to surface a "Clear filters" affordance
+   * inside the empty state.
+   */
+  readonly hasActiveFilters = computed<boolean>(() => {
+    const query = this._query();
+    return Boolean(query.q?.trim()) || Boolean(query.userId) || Boolean(query.tag);
+  });
+
   constructor() {
     // Sync _query → URL. Using replaceUrl so we don't pile up history
     // entries when filters change rapidly (e.g. typing in a search
@@ -109,5 +119,21 @@ export class PostsQueryState {
    */
   syncFromUrl(): void {
     this._query.set(readQueryFromParams(this.route.snapshot.queryParamMap));
+  }
+
+  /**
+   * Clear every user-driven filter (search, author, tag) and reset
+   * pagination to the first page. Page size is left untouched so the
+   * user keeps their preferred slice size.
+   */
+  resetFilters(): void {
+    const current = this._query();
+    this._query.set({
+      ...current,
+      q: DEFAULT_POST_LIST_QUERY.q,
+      userId: DEFAULT_POST_LIST_QUERY.userId,
+      tag: DEFAULT_POST_LIST_QUERY.tag,
+      page: DEFAULT_POST_LIST_QUERY.page,
+    });
   }
 }
