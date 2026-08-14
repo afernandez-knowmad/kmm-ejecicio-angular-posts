@@ -6,11 +6,11 @@ import {
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
-import { API_BASE_URL } from './core/http/api-base-url.token';
+import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { routes } from './app.routes';
-import { provideAuthHydration } from './features/auth/hydrate-auth-session';
-import { authInterceptor } from './features/auth/auth.interceptor';
-import { provideAppTransloco } from './features/i18n/transloco.config';
+import { provideAuthHydration } from '@features/auth/hydrate-auth-session';
+import { authInterceptor } from '@features/auth/auth.interceptor';
+import { provideAppTransloco } from '@features/i18n/transloco.config';
 
 /**
  * Default origin of the mock backend started by `npm start` via
