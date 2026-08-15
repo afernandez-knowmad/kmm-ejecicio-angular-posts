@@ -61,9 +61,16 @@ export class PostsListPage {
   private readonly api = inject(PostsApi);
   protected readonly queryState = inject(PostsQueryState);
 
-  protected readonly postsResource = httpResource<ServerPage<Post>>(() =>
-    this.api.listRequest(() => this.queryState.query()),
-  );
+  protected readonly postsResource = httpResource<ServerPage<Post>>(() => {
+    // Reading `refreshTick()` inside the request factory subscribes
+    // the resource to mutation-triggered invalidations. Any call to
+    // `queryState.bumpRefresh()` will refetch this endpoint, even if
+    // the URL / query params themselves did not change. The
+    // expression has no side effect on its own — it only registers
+    // a reactive dependency for the resource.
+    this.queryState.refreshTick();
+    return this.api.listRequest(() => this.queryState.query());
+  });
 
   protected readonly items = computed<readonly Post[]>(
     () => this.postsResource.value()?.data ?? [],

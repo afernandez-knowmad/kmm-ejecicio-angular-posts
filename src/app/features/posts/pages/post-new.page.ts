@@ -6,6 +6,7 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { AuthStore } from '@features/auth/auth.store';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
+import { PostsQueryState } from '../posts.query-state';
 
 interface PostFormModel {
   title: string;
@@ -37,6 +38,7 @@ export class PostNewPage {
   private readonly auth = inject(AuthStore);
   private readonly api = inject(PostsApi);
   private readonly router = inject(Router);
+  private readonly queryState = inject(PostsQueryState);
 
   protected readonly postModel = signal<PostFormModel>({ title: '', body: '', tags: '' });
   protected readonly form = form(this.postModel, (p) => {
@@ -69,7 +71,21 @@ export class PostNewPage {
       .filter((tag) => tag.length > 0);
 
     void this.api
-      .create({ userId, title, body, tags: tagList })
-      .then((created) => this.router.navigate(['/posts', created.id]));
+      .create({
+        userId,
+        title,
+        body,
+        tags: tagList,
+        // json-server v1-beta does not stamp `createdAt` on POST, so
+        // the client provides it. Mirrors the comments model.
+        createdAt: new Date().toISOString(),
+      })
+      .then((created) => {
+        // Invalidate the list cache so the new post shows up the next
+        // time the list page is rendered (e.g. after navigating back
+        // from the detail view).
+        this.queryState.bumpRefresh();
+        void this.router.navigate(['/posts', created.id]);
+      });
   }
 }

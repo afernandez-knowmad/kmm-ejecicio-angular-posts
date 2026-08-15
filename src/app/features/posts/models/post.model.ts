@@ -18,10 +18,11 @@ export interface Post {
 /**
  * Payload accepted by the api when creating a new post.
  *
- * `id` and `createdAt` are assigned by the backend, so they are not part
- * of the input contract.
+ * `id` is assigned by the backend. `createdAt` is **not** —
+ * json-server v1-beta does not stamp the field on `POST`, so the
+ * client must supply it (mirrors `NewComment.createdAt?`).
  */
-export type NewPost = Omit<Post, 'id' | 'createdAt'>;
+export type NewPost = Omit<Post, 'id'>;
 
 /**
  * Payload accepted by the api when updating a post.

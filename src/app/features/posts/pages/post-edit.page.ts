@@ -16,6 +16,7 @@ import { API_BASE_URL } from '@core/http/api-base-url.token';
 import { toId } from '@core/lib/ids';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsApi } from '../posts.api';
+import { PostsQueryState } from '../posts.query-state';
 import type { Post } from '../models/post.model';
 
 interface PostFormModel {
@@ -49,6 +50,7 @@ export class PostEditPage {
   private readonly router = inject(Router);
   private readonly api = inject(PostsApi);
   private readonly baseUrl = inject(API_BASE_URL);
+  private readonly queryState = inject(PostsQueryState);
 
   private readonly idParam = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
@@ -104,8 +106,11 @@ export class PostEditPage {
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
 
-    void this.api
-      .update(this.postId(), { title, body, tags: tagList })
-      .then(() => this.router.navigate(['/posts', this.postId()]));
+    void this.api.update(this.postId(), { title, body, tags: tagList }).then(() => {
+      // Keep the list in sync when the user navigates back from the
+      // detail page after editing.
+      this.queryState.bumpRefresh();
+      void this.router.navigate(['/posts', this.postId()]);
+    });
   }
 }

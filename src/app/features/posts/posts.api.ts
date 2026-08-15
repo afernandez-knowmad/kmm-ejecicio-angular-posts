@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable, firstValueFrom } from 'rxjs';
 
 import { API_BASE_URL } from '@core/http/api-base-url.token';
-import { toId } from '@core/lib/ids';
+import { toBackendId, toId } from '@core/lib/ids';
 import type { PostListQuery, ServerPage } from './models/post-filters.model';
 import type { NewPost, Post, PostPatch } from './models/post.model';
 
@@ -46,7 +46,11 @@ function buildListParams(query: PostListQuery): HttpParams {
     );
   }
   if (query.userId) {
-    params = params.set('userId', toId(query.userId));
+    // Type-strict filter: see comment on `toBackendId`. Coercing the
+    // userId to its numeric form when applicable ensures the query
+    // matches the seed (which stores ids as numbers in db.json),
+    // regardless of whether the post was seeded or created via POST.
+    params = params.set('userId', toBackendId(query.userId));
   }
   if (query.tag) {
     params = params.set('tags_like', query.tag);
@@ -99,8 +103,20 @@ export class PostsApi {
     return firstValueFrom(this.http.get<Post>(`${this.baseUrl}/posts/${toId(id)}`));
   }
 
+  /**
+   * Create a post.
+   *
+   * `userId` is coerced via `toBackendId` so the persisted row
+   * matches the type the rest of the collection uses (number for
+   * seeded ids, string for auto-generated ones). Without this, a
+   * post created by a seeded user (`userId: "1"` as a string) would
+   * never re-appear in `GET /posts?userId=1`, because json-server's
+   * query filter is type-strict — see `toBackendId` for the full
+   * explanation.
+   */
   create(payload: NewPost): Promise<Post> {
-    return firstValueFrom(this.http.post<Post>(`${this.baseUrl}/posts`, payload));
+    const body = { ...payload, userId: toBackendId(payload.userId) };
+    return firstValueFrom(this.http.post<Post>(`${this.baseUrl}/posts`, body));
   }
 
   update(id: string, patch: PostPatch): Promise<Post> {

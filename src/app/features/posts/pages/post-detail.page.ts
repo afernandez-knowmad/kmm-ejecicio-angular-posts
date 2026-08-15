@@ -14,6 +14,7 @@ import { LoadingStateComponent } from '@shared/ui/loading-state.component';
 import { PostActionsComponent } from '../components/post-actions.component';
 import type { Post } from '../models/post.model';
 import { PostsApi } from '../posts.api';
+import { PostsQueryState } from '../posts.query-state';
 import { UsersStore } from '../users.store';
 import { CommentsSectionComponent } from '@features/comments/components/comments-section.component';
 
@@ -51,6 +52,7 @@ export class PostDetailPage {
   private readonly router = inject(Router);
   private readonly baseUrl = inject(API_BASE_URL);
   private readonly api = inject(PostsApi);
+  private readonly queryState = inject(PostsQueryState);
   private readonly transloco = inject(TranslocoService);
   private readonly title = inject(Title);
   protected readonly usersStore = inject(UsersStore);
@@ -95,7 +97,12 @@ export class PostDetailPage {
     ) {
       return;
     }
-    void this.api.delete(id).then(() => this.router.navigateByUrl('/posts'));
+    void this.api.delete(id).then(() => {
+      // The delete action navigates back to the list; refresh it so
+      // the removed row is no longer counted.
+      this.queryState.bumpRefresh();
+      void this.router.navigateByUrl('/posts');
+    });
   }
 
   protected readonly post = computed<Post | undefined>(() => this.postResource.value());

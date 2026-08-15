@@ -58,8 +58,26 @@ export class PostsQueryState {
 
   private readonly _query = signal<PostListQuery>({ ...DEFAULT_POST_LIST_QUERY });
 
+  /**
+   * Bumped by mutation flows (create / update / delete) so any
+   * `httpResource` keyed on this state invalidates and refetches.
+   * The list page reads this signal inside its request factory, so
+   * bumping it forces a reload even when the URL / query params
+   * themselves did not change.
+   *
+   * Starts at 0 so the initial fetch is unaffected.
+   */
+  private readonly _refreshTick = signal(0);
+
   /** Readonly view of the current query. */
   readonly query = this._query.asReadonly();
+
+  /**
+   * Readonly view of the refresh tick. Read inside httpResource
+   * request factories to subscribe to invalidations triggered by
+   * `bumpRefresh()`.
+   */
+  readonly refreshTick = this._refreshTick.asReadonly();
 
   /** Convenience computed: same data as `query()` but guaranteed reactive. */
   readonly q = computed(() => this._query().q ?? '');
@@ -135,5 +153,14 @@ export class PostsQueryState {
       tag: DEFAULT_POST_LIST_QUERY.tag,
       page: DEFAULT_POST_LIST_QUERY.page,
     });
+  }
+
+  /**
+   * Invalidate every consumer that reads `refreshTick()` (notably the
+   * list page's `httpResource`). Call this after any successful
+   * mutation so the list reflects the new state on the next render.
+   */
+  bumpRefresh(): void {
+    this._refreshTick.update((n) => n + 1);
   }
 }
