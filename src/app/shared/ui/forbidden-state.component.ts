@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-/**
- * Generic forbidden state for routes that the ownership guard
- * redirected. Visually identical to ErrorState but kept separate so
- * copy and tests can target it precisely.
- */
 @Component({
   selector: 'app-forbidden-state',
   changeDetection: ChangeDetectionStrategy.OnPush,

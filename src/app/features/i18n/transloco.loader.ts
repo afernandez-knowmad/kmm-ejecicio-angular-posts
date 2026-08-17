@@ -3,11 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import type { Translation, TranslocoLoader } from '@jsverse/transloco';
 
 /**
- * Loads translation files from `/assets/i18n/<lang>.json`.
+ * Carga los json de traducción desde `/assets/i18n/<lang>.json`.
  *
- * Files are served as static assets from `src/assets/i18n/` thanks to the
- * Angular build config (see `angular.json` -> `assets`). That keeps the
- * build fast and the loader trivial.
+ * Los archivos se sirven como assets estáticos desde
+ * `src/assets/i18n/` por la build config de Angular (ver
+ * `angular.json` -> `assets`). Build rápida, loader trivial.
  */
 @Injectable({ providedIn: 'root' })
 export class TranslocoHttpLoader implements TranslocoLoader {

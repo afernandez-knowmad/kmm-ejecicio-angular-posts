@@ -14,13 +14,6 @@ interface PostFormModel {
   tags: string;
 }
 
-/**
- * /posts/new — standalone page that creates a post owned by the
- * current user.
- *
- * Uses Signal Forms so the submit button can be driven by a
- * `canSubmit` computed.
- */
 @Component({
   selector: 'app-post-new-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -50,7 +43,6 @@ export class PostNewPage {
 
   protected readonly canSubmit = computed(() => this.form().valid() && this.auth.isAuthenticated());
 
-  /** Gates inline field error rendering until the user submits at least once. */
   private readonly submitAttempted = signal(false);
 
   protected readonly titleField = computed(() => this.form.title());
@@ -63,11 +55,8 @@ export class PostNewPage {
     () => this.submitAttempted() && this.bodyField().errors().length > 0,
   );
 
-  /**
-   * Picks the most relevant error kind for the title field, in the
-   * order required → minLength, so the first failure surfaces to
-   * the assistive tech. Returns `null` when the field is valid.
-   */
+  // Orden required → minLength para que el primer fallo sea el que
+  // sale al lector de pantalla.
   protected readonly titleErrorKind = computed(() => {
     const errors = this.titleField().errors();
     if (errors.length === 0) {
@@ -161,14 +150,10 @@ export class PostNewPage {
         title,
         body,
         tags: tagList,
-        // json-server v1-beta does not stamp `createdAt` on POST, so
-        // the client provides it. Mirrors the comments model.
+        // json-server v1-beta no estampa `createdAt` en el POST.
         createdAt: new Date().toISOString(),
       })
       .then((created) => {
-        // Invalidate the list cache so the new post shows up the next
-        // time the list page is rendered (e.g. after navigating back
-        // from the detail view).
         this.queryState.bumpRefresh();
         void this.router.navigate(['/posts', created.id]);
       });

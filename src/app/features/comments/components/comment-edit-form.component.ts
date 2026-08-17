@@ -18,10 +18,6 @@ interface CommentEditModel {
   body: string;
 }
 
-/**
- * Inline edit form for a comment. Seeds its value from the input
- * comment via effect() and emits 'saved' on submit.
- */
 @Component({
   selector: 'app-comment-edit-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -79,13 +75,9 @@ export class CommentEditFormComponent {
 
   protected readonly submitting = signal(false);
 
-  /**
-   * Tracks which comment id the form has been seeded for. We only
-   * seed the form when this changes — never on every input tick.
-   * Reading the current model value inside `untracked()` keeps it
-   * out of the reactive graph so writing to it doesn't re-trigger
-   * the effect (which would loop forever under OnPush).
-   */
+  // Re-sembramos solo cuando cambia el id. `untracked()` rompe la
+  // dependencia del modelo para que la escritura no re-dispare el
+  // effect (bucle bajo OnPush).
   private lastSeededId: string | null = null;
 
   constructor() {

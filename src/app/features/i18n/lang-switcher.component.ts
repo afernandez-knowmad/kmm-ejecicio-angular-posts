@@ -4,16 +4,6 @@ import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 import { DEFAULT_LANG, SUPPORTED_LANGS, type SupportedLang } from './transloco.config';
 
-/**
- * Pill-style language switcher used in the app header.
- *
- * Two-segment control: each segment is a button that flips the active
- * Transloco language. Active segments are highlighted with the brand
- * colour.
- *
- * Lives under `features/i18n` because it is tightly coupled to
- * Transloco rather than a generic UI primitive.
- */
 @Component({
   selector: 'app-lang-switcher',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,12 +7,6 @@ import { AvatarComponent } from '@shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 import type { Post } from '../models/post.model';
 
-/**
- * Presentational component that renders a single post as a card.
- *
- * Resolves the author from UsersStore and renders tags. Author lookup
- * is best-effort: until UsersStore loads, we fall back to the userId.
- */
 @Component({
   selector: 'app-post-list-item',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,11 +84,6 @@ export class PostListItemComponent {
     }).format(date);
   });
 
-  /**
-   * Accessible label for the wrapping link. Built from the post title
-   * so screen readers announce it as a navigation target rather than a
-   * bare "link".
-   */
   protected readonly ariaLabel = computed(() => this.post().title);
 
   private readonly lang = computed(() => this.transloco.getActiveLang());

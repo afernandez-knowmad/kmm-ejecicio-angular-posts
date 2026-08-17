@@ -11,12 +11,6 @@ interface CommentFormModel {
   body: string;
 }
 
-/**
- * Inline form to create a new comment on a post.
- *
- * On submit: builds NewComment from current user, calls
- * CommentsApi.create and emits the created comment.
- */
 @Component({
   selector: 'app-comment-form',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,11 +82,11 @@ export class CommentFormComponent {
       this.form().markAsTouched();
       return;
     }
-    // ids are kept as strings end-to-end. json-server's query filter
-    // and POST payloads accept either numeric or alphanumeric
-    // strings, so we never coerce with `Number()` — posts created
-    // dynamically get ids like `"n1I0hof7I3o"` which would NaN-out
-    // and silently break the create flow.
+    // Los ids se manejan como string de extremo a extremo. El filtro de
+    // json-server y los POST aceptan strings numéricos o
+    // alfanuméricos, así que nunca coercemos con `Number()`: los
+    // posts creados dinámicamente reciben ids como `"n1I0hof7I3o"`
+    // que se irían a NaN y romperían el create en silencio.
     const postId = toId(this.postId());
     const userId = toId(this.auth.user()?.id);
     if (postId.length === 0) {
@@ -100,8 +94,8 @@ export class CommentFormComponent {
       return;
     }
     if (userId.length === 0) {
-      // The auth guard prevents this branch in practice, but if the
-      // session expires mid-session we don't want a silent no-op.
+      // El auth guard evita esta rama en la práctica, pero si la
+      // sesión expira a mitad de uso no queremos un no-op silencioso.
 
       console.error('[comment-form] missing userId; cannot post comment');
       return;
@@ -117,10 +111,10 @@ export class CommentFormComponent {
 
   private async createComment(postId: string, userId: string, body: string): Promise<void> {
     try {
-      // json-server does not always auto-generate timestamps on
-      // POST, so we send one explicitly. Without it the new row is
-      // persisted with `createdAt: undefined`, which then breaks the
-      // store sort (NaN comparisons are unstable in V8).
+      // json-server no siempre autogenera timestamps en el POST, así
+      // que mandamos uno explícito. Si no, la fila persistida queda
+      // con `createdAt: undefined`, que rompe el sort del store (las
+      // comparaciones con NaN son inestables en V8).
       const createdAt = new Date().toISOString();
       const created = await this.api.create({ postId, userId, body, createdAt });
       this.created.emit(created);

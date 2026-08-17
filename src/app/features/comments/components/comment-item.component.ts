@@ -19,11 +19,11 @@ import { formatRelativeTime } from '../lib/relative-time';
 import type { Comment } from '../models/comment.model';
 
 /**
- * Presentational component for a single comment row.
+ * Componente presentacional de una fila de comentario.
  *
- * Resolves the author from UsersStore.byId, renders edit/delete
- * actions only when the current user owns the comment, and toggles
- * an inline edit form when the user opts to edit.
+ * Resuelve el autor desde UsersStore.byId, solo muestra
+ * editar/borrar cuando el comentario es del usuario actual y
+ * alterna un formulario de edición inline.
  */
 @Component({
   selector: 'app-comment-item',
@@ -107,15 +107,12 @@ export class CommentItemComponent {
 
   private readonly lang = computed(() => this.transloco.getActiveLang());
 
-  /**
-   * Display the relative bucket + absolute time, separated by a
-   * comma: "Hoy, 10:01" / "Ayer, 09:30" / "12/2/2026, 10:01".
-   *
-   * json-server does not always assign `createdAt` to comments
-   * created via POST, so we fall back to the local clock when the
-   * backend left it empty. Otherwise the row would render with no
-   * date at all.
-   */
+  // Pinta el bucket relativo + la hora absoluta, separados por coma:
+  // "Hoy, 10:01" / "Ayer, 09:30" / "12/2/2026, 10:01".
+  //
+  // json-server a veces no asigna `createdAt` en comentarios creados
+  // por POST, así que si el backend lo deja vacío caemos al reloj
+  // local. Si no, la fila saldría sin fecha.
   protected readonly formattedDate = computed(() => {
     const iso = this.comment().createdAt || new Date().toISOString();
     const { label, time } = formatRelativeTime(iso, new Date(), this.lang());

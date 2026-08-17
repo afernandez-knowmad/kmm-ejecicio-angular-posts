@@ -3,14 +3,6 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import type { PublicUser } from '@features/auth/models/user.model';
 import { UsersApi } from './users.api';
 
-/**
- * Caches the list of users so the posts list and post detail can show
- * author info without refetching on every render.
- *
- * `loaded` flips to true after the first successful fetch. Components
- * call `ensureLoaded()` from their constructor and then read `byId`
- * synchronously.
- */
 @Injectable({ providedIn: 'root' })
 export class UsersStore {
   private readonly api = inject(UsersApi);
@@ -29,10 +21,6 @@ export class UsersStore {
     return map;
   });
 
-  /**
-   * Trigger the fetch if it has not happened yet. Concurrent callers
-   * share the same promise.
-   */
   ensureLoaded(): Promise<void> {
     if (this._loaded()) {
       return Promise.resolve();

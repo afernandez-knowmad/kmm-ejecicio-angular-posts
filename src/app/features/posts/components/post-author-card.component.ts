@@ -5,15 +5,6 @@ import { toId } from '@core/lib/ids';
 import { AvatarComponent } from '@shared/ui/avatar.component';
 import { UsersStore } from '../users.store';
 
-/**
- * Presentational card showing the post author. Resolves the name
- * from UsersStore.byId; falls back to the userId until the store
- * loads.
- *
- * The lookup normalises the incoming id to a string because the mock
- * backend stores `userId` as a number on posts while `users[].id` is
- * a string, so a raw `Map.get` would always miss.
- */
 @Component({
   selector: 'app-post-author-card',
   changeDetection: ChangeDetectionStrategy.OnPush,

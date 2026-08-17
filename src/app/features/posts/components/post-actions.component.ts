@@ -6,13 +6,6 @@ import { AuthStore } from '@features/auth/auth.store';
 import { isOwner } from '@core/lib/ids';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 
-/**
- * Edit / delete actions for a post.
- *
- * Renders nothing when the current user is not the post author. The
- * delete button emits a `delete` output so the parent page can
- * perform the actual API call and navigation.
- */
 @Component({
   selector: 'app-post-actions',
   changeDetection: ChangeDetectionStrategy.OnPush,

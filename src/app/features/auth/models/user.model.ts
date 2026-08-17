@@ -1,13 +1,13 @@
 /**
- * Domain model for a user as stored by the mock backend.
+ * Modelo de dominio de un usuario según el backend mock.
  *
- * The mock backend (`db.json`) returns users with these fields. The
- * `password` field is only present when the api is queried for login
- * validation; it must never reach the UI or be cached in public-facing
- * state.
+ * El backend mock (`db.json`) devuelve usuarios con estos campos.
+ * El campo `password` solo aparece cuando la api se consulta para
+ * validar el login; nunca debe llegar a la UI ni quedarse en estado
+ * público.
  */
 export interface User {
-  /** json-server emits ids as strings even when the seed value is numeric. */
+  /** json-server emite ids como string incluso cuando el seed es numérico. */
   readonly id: string;
   readonly name: string;
   readonly password: string;
@@ -15,17 +15,8 @@ export interface User {
   readonly avatar: string;
 }
 
-/**
- * Public projection of `User` that excludes sensitive fields.
- *
- * Use this type anywhere the user is rendered, logged or passed to
- * non-auth code paths.
- */
 export type PublicUser = Omit<User, 'password'>;
 
-/**
- * Credentials used by the login form.
- */
 export interface LoginCredentials {
   readonly name: string;
   readonly password: string;

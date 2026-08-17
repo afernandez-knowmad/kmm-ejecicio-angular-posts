@@ -23,8 +23,8 @@ function makeComment(over: Partial<Comment> = {}): Comment {
 }
 
 /**
- * Build a `ServerPage`-shaped response that matches what
- * json-server v1-beta returns for paginated comments.
+ * Construye una respuesta con forma `ServerPage` que matchea lo que
+ * devuelve json-server v1-beta para comentarios paginados.
  */
 function makePage(comments: readonly Comment[], hasMore = false): ServerPage<Comment> {
   return {
@@ -39,9 +39,9 @@ function makePage(comments: readonly Comment[], hasMore = false): ServerPage<Com
 }
 
 /**
- * Stub UsersStore so its background fetch (used by other components
- * downstream) does not leave dangling requests behind. The comments
- * section does not depend on it.
+ * Stub de UsersStore para que su fetch en background (que usan
+ * otros componentes aguas abajo) no deje requests colgadas. Esta
+ * sección no depende de él.
  */
 class StubUsersStore {
   readonly users = () => [] as readonly never[];
@@ -62,12 +62,12 @@ describe('CommentsSectionComponent', () => {
 
     const httpTesting = TestBed.inject(HttpTestingController);
 
-    // Initial state: keyed off the cache (empty) and the resource
-    // status, so we should see the loading state.
+    // Estado inicial: depende de la caché (vacía) y del status del
+    // recurso, así que deberíamos ver el estado de loading.
     expect(view.getByTestId('comments-loading')).toBeTruthy();
 
-    // Flush the GET triggered by the httpResource with the paginated
-    // shape json-server returns.
+    // Hacemos flush del GET disparado por el httpResource con la
+    // forma paginada que devuelve json-server.
     const req = httpTesting.expectOne((r: { url: string }) => r.url.includes('/comments'));
     req.flush(makePage([makeComment()]));
 
@@ -101,18 +101,17 @@ describe('CommentsSectionComponent', () => {
   });
 
   /**
-   * The error branch (`displayState() === 'error'`) is driven by
-   * `httpResource` rethrowing the upstream HTTP error inside the
-   * `displayState` computed. That rethrow is the whole point of the
-   * branch — we just can't observe it from a unit test without
-   * crashing the test runtime, because `httpResource` rethrows on
-   * every consumer read (including the effect that re-evaluates the
-   * cache after the fixture is torn down).
+   * La rama de error (`displayState() === 'error'`) la dispara el
+   * `httpResource` re-lanzando el HTTP error aguas arriba dentro del
+   * computed `displayState`. Ese rethrow es justo lo que motiva la
+   * rama — pero no podemos observarlo desde un test unitario sin
+   * reventar el runtime, porque `httpResource` re-lanza en cada
+   * lectura de consumidor (incluido el effect que re-evalúa la
+   * caché tras tirar la fixture).
    *
-   * The user-facing error UI is exercised end-to-end in
-   * `e2e/posts-crud.spec.ts`.
+   * La UI de error se cubre end-to-end en `e2e/posts-crud.spec.ts`.
    */
   it.skip('renders the error state when the request fails', async () => {
-    // Covered by the e2e suite — see comment above.
+    // Cubierto por la suite e2e — ver comentario arriba.
   });
 });

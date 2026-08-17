@@ -18,14 +18,6 @@ import { PostsQueryState } from '../posts.query-state';
 import { UsersStore } from '../users.store';
 import { CommentsSectionComponent } from '@features/comments/components/comments-section.component';
 
-/**
- * Post detail page.
- *
- * Reads the :id route param, fetches the post via httpResource, and
- * surfaces loading/error/not-found states explicitly. The `forbidden`
- * query param short-circuits the render to a forbidden state when the
- * user was redirected from the ownership guard.
- */
 @Component({
   selector: 'app-post-detail-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -98,8 +90,6 @@ export class PostDetailPage {
       return;
     }
     void this.api.delete(id).then(() => {
-      // The delete action navigates back to the list; refresh it so
-      // the removed row is no longer counted.
       this.queryState.bumpRefresh();
       void this.router.navigateByUrl('/posts');
     });
@@ -107,15 +97,6 @@ export class PostDetailPage {
 
   protected readonly post = computed<Post | undefined>(() => this.postResource.value());
 
-  /**
-   * Once the post resolves, prepend the prefix label ("Detalle del post")
-   * to the actual post title so the document tab shows something like
-   * `Detalle del post · Post 1: practical Angular topic 1 | TechPoC`.
-   *
-   * Using `effect` (rather than a setter on the resource) lets the
-   * title update again if the resource is refreshed while the page
-   * stays mounted (e.g. after the user edits and returns).
-   */
   constructor() {
     effect(() => {
       const p = this.post();

@@ -4,25 +4,10 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
-/**
- * Single token used to render ellipsis in the page list.
- *
- * Page slots are computed as a flat list of either `number` (a real
- * page index) or the string `'…'` to keep the template branching-free.
- */
 type PageSlot = number | '…';
 
-/**
- * Build the compact page list shown in the pager.
- *
- * - Always includes the first and last page.
- * - Keeps the current page and its neighbours within a window so the
- *   pager stays short even for very long result sets.
- * - Inserts ellipsis on either side when the window does not touch
- *   the boundary.
- *
- * Example (current=6, last=10, window=1) → [1, …, 5, 6, 7, …, 10]
- */
+// Lista plana de `number` o `'…'` para mantener el template sin branches.
+// Ejemplo (current=6, last=10, window=1) → [1, …, 5, 6, 7, …, 10]
 function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
   if (last <= 1) {
     return [];
@@ -54,14 +39,6 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
   return result;
 }
 
-/**
- * Pagination controls wired to PostsQueryState.
- *
- * The total number of items matching the current filter is passed in
- * by the parent page (it comes from the json-server paginated
- * wrapper). From there we derive the last page and render a numbered
- * pager with prev/next and ellipsis for long result sets.
- */
 @Component({
   selector: 'app-posts-pagination',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -131,13 +108,11 @@ function buildPageSlots(current: number, last: number, window = 1): PageSlot[] {
 export class PostsPaginationComponent {
   private readonly queryState = inject(PostsQueryState);
 
-  /** Total number of items matching the current filter (across pages). */
   readonly total = input<number>(0);
 
   protected readonly page = computed(() => this.queryState.page());
   protected readonly pageSize = computed(() => this.queryState.pageSize());
 
-  /** Total pages derived from `total / pageSize`. Always at least 1. */
   protected readonly lastPage = computed(() =>
     Math.max(1, Math.ceil(this.total() / this.pageSize())),
   );
@@ -145,7 +120,6 @@ export class PostsPaginationComponent {
   protected readonly canPrev = computed(() => this.page() > 1);
   protected readonly canNext = computed(() => this.page() < this.lastPage());
 
-  /** Compact list of pages (plus ellipsis) actually rendered as buttons. */
   protected readonly pages = computed<PageSlot[]>(() =>
     buildPageSlots(this.page(), this.lastPage()),
   );

@@ -15,13 +15,6 @@ export type IconName =
   | 'plus'
   | 'close';
 
-/**
- * Stand-alone icon component. Renders SVG paths from a small bundled
- * registry so we don't pull in a full icon library.
- *
- * All icons inherit `currentColor` so they can be tinted from the
- * parent via `text-*` utilities.
- */
 @Component({
   selector: 'app-icon',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -116,9 +109,7 @@ export type IconName =
 })
 export class IconComponent {
   readonly name = input.required<IconName>();
-  /** Pixel size for both width and height. */
   readonly size = input<number>(16);
-  /** Stroke width. Defaults to 2 so it reads in screenshots. */
   readonly strokeWidth = input<number>(2);
 
   protected readonly viewBox = computed(() => '0 0 24 24');

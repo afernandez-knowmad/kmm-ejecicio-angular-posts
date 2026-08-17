@@ -1,10 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-/**
- * Generic empty state. Use when an HTTP resource resolves
- * successfully but the data is empty (no posts, no comments, etc.).
- */
 @Component({
   selector: 'app-empty-state',
   changeDetection: ChangeDetectionStrategy.OnPush,

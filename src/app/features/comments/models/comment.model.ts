@@ -1,35 +1,34 @@
 /**
- * Domain model for a comment as stored by the mock backend.
+ * Modelo de dominio de un comentario según el backend mock.
  *
- * A comment belongs to exactly one post (`postId`) and is authored by
- * exactly one user (`userId`). Ownership checks compare
- * `Comment.userId` against the authenticated user's id.
+ * Un comentario pertenece a un post (`postId`) y lo escribe un
+ * usuario (`userId`). El check de ownership compara
+ * `Comment.userId` con el id del usuario autenticado.
  *
- * NOTE on types: json-server v1-beta stores ids in whatever type the
- * client sends. The seed in `db.json` keeps `postId`/`userId` as
- * **numbers** (`1`, `2`, ...), while `POST /posts` and `POST /comments`
- * auto-generate **alphanumeric** ids (`"n1I0hof7I3o"`). We therefore
- * model these fields as `string | number` and rely on `toBackendId`
- * in the api layer to send the type the backend expects for each
- * case. Comparisons against ids from other sources should normalise
- * via `toId`/`isOwner` from `core/lib/ids`.
+ * Sobre los tipos: json-server v1-beta guarda los ids en el tipo
+ * que mande el cliente. El seed de `db.json` usa ids numéricos
+ * (`1`, `2`, ...), pero `POST /posts` y `POST /comments`
+ * autogeneran ids alfanuméricos (`"n1I0hof7I3o"`). Por eso
+ * modelamos los campos como `string | number` y delegamos en
+ * `toBackendId` en la capa de api para enviar el tipo que el
+ * backend espera. Las comparaciones con ids de otras fuentes se
+ * normalizan con `toId` / `isOwner` de `core/lib/ids`.
  */
 export interface Comment {
   readonly id: string;
   readonly postId: string | number;
   readonly userId: string | number;
   readonly body: string;
-  /** ISO-8601 string. Parsing to `Date` is deferred to the UI layer. */
+  /** String ISO-8601. El parseo a `Date` se delega a la capa de UI. */
   readonly createdAt: string;
 }
 
 /**
- * Payload accepted by the api when creating a new comment.
+ * Payload del create.
  *
- * `id` is assigned by the backend. `createdAt` is optional because
- * json-server is unreliable about auto-generating it on POST, so the
- * form sends one explicitly to guarantee the persisted row has a
- * usable timestamp for sorting/display.
+ * `id` lo asigna el backend. `createdAt` es opcional porque
+ * json-server no siempre lo autogenera en el POST; el formulario
+ * lo manda explícito para garantizar timestamp útil en sort/display.
  */
 export type NewComment = Omit<Comment, 'id' | 'postId' | 'userId'> & {
   readonly postId: string | number;
@@ -38,8 +37,7 @@ export type NewComment = Omit<Comment, 'id' | 'postId' | 'userId'> & {
 };
 
 /**
- * Payload accepted by the api when updating a comment.
- *
- * Only `body` is editable, but the type is left open for future fields.
+ * Payload del update. Hoy solo `body` es editable, pero el tipo
+ * queda abierto por si se añaden campos.
  */
 export type CommentPatch = Partial<NewComment>;

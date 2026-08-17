@@ -1,11 +1,6 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TranslocoModule } from '@jsverse/transloco';
 
-/**
- * Generic loading indicator. Renders a transloco-driven label inside
- * a soft container so it can be dropped into any page's @switch
- * branch.
- */
 @Component({
   selector: 'app-loading-state',
   changeDetection: ChangeDetectionStrategy.OnPush,

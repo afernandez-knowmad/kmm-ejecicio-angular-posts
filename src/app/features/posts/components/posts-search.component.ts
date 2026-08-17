@@ -19,22 +19,6 @@ interface SearchModel {
   q: string;
 }
 
-/**
- * Debounced text search input backed by Signal Forms.
- *
- * The input is bound through `[formField]` and is the source of truth
- * while the user types. A single `effect` mirrors the form value into
- * `PostsQueryState` after a short debounce so the URL stays in sync.
- *
- * `linkedSignal` seeds the model from `queryState.q()` so external
- * changes (Clear filters, back/forward navigation) update the input,
- * but typing in the input does not re-trigger this seeding — that's
- * what previously caused the input to snap back mid-keystroke.
- *
- * The `untracked()` read of `queryState.query().q` inside the
- * debounce callback breaks the reactive dependency that would
- * otherwise fire on every URL sync.
- */
 @Component({
   selector: 'app-posts-search',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -68,21 +52,10 @@ export class PostsSearchComponent {
   protected readonly queryState = inject(PostsQueryState);
   private readonly destroyRef = inject(DestroyRef);
 
-  /**
-   * Mirrors `queryState.q()` into the form model.
-   *
-   * `linkedSignal` is configured with `source`/`computation`/`equal`
-   * so that the inner signal only updates when `q` is **actually**
-   * different. The default `Object.is` is not enough: the source
-   * thunk returns a fresh `{ q }` object on every evaluation, so the
-   * default equality would mark every re-evaluation as a change and
-   * re-trigger the debounced effect, creating a render/write loop.
-   *
-   * With the `equal` below, when our own debounced `setQuery` causes
-   * the source to re-emit the same value we already have, the model
-   * stays put and the effect does not re-fire. External changes
-   * (Clear filters, back/forward navigation) still flow through.
-   */
+  // El `equal` custom es obligatorio: el source thunk devuelve un `{ q }`
+  // nuevo en cada evaluación, así que el `Object.is` por defecto
+  // marcaría cada re-evaluación como cambio y entraría en bucle
+  // con el `setQuery` debounced.
   protected readonly model = linkedSignal<SearchModel, SearchModel>({
     source: () => ({ q: this.queryState.q() }),
     computation: (source) => source,
@@ -95,7 +68,6 @@ export class PostsSearchComponent {
   constructor() {
     this.destroyRef.onDestroy(() => this.clearDebounce());
 
-    // Single effect: form value → queryState (debounced).
     effect(() => {
       const raw = this.form.q().value();
       this.clearDebounce();

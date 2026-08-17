@@ -1,10 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-/**
- * Curated palette of muted avatar backgrounds. The pick is
- * deterministic — the same name always renders the same colour —
- * which keeps the rendered list visually stable.
- */
+// djb2 para pick determinista: el mismo nombre siempre cae en el
+// mismo color y la lista queda visualmente estable.
 const AVATAR_PALETTE: readonly string[] = [
   '#dbeafe', // blue-100
   '#e0e7ff', // indigo-100
@@ -20,10 +17,6 @@ const AVATAR_PALETTE: readonly string[] = [
 
 const AVATAR_FOREGROUND = '#1e293b'; // slate-800
 
-/**
- * Best-effort djb2 hash. Small and stable, fine for picking a palette
- * slot from a string. We don't need cryptographic strength here.
- */
 function hashName(name: string): number {
   let hash = 5381;
   for (let i = 0; i < name.length; i += 1) {
@@ -32,11 +25,6 @@ function hashName(name: string): number {
   return hash >>> 0;
 }
 
-/**
- * Pick the first `count` initials from a name. Splits on whitespace
- * and ignores empty pieces. Falls back to the first character when
- * the name has no whitespace.
- */
 function initialsFromName(name: string, count = 2): string {
   const parts = name
     .trim()
@@ -49,14 +37,6 @@ function initialsFromName(name: string, count = 2): string {
   return picked.join('');
 }
 
-/**
- * Stand-alone avatar component. Renders colour-tinted initials in a
- * circle, matching the design shown in the screenshots. Sized via
- * Tailwind utility classes on the host (`size-8`, `size-10`, etc.).
- *
- * The seed can be either a display name (default) or a user id — it
- * only affects which colour/pair of initials is shown.
- */
 @Component({
   selector: 'app-avatar',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -84,9 +64,7 @@ function initialsFromName(name: string, count = 2): string {
   ],
 })
 export class AvatarComponent {
-  /** Name used to derive initials and a stable palette pick. */
   readonly name = input.required<string>();
-  /** Size in pixels. Defaults to 32 (matches `size-8`). */
   readonly size = input<number>(32);
 
   protected readonly initials = computed(() => initialsFromName(this.name()));

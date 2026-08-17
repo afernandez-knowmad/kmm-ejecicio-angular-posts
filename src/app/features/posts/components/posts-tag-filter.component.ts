@@ -4,13 +4,6 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 
-/**
- * Dropdown that filters posts by tag.
- *
- * Tag options are passed in by the parent page as a `tags` input,
- * derived from the current page of posts. Empty string resets the
- * active tag.
- */
 @Component({
   selector: 'app-posts-tag-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,7 +45,6 @@ import { PostsQueryState } from '../posts.query-state';
 export class PostsTagFilterComponent {
   private readonly queryState = inject(PostsQueryState);
 
-  /** Tags to render as options. Provided by the parent page. */
   readonly tags = input.required<readonly string[]>();
 
   protected readonly current = computed(() => this.queryState.tag() ?? '');

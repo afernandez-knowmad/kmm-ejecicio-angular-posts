@@ -11,8 +11,9 @@ describe('PostsQueryState', () => {
   let route: ActivatedRoute;
 
   beforeEach(() => {
-    // Provision router first so the spy is installed before the
-    // service's constructor effect fires for the very first time.
+    // Provisionamos el router antes para que el spy esté instalado
+    // antes de que el effect del constructor del servicio se dispare
+    // por primera vez.
     TestBed.configureTestingModule({ providers: provideTestApp() });
     router = TestBed.inject(Router);
     route = TestBed.inject(ActivatedRoute);
@@ -50,7 +51,7 @@ describe('PostsQueryState', () => {
   });
 
   it('mirrors the query into the URL via router.navigate', async () => {
-    // The sync effect runs on the next change-detection tick.
+    // El effect de sync corre en el siguiente tick de change detection.
     await Promise.resolve();
     await Promise.resolve();
 

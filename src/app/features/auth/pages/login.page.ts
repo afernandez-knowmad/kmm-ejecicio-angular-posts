@@ -13,12 +13,11 @@ interface LoginModel {
 }
 
 /**
- * Standalone login page.
+ * Página de login standalone, sobre Signal Forms.
  *
- * Built on `@angular/forms/signals` (Angular v22). The form is declared
- * with `form(model, schema(...))`; the schema applies `required` and
- * `minLength` validators to each field path. Each control is bound to
- * an `<input>` via the `FormField` directive (`[formField]`).
+ * El formulario se declara con `form(model, schema(...))`; el schema
+ * aplica `required` y `minLength` a cada campo. Cada control se
+ * enlaza al `<input>` con la directiva `FormField` (`[formField]`).
  */
 @Component({
   selector: 'app-login-page',
@@ -57,7 +56,7 @@ export class LoginPage {
     return err ? `auth.errors.${err}` : null;
   });
 
-  /** Flips to true on first submit attempt; used to gate field error rendering. */
+  /** Salta a true en el primer submit; sirve para no mostrar errores de campo antes de tiempo. */
   private readonly submitAttempted = signal(false);
 
   protected readonly showNameError = computed(

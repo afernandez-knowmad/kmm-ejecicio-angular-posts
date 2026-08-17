@@ -25,13 +25,6 @@ interface PostFormModel {
   tags: string;
 }
 
-/**
- * /posts/:id/edit — standalone page that updates a post.
- *
- * Loads the post with httpResource and pre-fills the form once the
- * resource resolves. On submit, calls PostsApi.update and navigates
- * back to the detail page.
- */
 @Component({
   selector: 'app-post-edit-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -71,7 +64,6 @@ export class PostEditPage {
   });
   protected readonly canSubmit = computed(() => this.form().valid());
 
-  /** Gates inline field error rendering until the user submits at least once. */
   private readonly submitAttempted = signal(false);
 
   protected readonly titleField = computed(() => this.form.title());
@@ -84,11 +76,8 @@ export class PostEditPage {
     () => this.submitAttempted() && this.bodyField().errors().length > 0,
   );
 
-  /**
-   * Picks the most relevant error kind for the title field, in the
-   * order required → minLength, so the first failure surfaces to
-   * the assistive tech. Returns `null` when the field is valid.
-   */
+  // Orden required → minLength para que el primer fallo sea el que
+  // sale al lector de pantalla.
   protected readonly titleErrorKind = computed(() => {
     const errors = this.titleField().errors();
     if (errors.length === 0) {
@@ -162,9 +151,6 @@ export class PostEditPage {
   private lastSeededPost: Post | undefined;
 
   constructor() {
-    // Seed the form once the resource resolves. Only re-seed when the
-    // resource value changes, so unrelated signal effects cannot
-    // overwrite edits made by the user.
     effect(() => {
       const p = this.postResource.value();
       if (p && p !== this.lastSeededPost) {
@@ -192,8 +178,6 @@ export class PostEditPage {
       .filter((tag) => tag.length > 0);
 
     void this.api.update(this.postId(), { title, body, tags: tagList }).then(() => {
-      // Keep the list in sync when the user navigates back from the
-      // detail page after editing.
       this.queryState.bumpRefresh();
       void this.router.navigate(['/posts', this.postId()]);
     });

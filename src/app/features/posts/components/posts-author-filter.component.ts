@@ -5,12 +5,6 @@ import { IconComponent } from '@shared/ui/icon/icon.component';
 import { PostsQueryState } from '../posts.query-state';
 import { UsersStore } from '../users.store';
 
-/**
- * Dropdown that filters posts by author id.
- *
- * Options are derived from UsersStore so adding a user to the seed
- * data automatically becomes a filter option.
- */
 @Component({
   selector: 'app-posts-author-filter',
   changeDetection: ChangeDetectionStrategy.OnPush,
