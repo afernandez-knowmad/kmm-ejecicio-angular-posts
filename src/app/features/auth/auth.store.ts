@@ -6,14 +6,6 @@ import { AuthSessionStorage } from './auth.session-storage';
 import type { AuthError } from './auth.types';
 import type { LoginCredentials, PublicUser } from './models/user.model';
 
-/**
- * Store de auth en memoria. Expone la sesión activa como signals
- * para que el resto reaccione a login/logout sin suscribirse.
- *
- * La persistencia (localStorage) vive aquí: un effect refleja el
- * par (user, token) en `AuthSessionStorage` para que un reload
- * restaure la sesión automáticamente.
- */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
   private readonly api = inject(AuthApi);
@@ -31,9 +23,6 @@ export class AuthStore {
   readonly isAuthenticated = computed(() => this._user() !== null && this._token() !== null);
 
   constructor() {
-    // Sincroniza el par (user, token) en localStorage en cada cambio.
-    // Como el store es providedIn root y se instancia lazy, basta con
-    // que el effect corra dentro de un InjectionContext.
     effect(() => {
       const user = this._user();
       const token = this._token();
@@ -45,11 +34,6 @@ export class AuthStore {
     });
   }
 
-  /**
-   * Intenta login con las credenciales. Resuelve con el `PublicUser`
-   * autenticado o rechaza con un código `AuthError` que la UI mapea
-   * a una clave de transloco.
-   */
   async login(credentials: LoginCredentials): Promise<PublicUser> {
     this._loading.set(true);
     this._error.set(null);
@@ -79,7 +63,6 @@ export class AuthStore {
       return publicUser;
     } catch (err) {
       if (this._error() === null) {
-        // Solo cubrimos errores de red genuinos; los de auth ya están seteados.
         this._error.set(
           err instanceof Error && err.message === 'network' ? 'network-error' : 'unknown',
         );
@@ -90,7 +73,6 @@ export class AuthStore {
     }
   }
 
-  /** Cierra la sesión activa. */
   logout(): void {
     this._user.set(null);
     this._token.set(null);
@@ -98,10 +80,6 @@ export class AuthStore {
     this._loading.set(false);
   }
 
-  /**
-   * Sustituye el estado vivo por una sesión persistida. La usa la
-   * capa de hidratación de localStorage al arrancar.
-   */
   hydrate(session: { token: string; user: PublicUser } | null): void {
     if (!session) {
       return;
@@ -110,11 +88,7 @@ export class AuthStore {
     this._token.set(session.token);
   }
 
-  /**
-   * Genera el token mock que usa el interceptor. Es determinista
-   * para que una sesión hidratada se reemita con el mismo token
-   * tras cada recarga.
-   */
+  // Determinista para que la sesión hidratada reemita el mismo token.
   private makeToken(userId: string): string {
     return `mock-token-${toId(userId)}`;
   }

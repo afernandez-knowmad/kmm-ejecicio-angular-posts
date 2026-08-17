@@ -5,10 +5,6 @@ import { provideTransloco } from '@jsverse/transloco';
 
 import { API_BASE_URL } from '@core/http/api-base-url.token';
 
-/**
- * Providers reusables para tests unitarios.
- *
- */
 export function provideTestApp(
   extra: (Provider | EnvironmentProviders)[] = [],
 ): (Provider | EnvironmentProviders)[] {

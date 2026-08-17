@@ -3,8 +3,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterStateSnapshot, TitleStrategy } from '@angular/router';
 import { TranslocoService } from '@jsverse/transloco';
 
-// Sufijo que se añade a cada título de página. Hard-codeado para
-// que la estrategia no dependa del catálogo de i18n.
+// Hard-codeado para que la estrategia no dependa del catálogo i18n.
 const APP_TITLE = 'TechPoC';
 
 @Injectable({ providedIn: 'root' })

@@ -40,6 +40,7 @@ export function ownershipGuardFor(basePath: string, resolver: OwnershipResolver)
     const router = inject(Router);
 
     if (!store.isAuthenticated()) {
+      // authGuard cubre este caso en la práctica; por si corre solo.
       return router.createUrlTree(['/login']);
     }
 

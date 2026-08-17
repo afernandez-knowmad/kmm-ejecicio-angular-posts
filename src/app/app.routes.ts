@@ -4,8 +4,6 @@ import { authGuard } from '@features/auth/auth.guard';
 import { ownershipGuardFor } from '@features/auth/ownership.guard';
 import { injectPostsOwnershipResolver } from '@features/posts/posts.resolver';
 
-// Wrapper que retrasa la construcción del resolver hasta que la ruta
-// se matchea, así `inject()` corre dentro de un InjectionContext.
 const postOwnershipGuard: CanMatchFn = (route, segments, snapshot) =>
   ownershipGuardFor('posts', injectPostsOwnershipResolver())(route, segments, snapshot);
 
