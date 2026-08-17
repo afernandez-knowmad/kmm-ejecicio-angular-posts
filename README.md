@@ -164,11 +164,28 @@ que mejor dejarlas escritas.
   propio con SVG inline. Mantiene el bundle pequeño y evita
   pelearse con overrides de clases en componentes de terceros.
 
-- **Tests donde más duelen.** Vitest + Testing Library cubren guards,
+- **Tests** Vitest + Testing Library cubren guards,
   ownership, login, query-state, listado, detalle y CRUD de
   comentarios. Playwright cubre el flujo crítico de Playwright
   (login → list → detail → edit) end-to-end. Lo demás va por
   pragmatismo: si es trivial, no se testea.
+
+- **Animaciones** Se añadió únicamente la animación de routing
+  (fade al entrar/salir de rutas) implementada con CSS en el shell
+  de la app, no con `@angular/animations`. La razón de no usar el
+  módulo de Angular Animations es que en este proyecto no aporta
+  nada que compense su coste: solo necesitamos un fundido de ~150ms
+  al cambiar de ruta, sin orquestación de estados ni timelines
+  complejos. Hacerlo con CSS (`transition` + una clase que se
+  activa/desactiva vía `router-outlet` o un pequeño wrapper con
+  signal) evita tirar de `BrowserAnimationsModule`, mantiene el
+  bundle más pequeño y se entiende de un vistazo. Si más adelante
+  hace falta coordinar varias animaciones (stagger, animaciones de
+  entrada/salida compartidas entre componentes padre/hijo, o
+  disparadas desde lógica de TypeScript), `@angular/animations`
+  pasa a tener sentido y se refactoriza. De momento, con CSS basta
+  y se mantiene el principio de no meter dependencias mientras no
+  resuelvan un problema real.
 
 ### Recursos del backend
 
@@ -184,7 +201,7 @@ Los ids numéricos del seed y los ids alfanuméricos que devuelve
 
 ## Cosas que se quedaron en el tintero
 
-- SSR, Nx y animaciones: el enunciado las marcaba como valorable, no
+- SSR: el enunciado las marcaba como valorable, no
   obligatorio.
 - Scroll infinito en comentarios: hoy hay "Cargar más" con paginación
   clásica. La estructura del store ya lo permite (`loadMore` +
