@@ -92,3 +92,17 @@ form :where(input, textarea, select) {
 :where(input, textarea, select):focus-visible {
   outline: none;
 }
+
+/*
+ * The skip-to-content link jumps to <main id="main-content"
+ * tabindex="-1">. The tabindex is required so the element is
+ * focusable when targeted by an in-page anchor, but we don't want
+ * the focus ring to appear on the main container itself — that
+ * would be visual noise on top of the actual content.
+ */
+#main-content:focus {
+  outline: none;
+}
+#main-content:focus-visible {
+  outline: none;
+}

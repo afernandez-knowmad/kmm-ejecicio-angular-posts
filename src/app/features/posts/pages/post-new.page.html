@@ -14,12 +14,25 @@
         {{ 'posts.form.titleLabel' | transloco }}
       </span>
       <input
+        id="post-new-title"
         type="text"
-        class="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        class="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-500"
         [formField]="form.title"
         [attr.placeholder]="'posts.form.titlePlaceholder' | transloco"
+        [attr.aria-invalid]="showTitleError() ? 'true' : null"
+        [attr.aria-describedby]="showTitleError() ? 'post-new-title-error' : null"
         data-testid="post-form-title"
       />
+      @if (showTitleError()) {
+        <p
+          id="post-new-title-error"
+          class="text-xs text-red-600"
+          role="alert"
+          data-testid="post-form-title-error"
+        >
+          {{ titleErrorKey() | transloco: titleErrorParams() }}
+        </p>
+      }
     </label>
 
     <label class="flex flex-col gap-1.5">
@@ -27,12 +40,25 @@
         {{ 'posts.form.bodyLabel' | transloco }}
       </span>
       <textarea
-        class="min-h-64 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+        id="post-new-body"
+        class="min-h-64 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-500"
         [formField]="form.body"
         rows="10"
         [attr.placeholder]="'posts.form.bodyPlaceholder' | transloco"
+        [attr.aria-invalid]="showBodyError() ? 'true' : null"
+        [attr.aria-describedby]="showBodyError() ? 'post-new-body-error' : null"
         data-testid="post-form-body"
       ></textarea>
+      @if (showBodyError()) {
+        <p
+          id="post-new-body-error"
+          class="text-xs text-red-600"
+          role="alert"
+          data-testid="post-form-body-error"
+        >
+          {{ bodyErrorKey() | transloco: bodyErrorParams() }}
+        </p>
+      }
     </label>
 
     <label class="flex flex-col gap-1.5">
@@ -46,6 +72,7 @@
           class="pointer-events-none absolute left-3 text-slate-400"
         />
         <input
+          id="post-new-tags"
           type="text"
           class="w-full rounded-lg bg-slate-100 py-3 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
           [formField]="form.tags"

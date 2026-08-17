@@ -12,11 +12,24 @@
           {{ 'posts.form.titleLabel' | transloco }}
         </span>
         <input
+          id="post-edit-title"
           type="text"
-          class="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+          class="w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-500"
           [formField]="form.title"
+          [attr.aria-invalid]="showTitleError() ? 'true' : null"
+          [attr.aria-describedby]="showTitleError() ? 'post-edit-title-error' : null"
           data-testid="post-form-title"
         />
+        @if (showTitleError()) {
+          <p
+            id="post-edit-title-error"
+            class="text-xs text-red-600"
+            role="alert"
+            data-testid="post-form-title-error"
+          >
+            {{ titleErrorKey() | transloco: titleErrorParams() }}
+          </p>
+        }
       </label>
 
       <label class="flex flex-col gap-1.5">
@@ -24,11 +37,24 @@
           {{ 'posts.form.bodyLabel' | transloco }}
         </span>
         <textarea
-          class="min-h-64 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
+          id="post-edit-body"
+          class="min-h-64 w-full rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-red-500"
           [formField]="form.body"
           rows="10"
+          [attr.aria-invalid]="showBodyError() ? 'true' : null"
+          [attr.aria-describedby]="showBodyError() ? 'post-edit-body-error' : null"
           data-testid="post-form-body"
         ></textarea>
+        @if (showBodyError()) {
+          <p
+            id="post-edit-body-error"
+            class="text-xs text-red-600"
+            role="alert"
+            data-testid="post-form-body-error"
+          >
+            {{ bodyErrorKey() | transloco: bodyErrorParams() }}
+          </p>
+        }
       </label>
 
       <label class="flex flex-col gap-1.5">
@@ -42,6 +68,7 @@
             class="pointer-events-none absolute left-3 text-slate-400"
           />
           <input
+            id="post-edit-tags"
             type="text"
             class="w-full rounded-lg bg-slate-100 py-3 pl-9 pr-4 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"
             [formField]="form.tags"

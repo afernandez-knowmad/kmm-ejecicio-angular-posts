@@ -71,6 +71,90 @@ export class PostEditPage {
   });
   protected readonly canSubmit = computed(() => this.form().valid());
 
+  /** Gates inline field error rendering until the user submits at least once. */
+  private readonly submitAttempted = signal(false);
+
+  protected readonly titleField = computed(() => this.form.title());
+  protected readonly bodyField = computed(() => this.form.body());
+
+  protected readonly showTitleError = computed(
+    () => this.submitAttempted() && this.titleField().errors().length > 0,
+  );
+  protected readonly showBodyError = computed(
+    () => this.submitAttempted() && this.bodyField().errors().length > 0,
+  );
+
+  /**
+   * Picks the most relevant error kind for the title field, in the
+   * order required → minLength, so the first failure surfaces to
+   * the assistive tech. Returns `null` when the field is valid.
+   */
+  protected readonly titleErrorKind = computed(() => {
+    const errors = this.titleField().errors();
+    if (errors.length === 0) {
+      return null;
+    }
+    if (errors.some((e) => e.kind === 'required')) {
+      return 'required' as const;
+    }
+    if (errors.some((e) => e.kind === 'minLength')) {
+      return 'minLength' as const;
+    }
+    return errors[0].kind;
+  });
+
+  protected readonly titleErrorKey = computed(() => {
+    const kind = this.titleErrorKind();
+    if (kind === null) {
+      return null;
+    }
+    if (kind === 'minLength') {
+      return 'posts.form.errors.minlength';
+    }
+    return 'posts.form.errors.required';
+  });
+
+  protected readonly titleErrorParams = computed(() => {
+    const kind = this.titleErrorKind();
+    if (kind === 'minLength') {
+      return { min: 3, actual: this.postModel().title.length };
+    }
+    return {};
+  });
+
+  protected readonly bodyErrorKind = computed(() => {
+    const errors = this.bodyField().errors();
+    if (errors.length === 0) {
+      return null;
+    }
+    if (errors.some((e) => e.kind === 'required')) {
+      return 'required' as const;
+    }
+    if (errors.some((e) => e.kind === 'minLength')) {
+      return 'minLength' as const;
+    }
+    return errors[0].kind;
+  });
+
+  protected readonly bodyErrorKey = computed(() => {
+    const kind = this.bodyErrorKind();
+    if (kind === null) {
+      return null;
+    }
+    if (kind === 'minLength') {
+      return 'posts.form.errors.minlength';
+    }
+    return 'posts.form.errors.required';
+  });
+
+  protected readonly bodyErrorParams = computed(() => {
+    const kind = this.bodyErrorKind();
+    if (kind === 'minLength') {
+      return { min: 10, actual: this.postModel().body.length };
+    }
+    return {};
+  });
+
   protected onCancel(): void {
     void this.router.navigate(['/posts', this.postId()]);
   }
@@ -97,6 +181,7 @@ export class PostEditPage {
   protected onSubmit(event: Event): void {
     event.preventDefault();
     if (!this.form().valid()) {
+      this.submitAttempted.set(true);
       this.form().markAsTouched();
       return;
     }
