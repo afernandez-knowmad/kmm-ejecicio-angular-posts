@@ -194,7 +194,7 @@ Los ids numéricos del seed y los ids alfanuméricos que devuelve
 
 ## Uso de IA
 
-Copilot ha sido utilizado como ayudante técnico, para dudas, debugging y demas tareas repetitivas y no como un agente para construir automaticamente lo que pedia el ejercicio.
+Copilot ha sido utilizado como ayudante técnico, para dudas, debugging y demas tareas repetitivas y no como un agente para construir automaticamente lo que pedia el ejercicio. Asistido por IA, no es lo mismo que generado por IA.
 Todo lo que inserto en el repo se leyó, probó y revisó a mano.
 
 - **Scaffolding repetitivo.** Las páginas de `features/posts/pages/*`
