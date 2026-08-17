@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Posts",
-    "tagline": "Gestiona posts y comentarios"
+    "tagline": "Gestiona posts y comentarios",
+    "skipToContent": "Saltar al contenido principal"
   },
   "nav": {
     "posts": "Posts",
@@ -80,7 +81,11 @@
       "bodyPlaceholder": "Contenido del post…",
       "create": "Publicar",
       "save": "Guardar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "errors": {
+        "required": "Este campo es obligatorio.",
+        "minlength": "Necesita al menos {min} caracteres (tiene {actual})."
+      }
     }
   },
   "comments": {
@@ -98,7 +103,11 @@
       "bodyPlaceholder": "Escribe tu comentario…",
       "submit": "Publicar comentario",
       "save": "Guardar",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "errors": {
+        "required": "Este campo es obligatorio.",
+        "minlength": "Necesita al menos {min} caracteres (tiene {actual})."
+      }
     },
     "actions": {
       "edit": "Editar",

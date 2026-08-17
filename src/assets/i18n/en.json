@@ -1,7 +1,8 @@
 {
   "app": {
     "title": "Posts",
-    "tagline": "Manage posts and comments"
+    "tagline": "Manage posts and comments",
+    "skipToContent": "Skip to main content"
   },
   "nav": {
     "posts": "Posts",
@@ -80,7 +81,11 @@
       "bodyPlaceholder": "Post body…",
       "create": "Publish",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "errors": {
+        "required": "This field is required.",
+        "minlength": "Needs at least {min} characters (currently {actual})."
+      }
     }
   },
   "comments": {
@@ -98,7 +103,11 @@
       "bodyPlaceholder": "Write your comment…",
       "submit": "Post comment",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "errors": {
+        "required": "This field is required.",
+        "minlength": "Needs at least {min} characters (currently {actual})."
+      }
     },
     "actions": {
       "edit": "Edit",
