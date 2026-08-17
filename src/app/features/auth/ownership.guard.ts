@@ -5,47 +5,33 @@ import { isOwner } from '@core/lib/ids';
 import { AuthStore } from './auth.store';
 
 /**
- * Resource shape required by the ownership resolver.
- *
- * Anything that has a `userId` works. Kept as a structural type so
- * `Post`, `Comment` and any future resource can satisfy it without
- * inheritance.
+ * Forma del recurso que espera el ownership resolver. Cualquier cosa
+ * con `userId` sirve. Tipo estructural para que `Post`, `Comment` o
+ * cualquier recurso futuro lo cumplan sin herencia.
  */
 export interface OwnedResource {
   readonly userId: string;
 }
 
 /**
- * Resolver signature: given the :id from the URL, fetch the resource
- * and return its userId. Resolvers are expected to throw or return
- * `null` if the resource cannot be loaded.
+ * Firma del resolver: dado el :id de la URL, trae el recurso y
+ * devuelve su userId. Debe tirar o devolver `null` si no se puede
+ * cargar.
  */
 export type OwnershipResolver = (id: string) => Promise<OwnedResource | null>;
 
 /**
- * Build a `CanMatchFn` that checks whether the authenticated user is the
- * owner of the resource referenced by the `:id` route parameter.
+ * Construye un `CanMatchFn` que comprueba si el usuario autenticado
+ * es dueño del recurso referenciado por el `:id` de la ruta.
  *
- * Usage:
- *
- * ```ts
- * {
- *   path: 'posts/:id/edit',
- *   canMatch: [ownershipGuardFor(id => postsApi.findOne(id))],
- *   loadComponent: () => import('./edit.page'),
- * }
- * ```
- *
- * On failure it redirects to the read-only view (`/<base>/:id`) so the
- * user can still browse the resource; a separate `forbidden` signal in
- * the page handles the UI feedback.
+ * En caso contrario redirige a la vista de solo lectura
+ * (`/<base>/:id`) para que el usuario pueda seguir leyendo; la UI
+ * del feedback la lleva el `?forbidden=1` en la página.
  */
 export function ownershipGuardFor(basePath: string, resolver: OwnershipResolver): CanMatchFn {
   return async (
     route: Route,
     segments: UrlSegment[],
-    // The third CanMatchFn parameter is required by the signature
-    // but unused by this guard; suppressed via config in eslint.config.
     snapshot: Parameters<CanMatchFn>[2],
   ): Promise<boolean | UrlTree> => {
     void snapshot;
@@ -54,8 +40,6 @@ export function ownershipGuardFor(basePath: string, resolver: OwnershipResolver)
     const router = inject(Router);
 
     if (!store.isAuthenticated()) {
-      // Defer to authGuard for anonymous users; this guard should
-      // never run before authentication is established.
       return router.createUrlTree(['/login']);
     }
 

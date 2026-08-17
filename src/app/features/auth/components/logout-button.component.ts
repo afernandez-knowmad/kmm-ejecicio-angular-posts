@@ -5,12 +5,6 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { IconComponent } from '@shared/ui/icon/icon.component';
 import { AuthStore } from '../auth.store';
 
-/**
- * Header logout button with icon and label.
- *
- * Renders nothing when there is no active session so it can sit
- * unconditionally in the app shell.
- */
 @Component({
   selector: 'app-logout-button',
   changeDetection: ChangeDetectionStrategy.OnPush,
