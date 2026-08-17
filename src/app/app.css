@@ -4,22 +4,6 @@
   min-height: 100vh;
 }
 
-/* ----------------------------------------------------------------------
- * Fade & slide-up animation for route transitions.
- *
- * Uses the native View Transitions API via Angular's `withViewTransitions()`
- * router feature. When the user navigates, Angular wraps the route swap
- * inside `document.startViewTransition(...)`, and the browser snapshots the
- * old and new states. We customize the cross-fade using the
- * `::view-transition-{old,new}(root)` pseudo-elements.
- *
- * The curve `cubic-bezier(0.16, 1, 0.3, 1)` is an "ease-out-expo" that
- * gives a soft, pleasant deceleration.
- *
- * Browsers without View Transitions API support (or users with
- * `prefers-reduced-motion: reduce`) skip the animation cleanly.
- * ---------------------------------------------------------------------- */
-
 @keyframes route-fade-in {
   from {
     opacity: 0;

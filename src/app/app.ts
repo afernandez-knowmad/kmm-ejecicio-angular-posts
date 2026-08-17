@@ -26,11 +26,9 @@ export class App {
   protected readonly store = inject(AuthStore);
   private readonly router = inject(Router);
 
-  /**
-   * Reactive view of the current URL (post-redirect). Emits the
-   * initial value synchronously so the header renders correctly on
-   * the very first paint, and updates on every successful navigation.
-   */
+  // Vista reactiva de la URL actual (post-redirect). Emite el valor
+  // inicial de forma síncrona para que el header pinte bien al primer
+  // render y se actualiza en cada navegación exitosa.
   private readonly currentUrl = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -40,26 +38,21 @@ export class App {
     { initialValue: this.router.url },
   );
 
-  /**
-   * True only when the active route is the posts list
-   * (`/posts`, with optional query params). Detail (`/posts/:id`),
-   * edit (`/posts/:id/edit`) and new (`/posts/new`) sub-routes are
-   * excluded so the header search input never appears there.
-   *
-   * We match against the UrlTree segments rather than the URL
-   * string so that, e.g., `/posts/123` is correctly recognised as
-   * the detail route even though it shares the `/posts` prefix.
-   */
+  // Solo true en la lista de posts (`/posts`, con o sin query params).
+  // Se excluyen `/posts/:id`, `/posts/:id/edit` y `/posts/new` para
+  // que la búsqueda del header no aparezca ahí.
+  //
+  // Comparamos contra los segmentos del UrlTree y no contra el string
+  // de la URL: así `/posts/123` se reconoce como detalle aunque
+  // comparta prefijo con la lista.
   protected readonly isPostsList = computed(() => {
     const tree = this.router.parseUrl(this.currentUrl());
     const segments = tree.root.children['primary']?.segments ?? [];
     return segments.length === 1 && segments[0].path === 'posts';
   });
 
-  /**
-   * The header search box should only render for authenticated
-   * users AND while they are on the posts list page.
-   */
+  // El buscador del header solo sale si hay sesión y estamos en la
+  // lista de posts.
   protected readonly showSearch = computed(
     () => this.store.isAuthenticated() && this.isPostsList(),
   );

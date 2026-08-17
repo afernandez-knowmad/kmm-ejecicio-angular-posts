@@ -15,12 +15,6 @@ const ALICE: PublicUser = {
 
 const ALICE_RECORD = { ...ALICE, password: 'alice123' };
 
-/**
- * Stand-in for the AuthSessionStorage adapter that just keeps the
- * value in a local variable. We don't want to touch localStorage in
- * unit tests; the real storage has its own contract that is exercised
- * in the e2e suite.
- */
 class InMemoryStorage {
   private session: { token: string; user: PublicUser } | null = null;
   read() {
@@ -69,8 +63,6 @@ describe('AuthStore', () => {
     expect(store.token()).toBe('mock-token-1');
     expect(store.loading()).toBe(false);
 
-    // The persistence effect runs asynchronously after the signals
-    // update; let it flush before asserting against the storage.
     await vi.waitFor(() => {
       expect(storage.read()?.user).toEqual(ALICE);
     });

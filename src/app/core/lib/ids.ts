@@ -1,10 +1,10 @@
 /**
- * Coerce an incoming id (string | number) to its canonical string form.
+ * Convierte un id entrante a string canónico.
  *
- * The mock backend emits `users[].id` as a string but `posts.userId` and
- * `comments.userId` look like numbers in `db.json`. json-server
- * normalises everything to strings in responses, so this helper exists
- * to guarantee consistent comparisons at the boundary.
+ * `users[].id` llega como string, pero `posts.userId` y
+ * `comments.userId` aparentan ser number en `db.json`. json-server
+ * lo normaliza todo a string en sus respuestas, así que este helper
+ * garantiza comparaciones consistentes en el borde.
  */
 export function toId(value: string | number | null | undefined): string {
   if (value === null || value === undefined) {
@@ -14,10 +14,9 @@ export function toId(value: string | number | null | undefined): string {
 }
 
 /**
- * Parse a string id into a finite number, falling back to `NaN`.
- *
- * Useful when the api contract expects a number (e.g. `_page` query
- * params) but we have stored ids as strings.
+ * Parsea un id a number finito o devuelve NaN. Útil cuando la API
+ * espera number (p.ej. query param `_page`) pero los ids se guardan
+ * como string.
  */
 export function toNumericId(value: string | number | null | undefined): number {
   if (typeof value === 'number') {
@@ -31,21 +30,19 @@ export function toNumericId(value: string | number | null | undefined): number {
 }
 
 /**
- * Coerce an id to the shape json-server expects for the seeded data.
+ * Devuelve el id en la forma que espera json-server para los datos
+ * del seed.
  *
- * json-server v1-beta filters with strict type matching: querying
- * `?postId=1` only matches records whose `postId` is the **number**
- * 1, and `?postId="1"` only matches the string `"1"`. The seed in
- * `db.json` keeps resource ids as **numeric** strings (`"1"`,
- * `"2"`, ...), but `POST /posts` auto-generates **alphanumeric**
- * ids (`"n1I0hof7I3o"`). Sending a numeric seed as a string (or
- * vice-versa) silently breaks the create flow: the POST succeeds
- * with 200, but the resulting row never re-appears in the list
- * query — so the UI looks like the comment "didn't take".
+ * json-server v1-beta filtra con matching estricto de tipo:
+ * `?postId=1` solo matchea registros con `postId` **number** 1, y
+ * `?postId="1"` solo el string `"1"`. El seed de `db.json` guarda
+ * ids numéricos (`"1"`, `"2"`...), pero `POST /posts` genera ids
+ * alfanuméricos (`"n1I0hof7I3o"`). Mandar un id del seed como string
+ * (o al revés) rompe en silencio el create: el POST devuelve 200
+ * pero la fila no aparece en la siguiente consulta.
  *
- * This helper returns the numeric form when the value is purely
- * numeric (so it matches the seed), and the string form otherwise
- * (so it matches auto-generated ids).
+ * Devuelve number cuando el valor es puramente numérico (match con
+ * el seed) y string en caso contrario (match con ids autogenerados).
  */
 export function toBackendId(value: string | number | null | undefined): string | number {
   const n = toNumericId(value);
@@ -53,9 +50,8 @@ export function toBackendId(value: string | number | null | undefined): string |
 }
 
 /**
- * Strict ownership check.
- *
- * Returns `true` only when both ids are defined and equal as strings.
+ * Check de ownership estricto. Solo true si ambos ids están definidos
+ * y son iguales como string.
  */
 export function isOwner(
   resourceUserId: string | number | undefined,

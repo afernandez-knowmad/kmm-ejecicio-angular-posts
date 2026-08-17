@@ -13,11 +13,8 @@ import { provideAuthHydration } from '@features/auth/hydrate-auth-session';
 import { authInterceptor } from '@features/auth/auth.interceptor';
 import { provideAppTransloco } from '@features/i18n/transloco.config';
 
-/**
- * Default origin of the mock backend started by `npm start` via
- * `concurrently`. Tests can override this by providing their own
- * value for API_BASE_URL in the TestBed.
- */
+// Origen por defecto del backend mock que levanta `npm start`. En tests
+// se sobreescribe el token API_BASE_URL desde el TestBed.
 const DEFAULT_API_BASE_URL = 'http://localhost:3000';
 
 export const appConfig: ApplicationConfig = {
@@ -29,9 +26,8 @@ export const appConfig: ApplicationConfig = {
     provideAppTransloco(),
     { provide: API_BASE_URL, useValue: DEFAULT_API_BASE_URL },
     provideAuthHydration(),
-    // The default Angular `TitleStrategy` paints the route's `title`
-    // field verbatim. We override it so the field is treated as a
-    // Transloco key and decorated with the ` | TechPoC` suffix.
+    // Sustituye el TitleStrategy por defecto para tratar el `title`
+    // de cada ruta como clave de Transloco y añadirle el sufijo ` | TechPoC`.
     { provide: TitleStrategy, useClass: TranslocoTitleStrategy },
   ],
 };

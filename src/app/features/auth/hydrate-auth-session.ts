@@ -5,10 +5,9 @@ import type { AuthSession } from './auth.types';
 import { AuthStore } from './auth.store';
 
 /**
- * Hydrate AuthStore from localStorage and return the loaded session
- * (or null). Exposed as a free function because it composes two
- * existing singletons; callers wrap it in their own initialization
- * step (see initAuthHydration).
+ * Hidrata el AuthStore desde localStorage y devuelve la sesión
+ * cargada (o null). Función libre porque compone dos singletons
+ * existentes; los callers la envuelven en su propio init.
  */
 export function hydrateAuthSession(): AuthSession | null {
   const storage = inject(AuthSessionStorage);
@@ -22,18 +21,17 @@ export function hydrateAuthSession(): AuthSession | null {
 }
 
 /**
- * APP_INITIALIZER-friendly variant: returns void once hydration is
- * done. Use this with `provideAppInitializer(initAuthHydration)`.
+ * Variante apta para APP_INITIALIZER: devuelve void al terminar.
+ * Úsala con `provideAppInitializer(initAuthHydration)`.
  */
 export function initAuthHydration(): void {
   hydrateAuthSession();
 }
 
 /**
- * APP_INITIALIZER provider that rehydrates AuthStore from
- * localStorage before any route guard runs. Without this, a page
- * reload would always redirect to /login because the guard would
- * see an empty in-memory store even though a valid session exists
- * in localStorage.
+ * Provider APP_INITIALIZER que rehidrata el AuthStore desde
+ * localStorage antes de que corran los guards. Sin esto, un reload
+ * redirigiría siempre a `/login` porque el guard vería el store
+ * vacío aunque haya sesión válida persistida.
  */
 export const provideAuthHydration = () => provideAppInitializer(initAuthHydration);

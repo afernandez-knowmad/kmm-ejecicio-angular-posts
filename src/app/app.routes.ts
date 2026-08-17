@@ -4,25 +4,11 @@ import { authGuard } from '@features/auth/auth.guard';
 import { ownershipGuardFor } from '@features/auth/ownership.guard';
 import { injectPostsOwnershipResolver } from '@features/posts/posts.resolver';
 
-/**
- * CanMatchFn wrapper that defers building the OwnershipResolver
- * until the route is matched, so `inject()` runs inside an
- * InjectionContext.
- */
+// Wrapper que retrasa la construcción del resolver hasta que la ruta
+// se matchea, así `inject()` corre dentro de un InjectionContext.
 const postOwnershipGuard: CanMatchFn = (route, segments, snapshot) =>
   ownershipGuardFor('posts', injectPostsOwnershipResolver())(route, segments, snapshot);
 
-/**
- * Top-level routes for the app.
- *
- * Authenticated routes use `authGuard` via `canMatch` so the lazy
- * chunk is not even loaded when the user is not signed in. The login
- * route is intentionally NOT guarded so anonymous users can reach it.
- *
- * /posts/:id/edit uses both authGuard and postOwnershipGuard so the
- * edit page is not even loaded for posts the current user does not
- * own; non-owners are redirected back to /posts/:id?forbidden=1.
- */
 export const routes: Routes = [
   {
     path: 'login',

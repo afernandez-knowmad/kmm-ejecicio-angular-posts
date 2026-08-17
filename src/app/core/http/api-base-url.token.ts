@@ -1,10 +1,10 @@
 import { InjectionToken } from '@angular/core';
 
 /**
- * Base URL of the mock backend (json-server).
+ * URL base del backend mock (json-server).
  *
- * Provided in `app.config.ts` and consumed by feature services so they do
- * not hard-code the origin. Keeping it as a token makes it trivial to swap
- * in tests with a different value (in-memory server, fixtures, etc.).
+ * Se aporta desde `app.config.ts` y la consumen los servicios de las
+ * features para no acoplar el origen a cada uno. Tokenizarlo hace
+ * trivial cambiarlo en tests.
  */
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');

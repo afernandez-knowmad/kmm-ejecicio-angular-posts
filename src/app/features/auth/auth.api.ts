@@ -6,29 +6,22 @@ import { API_BASE_URL } from '@core/http/api-base-url.token';
 import type { User } from './models/user.model';
 
 /**
- * AuthApi talks to the mock backend (`/users` collection).
+ * AuthApi habla con el backend mock (colección `/users`).
  *
- * The mock backend has no `/auth/login` endpoint, so login is modelled
- * as a name+password lookup against `/users`. This is good enough for
- * the practice and keeps the service surface small.
+ * No hay endpoint `/auth/login`, así que el login se modela como un
+ * lookup por name+password contra `/users`. Suficiente para la
+ * práctica y mantiene la superficie pequeña.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthApi {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
 
-  /**
-   * Look up users whose `name` equals the given value. Returns at most
-   * one record under normal seed data.
-   */
   findByName(name: string): Observable<User[]> {
     const params = new HttpParams().set('name', name);
     return this.http.get<User[]>(`${this.baseUrl}/users`, { params });
   }
 
-  /**
-   * Promise-friendly wrapper used by `AuthStore.login`.
-   */
   findByNameOnce(name: string): Promise<User[]> {
     return firstValueFrom(this.findByName(name));
   }

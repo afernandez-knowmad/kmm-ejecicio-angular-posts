@@ -4,11 +4,11 @@ import type { AuthSession } from './auth.types';
 import type { PublicUser } from './models/user.model';
 
 /**
- * localStorage adapter for the auth session.
+ * Adaptador de localStorage para la sesión.
  *
- * Kept thin on purpose: it only knows how to read/write JSON; the
- * store decides when to call it. That keeps tests simple (no DI to
- * fake) and makes the storage key easy to swap if we ever need to.
+ * Pequeño a propósito: solo sabe leer/escribir JSON; el store
+ * decide cuándo llamarlo. Así los tests no necesitan fake de DI y
+ * la clave se cambia fácil si hace falta.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthSessionStorage {
@@ -30,7 +30,7 @@ export class AuthSessionStorage {
       const user = parsed.user as PublicUser;
       return { token: parsed.token, user };
     } catch {
-      // Corrupt payload: drop it so we do not block the user.
+      // Payload corrupto: lo tiramos para no bloquear al usuario.
       localStorage.removeItem(this.storageKey);
       return null;
     }

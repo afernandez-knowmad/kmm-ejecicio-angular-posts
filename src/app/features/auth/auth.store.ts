@@ -7,12 +7,12 @@ import type { AuthError } from './auth.types';
 import type { LoginCredentials, PublicUser } from './models/user.model';
 
 /**
- * In-memory auth store. Holds the active session as signals so the rest
- * of the app can react to login/logout changes without subscribing.
+ * Store de auth en memoria. Expone la sesión activa como signals
+ * para que el resto reaccione a login/logout sin suscribirse.
  *
- * Persistence (localStorage) is owned here as well: an effect mirrors
- * the (user, token) pair into AuthSessionStorage so that reloads
- * automatically restore the session.
+ * La persistencia (localStorage) vive aquí: un effect refleja el
+ * par (user, token) en `AuthSessionStorage` para que un reload
+ * restaure la sesión automáticamente.
  */
 @Injectable({ providedIn: 'root' })
 export class AuthStore {
@@ -31,9 +31,9 @@ export class AuthStore {
   readonly isAuthenticated = computed(() => this._user() !== null && this._token() !== null);
 
   constructor() {
-    // Sync the (user, token) pair into localStorage on every change.
-    // Running inside an InjectionContext is enough since the store is
-    // providedIn root and instantiated lazily.
+    // Sincroniza el par (user, token) en localStorage en cada cambio.
+    // Como el store es providedIn root y se instancia lazy, basta con
+    // que el effect corra dentro de un InjectionContext.
     effect(() => {
       const user = this._user();
       const token = this._token();
@@ -46,10 +46,9 @@ export class AuthStore {
   }
 
   /**
-   * Attempt to log in with the provided credentials.
-   *
-   * Resolves to the authenticated `PublicUser` on success, or rejects
-   * with an `AuthError` code that the UI maps to a transloco key.
+   * Intenta login con las credenciales. Resuelve con el `PublicUser`
+   * autenticado o rechaza con un código `AuthError` que la UI mapea
+   * a una clave de transloco.
    */
   async login(credentials: LoginCredentials): Promise<PublicUser> {
     this._loading.set(true);
@@ -80,7 +79,7 @@ export class AuthStore {
       return publicUser;
     } catch (err) {
       if (this._error() === null) {
-        // Only swallow genuine network errors; auth errors are already set.
+        // Solo cubrimos errores de red genuinos; los de auth ya están seteados.
         this._error.set(
           err instanceof Error && err.message === 'network' ? 'network-error' : 'unknown',
         );
@@ -91,9 +90,7 @@ export class AuthStore {
     }
   }
 
-  /**
-   * Drop the active session.
-   */
+  /** Cierra la sesión activa. */
   logout(): void {
     this._user.set(null);
     this._token.set(null);
@@ -102,9 +99,8 @@ export class AuthStore {
   }
 
   /**
-   * Replace the live state from a previously persisted session.
-   *
-   * Used by the localStorage hydration layer on app start.
+   * Sustituye el estado vivo por una sesión persistida. La usa la
+   * capa de hidratación de localStorage al arrancar.
    */
   hydrate(session: { token: string; user: PublicUser } | null): void {
     if (!session) {
@@ -115,10 +111,9 @@ export class AuthStore {
   }
 
   /**
-   * Build the mock token used by the bearer interceptor.
-   *
-   * Deterministic so a hydrated session can be re-emitted with the
-   * same token across reloads.
+   * Genera el token mock que usa el interceptor. Es determinista
+   * para que una sesión hidratada se reemita con el mismo token
+   * tras cada recarga.
    */
   private makeToken(userId: string): string {
     return `mock-token-${toId(userId)}`;
